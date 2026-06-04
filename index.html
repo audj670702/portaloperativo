@@ -21,11 +21,13 @@
       --border: #d1d5db;
       --dark: #111827;
       --blue: #2563eb;
-      --green: #16a34a;
+      --purple: #4f46e5;
       --orange: #f97316;
       --teal: #0f766e;
-      --red: #dc2626;
+      --green: #16a34a;
       --yellow: #facc15;
+      --red: #dc2626;
+      --gray: #6b7280;
     }
 
     * {
@@ -159,6 +161,47 @@
       background: var(--blue);
     }
 
+    .legend {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .legend button {
+      background: #f9fafb;
+      color: var(--text);
+      border: 1px solid #e5e7eb;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .legend button.active {
+      background: var(--dark);
+      color: white;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .dot.prog { background: var(--blue); }
+    .dot.conf { background: var(--purple); }
+    .dot.ruta { background: var(--orange); }
+    .dot.pres { background: var(--teal); }
+    .dot.cub { background: var(--green); }
+    .dot.pend { background: var(--yellow); }
+    .dot.falta { background: var(--red); }
+    .dot.canc { background: var(--gray); }
+
     .list {
       display: flex;
       flex-direction: column;
@@ -168,10 +211,20 @@
     .service-card {
       background: white;
       border: 1px solid var(--border);
+      border-left: 7px solid var(--gray);
       border-radius: 16px;
       padding: 14px;
       cursor: pointer;
     }
+
+    .service-card.prog { border-left-color: var(--blue); }
+    .service-card.conf { border-left-color: var(--purple); }
+    .service-card.ruta { border-left-color: var(--orange); }
+    .service-card.pres { border-left-color: var(--teal); }
+    .service-card.cub { border-left-color: var(--green); }
+    .service-card.pend { border-left-color: var(--yellow); }
+    .service-card.falta { border-left-color: var(--red); }
+    .service-card.canc { border-left-color: var(--gray); }
 
     .service-card-header {
       display: flex;
@@ -206,6 +259,9 @@
     .badge.ruta { background: #ffedd5; color: #c2410c; }
     .badge.pres { background: #ccfbf1; color: #0f766e; }
     .badge.cub { background: #dcfce7; color: #15803d; }
+    .badge.pend { background: #fef9c3; color: #854d0e; }
+    .badge.falta { background: #fee2e2; color: #b91c1c; }
+    .badge.canc { background: #e5e7eb; color: #374151; }
 
     .calendar {
       background: white;
@@ -242,17 +298,12 @@
       background: #f9fafb;
     }
 
-    .day.today {
-      border: 2px solid var(--dark);
-    }
-
     .day-number {
       font-weight: 700;
       margin-bottom: 3px;
     }
 
     .mini-event {
-      background: var(--dark);
       color: white;
       border-radius: 6px;
       padding: 3px;
@@ -262,7 +313,17 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      background: var(--gray);
     }
+
+    .mini-event.prog { background: var(--blue); }
+    .mini-event.conf { background: var(--purple); }
+    .mini-event.ruta { background: var(--orange); }
+    .mini-event.pres { background: var(--teal); }
+    .mini-event.cub { background: var(--green); }
+    .mini-event.pend { background: #ca8a04; }
+    .mini-event.falta { background: var(--red); }
+    .mini-event.canc { background: var(--gray); }
 
     .detail {
       background: white;
@@ -289,6 +350,49 @@
       margin-bottom: 3px;
     }
 
+    .reminder {
+      border-radius: 14px;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 14px;
+      line-height: 1.35;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+    }
+
+    .reminder.prog { border-left: 6px solid var(--blue); }
+    .reminder.conf { border-left: 6px solid var(--purple); }
+    .reminder.ruta { border-left: 6px solid var(--orange); }
+    .reminder.pres { border-left: 6px solid var(--teal); }
+    .reminder.cub { border-left: 6px solid var(--green); }
+
+    .progress-line {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .step {
+      text-align: center;
+      border-radius: 12px;
+      padding: 8px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #e5e7eb;
+      color: #6b7280;
+    }
+
+    .step.done {
+      background: #111827;
+      color: white;
+    }
+
+    .step.current {
+      background: #2563eb;
+      color: white;
+    }
+
     .empty {
       background: white;
       border: 1px dashed var(--border);
@@ -297,6 +401,20 @@
       text-align: center;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    @media (max-width: 520px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .day {
+        min-height: 62px;
+      }
+
+      .mini-event {
+        font-size: 8px;
+      }
     }
   </style>
 </head>
@@ -351,6 +469,15 @@
         <button id="btnViewList" onclick="setView('list')">Lista</button>
       </div>
 
+      <div class="legend">
+        <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
+        <button id="filterPROG" onclick="setStatusFilter('PROG')"><span class="dot prog"></span>PROG</button>
+        <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
+        <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
+        <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
+        <button id="filterCUB" onclick="setStatusFilter('CUB')"><span class="dot cub"></span>CUB</button>
+      </div>
+
       <div id="calendarView"></div>
       <div id="listView" style="display:none;"></div>
     </section>
@@ -377,6 +504,7 @@
     let servicios = [];
     let selectedItem = null;
     let currentView = "calendar";
+    let statusFilter = "TODOS";
 
     document.addEventListener("DOMContentLoaded", () => {
       if ("serviceWorker" in navigator) {
@@ -443,6 +571,25 @@
       document.getElementById("listView").style.display = view === "list" ? "block" : "none";
     }
 
+    function setStatusFilter(status) {
+      statusFilter = status;
+
+      ["TODOS", "PROG", "CONF", "RUTA", "PRES", "CUB"].forEach(s => {
+        const btn = document.getElementById(`filter${s}`);
+        if (btn) btn.classList.toggle("active", s === status);
+      });
+
+      renderViews();
+    }
+
+    function getFilteredServices() {
+      if (statusFilter === "TODOS") {
+        return servicios;
+      }
+
+      return servicios.filter(item => item.estado === statusFilter);
+    }
+
     function renderViews() {
       renderList();
       renderCalendar();
@@ -451,19 +598,20 @@
 
     function renderList() {
       const root = document.getElementById("listView");
+      const data = getFilteredServices();
 
-      if (!servicios.length) {
-        root.innerHTML = `<div class="empty">Sin servicios asignados.</div>`;
+      if (!data.length) {
+        root.innerHTML = `<div class="empty">Sin servicios para este filtro.</div>`;
         return;
       }
 
       root.innerHTML = `
         <div class="list">
-          ${servicios.map(item => `
-            <div class="service-card" onclick="openDetail('${item.coberturaId}')">
+          ${data.map(item => `
+            <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
               <div class="service-card-header">
                 <div class="service-card-title">${item.servicio || "Servicio"}</div>
-                <span class="badge ${String(item.estado).toLowerCase()}">${item.estado}</span>
+                <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
               </div>
               <div class="service-card-sub">
                 ${formatDate(item.fecha)} · ${item.horario}<br>
@@ -478,6 +626,8 @@
 
     function renderCalendar() {
       const root = document.getElementById("calendarView");
+      const data = getFilteredServices();
+
       const base = new Date("2026-06-01T00:00:00");
       const year = base.getFullYear();
       const month = base.getMonth();
@@ -498,12 +648,12 @@
 
       for (let d = 1; d <= totalDays; d++) {
         const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-        const dayItems = servicios.filter(s => s.fechaKey === key);
+        const dayItems = data.filter(s => s.fechaKey === key);
 
         html += `<div class="day">
           <div class="day-number">${d}</div>
           ${dayItems.map(item => `
-            <div class="mini-event" onclick="openDetail('${item.coberturaId}')">
+            <div class="mini-event ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
               ${item.horaInicio || ""} ${item.servicio || ""} ${item.estado || ""}
             </div>
           `).join("")}
@@ -525,28 +675,37 @@
 
     function renderDetail() {
       const item = selectedItem;
+      const estado = item.estado;
+      const cls = statusClass(estado);
 
       let actionButton = "";
+      let reminder = getReminderText(estado);
 
-      if (item.estado === "PROG") {
+      if (estado === "PROG") {
         actionButton = `<button class="success" onclick="confirmarServicio()">Confirmar conocimiento</button>`;
       }
 
-      if (item.estado === "CONF") {
-        actionButton = `<button class="warning" onclick="enRutaServicio()">En ruta</button>`;
+      if (estado === "CONF") {
+        actionButton = `<button class="warning" onclick="enRutaServicio()">Marcar en ruta</button>`;
       }
 
-      if (item.estado === "RUTA") {
-        actionButton = `<button class="teal" onclick="presenteServicio()">Presente</button>`;
+      if (estado === "RUTA") {
+        actionButton = `<button class="teal" onclick="presenteServicio()">Marcar presente</button>`;
       }
 
-      if (item.estado === "PRES" || item.estado === "CUB") {
+      if (estado === "PRES" || estado === "CUB") {
         actionButton = `<div class="empty">Sin acciones disponibles.</div>`;
       }
 
       document.getElementById("detailBox").innerHTML = `
         <div class="detail">
           <h2>${item.servicio || "Servicio"}</h2>
+
+          <div class="reminder ${cls}">
+            ${reminder}
+          </div>
+
+          ${renderProgressLine(estado)}
 
           <div class="detail-row"><strong>Estado</strong>${item.estado}</div>
           <div class="detail-row"><strong>Fecha</strong>${formatDate(item.fecha)}</div>
@@ -555,10 +714,62 @@
           <div class="detail-row"><strong>Posición</strong>${item.posicion || ""}</div>
           <div class="detail-row"><strong>Turno</strong>${item.turno || ""}</div>
           <div class="detail-row"><strong>Indicaciones</strong>${item.indicaciones || "Sin indicaciones."}</div>
+          <div class="detail-row"><strong>Confirmación</strong>${formatDateTime(item.fechaConfirmacionConocimiento)}</div>
+          <div class="detail-row"><strong>En ruta</strong>${formatDateTime(item.fechaEnRuta)}</div>
+          <div class="detail-row"><strong>Presente</strong>${formatDateTime(item.fechaEnServicio)}</div>
 
           <div class="toolbar">
             ${actionButton}
           </div>
+        </div>
+      `;
+    }
+
+    function getReminderText(estado) {
+      if (estado === "PROG") {
+        return "Tienes este servicio programado. Confirma que tienes conocimiento del servicio y disponibilidad para cubrirlo.";
+      }
+
+      if (estado === "CONF") {
+        return "Servicio confirmado. Cuando inicies tu traslado al servicio, marca En ruta.";
+      }
+
+      if (estado === "RUTA") {
+        return "Ya reportaste que vas en ruta. Al llegar al lugar del servicio, marca Presente.";
+      }
+
+      if (estado === "PRES") {
+        return "Presencia registrada. Queda pendiente la validación de supervisión.";
+      }
+
+      if (estado === "CUB") {
+        return "Cobertura validada.";
+      }
+
+      return "Servicio en consulta.";
+    }
+
+    function renderProgressLine(estado) {
+      const order = ["PROG", "CONF", "RUTA", "PRES"];
+      const labels = {
+        PROG: "Programado",
+        CONF: "Confirmado",
+        RUTA: "En ruta",
+        PRES: "Presente"
+      };
+
+      const currentIndex = order.indexOf(estado);
+
+      return `
+        <div class="progress-line">
+          ${order.map((s, i) => {
+            let cls = "";
+
+            if (currentIndex >= 0 && i < currentIndex) cls = "done";
+            if (currentIndex >= 0 && i === currentIndex) cls = "current";
+
+            return `<div class="step ${cls}">${labels[s]}</div>`;
+          }).join("")}
         </div>
       `;
     }
@@ -608,11 +819,41 @@
       }
     }
 
+    function statusClass(status) {
+      const raw = String(status || "").toLowerCase();
+
+      if (raw === "prog") return "prog";
+      if (raw === "conf") return "conf";
+      if (raw === "ruta") return "ruta";
+      if (raw === "pres") return "pres";
+      if (raw === "cub") return "cub";
+      if (raw === "pend") return "pend";
+      if (raw === "falta") return "falta";
+      if (raw === "canc") return "canc";
+
+      return "";
+    }
+
     function formatDate(value) {
       if (!value) return "";
 
       const [y, m, d] = value.split("-");
       return `${d}/${m}/${y}`;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "Sin registro.";
+
+      const d = new Date(value);
+
+      if (isNaN(d.getTime())) {
+        return "Sin registro.";
+      }
+
+      return d.toLocaleString("es-MX", {
+        dateStyle: "short",
+        timeStyle: "short"
+      });
     }
   </script>
 </body>
