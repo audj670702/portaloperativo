@@ -48,42 +48,33 @@
       margin: 0 auto;
     }
 
-    .top {
-      background: var(--dark);
-      color: white;
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-
-    .top h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .top p {
-      margin: 6px 0 0;
-      color: #d1d5db;
-      font-size: 14px;
-    }
-
-.top-compact {
-  padding: 14px;
+.app-top {
+  background: var(--dark);
+  color: white;
   border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 12px;
 }
 
-.title-row {
+.app-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.title-row h1 {
+.app-title-row h1 {
+  margin: 0;
   font-size: 22px;
 }
 
-.version-mini {
+.app-top p {
+  margin: 5px 0 0;
+  color: #d1d5db;
+  font-size: 13px;
+}
+
+.app-version {
   font-size: 11px;
   font-weight: 700;
   background: rgba(255,255,255,0.12);
@@ -91,6 +82,21 @@
   padding: 3px 7px;
   border-radius: 999px;
   white-space: nowrap;
+}
+
+.module-title {
+  margin: 8px 0 12px;
+}
+
+.module-title h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.module-title p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
     .screen {
@@ -600,11 +606,14 @@
 <body>
   <div class="app">
 
-    <section id="screenHome" class="screen active">
-      <div class="top">
-        <h1>SEGPRIV</h1>
-        <p>Portal operativo</p>
-      </div>
+<section id="screenHome" class="screen active">
+  <div class="app-top">
+    <div class="app-title-row">
+      <h1>SEGPRIV</h1>
+      <span class="app-version">v0.3.1</span>
+    </div>
+    <p>Portal operativo</p>
+  </div>
 
       <div class="grid">
         <div class="module-card" onclick="openServices()">
@@ -630,12 +639,17 @@
     </section>
 
     <section id="screenServices" class="screen">
-<div class="top top-compact">
-  <div class="title-row">
-    <h1>Mis servicios</h1>
-    <span class="version-mini">v0.3.1</span>
+<div class="app-top">
+  <div class="app-title-row">
+    <h1>SEGPRIV</h1>
+    <span class="app-version">v0.3.1</span>
   </div>
-  <p id="guardiaNombre">Guardia</p>
+  <p>Portal operativo</p>
+</div>
+
+<div class="module-title">
+  <h2>Mis servicios</h2>
+  <p>Guardia: <span id="guardiaNombre">Guardia</span></p>
 </div>
 
       <div class="toolbar">
@@ -694,10 +708,18 @@
     </section>
 
     <section id="screenDetail" class="screen">
-      <div class="top">
-        <h1>Detalle</h1>
-        <p>Cobertura asignada</p>
-      </div>
+<div class="app-top">
+  <div class="app-title-row">
+    <h1>SEGPRIV</h1>
+    <span class="app-version">v0.3.1</span>
+  </div>
+  <p>Portal operativo</p>
+</div>
+
+<div class="module-title">
+  <h2>Detalle del servicio</h2>
+  <p>Cobertura asignada</p>
+</div>
 
       <div class="toolbar">
         <button class="secondary" onclick="backToServices()">Regresar</button>
