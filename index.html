@@ -561,6 +561,41 @@
   font-size: 8px;
   padding: 3px;
 }
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 2px 2px 8px;
+}
+
+.calendar-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.calendar-inline-modes {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.calendar-inline-modes button {
+  padding: 5px 8px;
+  font-size: 10px;
+  border-radius: 999px;
+  background: #f9fafb;
+  color: var(--dark);
+  border: 1px solid var(--border);
+}
+
+.calendar-inline-modes button.active {
+  background: var(--dark);
+  color: white;
+  border-color: var(--dark);
+}
     
     @media (max-width: 520px) {
       
@@ -696,13 +731,6 @@
   <button id="filterCUB" onclick="setStatusFilter('CUB')"><span class="dot cub"></span>CUB</button>
 </div>
 
-<div class="calendar-mode-bar">
-  <button class="secondary" onclick="goToday()">Hoy</button>
-  <button id="btnModeMonth" class="active" onclick="setCalendarMode('month')">Mes</button>
-  <button id="btnModeWeek" onclick="setCalendarMode('week')">Semana</button>
-  <button id="btnModeDay" onclick="setCalendarMode('day')">Día</button>
-</div>
-
       <div id="calendarView"></div>
       <div id="listView" style="display:none;"></div>
     </section>
@@ -828,15 +856,10 @@
       document.getElementById("listView").style.display = view === "list" ? "block" : "none";
     }
 
-    function setCalendarMode(mode) {
-      calendarMode = mode;
-
-      document.getElementById("btnModeMonth").classList.toggle("active", mode === "month");
-      document.getElementById("btnModeWeek").classList.toggle("active", mode === "week");
-      document.getElementById("btnModeDay").classList.toggle("active", mode === "day");
-
-      renderCalendar();
-    }
+function setCalendarMode(mode) {
+  calendarMode = mode;
+  renderCalendar();
+}
 
     function goToday() {
       selectedDate = new Date();
@@ -907,110 +930,126 @@
       `;
     }
 
-    function renderCalendar() {
-      if (calendarMode === "day") {
-        renderDayCalendar();
-        return;
-      }
+  function renderCalendarModeButtons() {
+  return `
+    <div class="calendar-inline-modes">
+      <button class="${calendarMode === "day" ? "active" : ""}" onclick="goToday()">Hoy</button>
+      <button id="btnModeMonth" class="${calendarMode === "month" ? "active" : ""}" onclick="setCalendarMode('month')">Mes</button>
+      <button id="btnModeWeek" class="${calendarMode === "week" ? "active" : ""}" onclick="setCalendarMode('week')">Sem</button>
+      <button id="btnModeDay" class="${calendarMode === "day" ? "active" : ""}" onclick="setCalendarMode('day')">Día</button>
+    </div>
+  `;
+}
 
-      if (calendarMode === "week") {
-        renderWeekCalendar();
-        return;
-      }
+function renderMonthCalendar() {
+  const root = document.getElementById("calendarView");
+  const data = getFilteredServices();
 
-      renderMonthCalendar();
-    }
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
 
-    function renderMonthCalendar() {
-      const root = document.getElementById("calendarView");
-      const data = getFilteredServices();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startWeekDay = firstDay.getDay();
+  const totalDays = lastDay.getDate();
 
-      const year = selectedDate.getFullYear();
-      const month = selectedDate.getMonth();
+  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
-      const startWeekDay = firstDay.getDay();
-      const totalDays = lastDay.getDate();
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
+        <div class="calendar-title">${monthName(month)} ${year}</div>
+        ${renderCalendarModeButtons()}
+      </div>
+      <div class="calendar-grid">
+  `;
 
-      const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-      let html = `<div class="calendar"><div class="calendar-title">${monthName(month)} ${year}</div><div class="calendar-grid">`;
+  names.forEach(n => html += `<div class="day-name">${n}</div>`);
 
-      names.forEach(n => html += `<div class="day-name">${n}</div>`);
+  for (let i = 0; i < startWeekDay; i++) {
+    html += `<div class="day"></div>`;
+  }
 
-      for (let i = 0; i < startWeekDay; i++) {
-        html += `<div class="day"></div>`;
-      }
+  for (let d = 1; d <= totalDays; d++) {
+    const date = new Date(year, month, d);
+    const key = toDateKey(date);
+    const dayItems = data.filter(s => s.fechaKey === key);
 
-      for (let d = 1; d <= totalDays; d++) {
-        const date = new Date(year, month, d);
-        const key = toDateKey(date);
-        const dayItems = data.filter(s => s.fechaKey === key);
+    html += renderDayCell(date, dayItems);
+  }
 
-        html += renderDayCell(date, dayItems);
-      }
+  html += `</div></div>`;
+  root.innerHTML = html;
+}
 
-      html += `</div></div>`;
-      root.innerHTML = html;
-    }
+function renderWeekCalendar() {
+  const root = document.getElementById("calendarView");
+  const data = getFilteredServices();
+  const start = startOfWeek(selectedDate);
+  const end = addDays(start, 6);
+  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-    function renderWeekCalendar() {
-      const root = document.getElementById("calendarView");
-      const data = getFilteredServices();
-      const start = startOfWeek(selectedDate);
-      const end = addDays(start, 6);
-      const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
+        <div class="calendar-title">Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}</div>
+        ${renderCalendarModeButtons()}
+      </div>
+      <div class="calendar-grid">
+  `;
 
-      let html = `<div class="calendar"><div class="calendar-title">Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}</div><div class="calendar-grid">`;
+  names.forEach(n => html += `<div class="day-name">${n}</div>`);
 
-      names.forEach(n => html += `<div class="day-name">${n}</div>`);
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(start, i);
+    const key = toDateKey(date);
+    const dayItems = data.filter(s => s.fechaKey === key);
 
-      for (let i = 0; i < 7; i++) {
-        const date = addDays(start, i);
-        const key = toDateKey(date);
-        const dayItems = data.filter(s => s.fechaKey === key);
+    html += renderDayCell(date, dayItems);
+  }
 
-        html += renderDayCell(date, dayItems);
-      }
+  html += `</div></div>`;
+  root.innerHTML = html;
+}
 
-      html += `</div></div>`;
-      root.innerHTML = html;
-    }
+function renderDayCalendar() {
+  const root = document.getElementById("calendarView");
+  const data = getFilteredServices();
+  const key = toDateKey(selectedDate);
+  const dayItems = data.filter(s => s.fechaKey === key);
 
-    function renderDayCalendar() {
-      const root = document.getElementById("calendarView");
-      const data = getFilteredServices();
-      const key = toDateKey(selectedDate);
-      const dayItems = data.filter(s => s.fechaKey === key);
-
-      let html = `<div class="calendar">
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
         <div class="calendar-title">Día ${formatDate(key)}</div>
+        ${renderCalendarModeButtons()}
+      </div>
+  `;
+
+  if (!dayItems.length) {
+    html += `<div class="empty">Sin servicios para este día.</div>`;
+  } else {
+    html += `<div class="day-mode-list">`;
+    dayItems.forEach(item => {
+      html += `
+        <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
+          <div class="service-card-header">
+            <div class="service-card-title">${item.horario} · ${item.servicio || "Servicio"}</div>
+            <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
+          </div>
+          <div class="service-card-sub">
+            ${item.posicion || ""}<br>
+            Cliente: ${item.claveCliente || ""}
+          </div>
+        </div>
       `;
+    });
+    html += `</div>`;
+  }
 
-      if (!dayItems.length) {
-        html += `<div class="empty">Sin servicios para este día.</div>`;
-      } else {
-        html += `<div class="day-mode-list">`;
-        dayItems.forEach(item => {
-          html += `
-            <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
-              <div class="service-card-header">
-                <div class="service-card-title">${item.horario} · ${item.servicio || "Servicio"}</div>
-                <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
-              </div>
-              <div class="service-card-sub">
-                ${item.posicion || ""}<br>
-                Cliente: ${item.claveCliente || ""}
-              </div>
-            </div>
-          `;
-        });
-        html += `</div>`;
-      }
-
-      html += `</div>`;
-      root.innerHTML = html;
-    }
+  html += `</div>`;
+  root.innerHTML = html;
+}
 
     function renderDayCell(date, dayItems) {
       const key = toDateKey(date);
