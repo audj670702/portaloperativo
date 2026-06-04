@@ -67,17 +67,31 @@
       font-size: 14px;
     }
 
-    .version-badge {
-      display: inline-block;
-      margin-top: 8px;
-      margin-bottom: 4px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #2563eb;
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 700;
-    }
+.top-compact {
+  padding: 14px;
+  border-radius: 16px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title-row h1 {
+  font-size: 22px;
+}
+
+.version-mini {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.12);
+  color: #d1d5db;
+  padding: 3px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
 
     .screen {
       display: none;
@@ -448,7 +462,121 @@
       font-size: 14px;
     }
 
+.compact-controls {
+  padding: 10px;
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.control-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.compact-toolbar {
+  margin: 8px 0 0;
+}
+
+.compact-toolbar button {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13px;
+}
+
+.calendar-mode-bar {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 10px;
+  flex-wrap: nowrap;
+}
+
+.calendar-mode-bar button {
+  flex: 1;
+  padding: 9px 8px;
+  font-size: 13px;
+}
+
+.status-line {
+  font-size: 12px;
+}
+
+.view-tabs {
+  margin: 8px 0;
+}
+
+.view-tabs button {
+  padding: 9px 12px;
+  font-size: 13px;
+}
+
+.legend {
+  margin: 8px 0;
+  padding: 8px;
+  gap: 5px;
+}
+
+.legend button {
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.calendar {
+  padding: 8px;
+}
+
+.calendar-title {
+  font-size: 15px;
+}
+
+.day-name {
+  font-size: 10px;
+  padding: 4px 0;
+}
+
+.day {
+  min-height: 58px;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.day-number {
+  font-size: 11px;
+}
+
+.mini-event {
+  font-size: 8px;
+  padding: 3px;
+}
+    
     @media (max-width: 520px) {
+      
+      .control-row {
+  grid-template-columns: 1fr;
+}
+
+.calendar-mode-bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg);
+  padding: 4px 0;
+}
+
+.app {
+  padding: 10px;
+}
+
+.top h1 {
+  font-size: 21px;
+}
       .grid {
         grid-template-columns: 1fr;
       }
@@ -502,38 +630,41 @@
     </section>
 
     <section id="screenServices" class="screen">
-      <div class="top">
-        <h1>Mis servicios</h1>
-        <div class="version-badge">Versión prueba 0.3 · Calendario</div>
-        <p id="guardiaNombre">Guardia</p>
-      </div>
+<div class="top top-compact">
+  <div class="title-row">
+    <h1>Mis servicios</h1>
+    <span class="version-mini">v0.3.1</span>
+  </div>
+  <p id="guardiaNombre">Guardia</p>
+</div>
 
       <div class="toolbar">
         <button class="secondary" onclick="goHome()">Inicio</button>
         <button onclick="loadServices()">Actualizar</button>
       </div>
 
-      <div class="control-card">
-        <div class="control-label">Vista calendario</div>
-        <div class="calendar-controls">
-          <button class="secondary" onclick="goToday()">Hoy</button>
-          <button id="btnModeMonth" class="active" onclick="setCalendarMode('month')">Mes</button>
-          <button id="btnModeWeek" onclick="setCalendarMode('week')">Semana</button>
-          <button id="btnModeDay" onclick="setCalendarMode('day')">Día</button>
-        </div>
+<div class="control-card compact-controls">
+  <div class="control-row">
+    <label>
+      <span>Ir a fecha</span>
+      <input id="inputGoDate" type="date" onchange="goToSelectedDate()" />
+    </label>
 
-        <div class="control-label">Ir a fecha</div>
-        <div class="calendar-controls">
-          <input id="inputGoDate" type="date" onchange="goToSelectedDate()" />
-        </div>
+    <label>
+      <span>Inicio</span>
+      <input id="inputStartDate" type="date" />
+    </label>
 
-        <div class="control-label">Período de consulta</div>
-        <div class="period-controls">
-          <input id="inputStartDate" type="date" />
-          <input id="inputEndDate" type="date" />
-          <button onclick="loadServices()">Actualizar período</button>
-        </div>
-      </div>
+    <label>
+      <span>Fin</span>
+      <input id="inputEndDate" type="date" />
+    </label>
+  </div>
+
+  <div class="toolbar compact-toolbar">
+    <button onclick="loadServices()">Actualizar período</button>
+  </div>
+</div>
 
       <div id="statusLine" class="status-line">Cargando servicios...</div>
 
@@ -542,14 +673,21 @@
         <button id="btnViewList" onclick="setView('list')">Lista</button>
       </div>
 
-      <div class="legend">
-        <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
-        <button id="filterPROG" onclick="setStatusFilter('PROG')"><span class="dot prog"></span>PROG</button>
-        <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
-        <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
-        <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
-        <button id="filterCUB" onclick="setStatusFilter('CUB')"><span class="dot cub"></span>CUB</button>
-      </div>
+<div class="legend">
+  <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
+  <button id="filterPROG" onclick="setStatusFilter('PROG')"><span class="dot prog"></span>PROG</button>
+  <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
+  <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
+  <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
+  <button id="filterCUB" onclick="setStatusFilter('CUB')"><span class="dot cub"></span>CUB</button>
+</div>
+
+<div class="calendar-mode-bar">
+  <button class="secondary" onclick="goToday()">Hoy</button>
+  <button id="btnModeMonth" class="active" onclick="setCalendarMode('month')">Mes</button>
+  <button id="btnModeWeek" onclick="setCalendarMode('week')">Semana</button>
+  <button id="btnModeDay" onclick="setCalendarMode('day')">Día</button>
+</div>
 
       <div id="calendarView"></div>
       <div id="listView" style="display:none;"></div>
