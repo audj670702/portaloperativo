@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SEGPRIV</title>
+
+  <meta name="theme-color" content="#111827" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --dark: #111827;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --orange: #f97316;
+      --teal: #0f766e;
+      --red: #dc2626;
+      --yellow: #facc15;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 14px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .top {
+      background: var(--dark);
+      color: white;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .top p {
+      margin: 6px 0 0;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 110px;
+      cursor: pointer;
+    }
+
+    .module-card h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .module-card p {
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      background: var(--dark);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    button.success {
+      background: var(--green);
+    }
+
+    button.warning {
+      background: var(--orange);
+    }
+
+    button.teal {
+      background: var(--teal);
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .status-line {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 10px 0;
+    }
+
+    .status-error {
+      color: var(--red);
+    }
+
+    .view-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .view-tabs button.active {
+      background: var(--blue);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .service-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+    }
+
+    .service-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .service-card-title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .service-card-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #e5e7eb;
+      color: var(--dark);
+      white-space: nowrap;
+    }
+
+    .badge.prog { background: #dbeafe; color: #1d4ed8; }
+    .badge.conf { background: #e0e7ff; color: #4338ca; }
+    .badge.ruta { background: #ffedd5; color: #c2410c; }
+    .badge.pres { background: #ccfbf1; color: #0f766e; }
+    .badge.cub { background: #dcfce7; color: #15803d; }
+
+    .calendar {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px;
+    }
+
+    .calendar-title {
+      font-weight: 700;
+      margin: 4px 4px 10px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .day-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+
+    .day {
+      min-height: 74px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 4px;
+      font-size: 11px;
+      background: #f9fafb;
+    }
+
+    .day.today {
+      border: 2px solid var(--dark);
+    }
+
+    .day-number {
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .mini-event {
+      background: var(--dark);
+      color: white;
+      border-radius: 6px;
+      padding: 3px;
+      font-size: 9px;
+      margin-bottom: 3px;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .detail {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .detail h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .detail-row {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 0;
+      font-size: 14px;
+    }
+
+    .detail-row strong {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <section id="screenHome" class="screen active">
+      <div class="top">
+        <h1>SEGPRIV</h1>
+        <p>Portal operativo</p>
+      </div>
+
+      <div class="grid">
+        <div class="module-card" onclick="openServices()">
+          <h2>Mis servicios</h2>
+          <p>Calendario, lista y estado operativo.</p>
+        </div>
+
+        <div class="module-card">
+          <h2>Mis cursos</h2>
+          <p>Próximamente.</p>
+        </div>
+
+        <div class="module-card">
+          <h2>Documentos</h2>
+          <p>Próximamente.</p>
+        </div>
+
+        <div class="module-card">
+          <h2>Mensajería</h2>
+          <p>Próximamente.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenServices" class="screen">
+      <div class="top">
+        <h1>Mis servicios</h1>
+        <p id="guardiaNombre">Guardia</p>
+      </div>
+
+      <div class="toolbar">
+        <button class="secondary" onclick="goHome()">Inicio</button>
+        <button onclick="loadServices()">Actualizar</button>
+      </div>
+
+      <div id="statusLine" class="status-line">Cargando servicios...</div>
+
+      <div class="view-tabs">
+        <button id="btnViewCalendar" class="active" onclick="setView('calendar')">Calendario</button>
+        <button id="btnViewList" onclick="setView('list')">Lista</button>
+      </div>
+
+      <div id="calendarView"></div>
+      <div id="listView" style="display:none;"></div>
+    </section>
+
+    <section id="screenDetail" class="screen">
+      <div class="top">
+        <h1>Detalle</h1>
+        <p>Cobertura asignada</p>
+      </div>
+
+      <div class="toolbar">
+        <button class="secondary" onclick="backToServices()">Regresar</button>
+      </div>
+
+      <div id="detailBox"></div>
+    </section>
+
+  </div>
+
+  <script>
+    const API_BASE = "https://www.scad.mx/_functions";
+    const CLAVE_PERSONAL_PRUEBA = "JORGE";
+
+    let servicios = [];
+    let selectedItem = null;
+    let currentView = "calendar";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+    });
+
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function goHome() {
+      showScreen("screenHome");
+    }
+
+    function openServices() {
+      showScreen("screenServices");
+      loadServices();
+    }
+
+    function backToServices() {
+      showScreen("screenServices");
+    }
+
+    function setStatus(text, error = false) {
+      const el = document.getElementById("statusLine");
+      el.textContent = text;
+      el.className = error ? "status-line status-error" : "status-line";
+    }
+
+    async function loadServices() {
+      setStatus("Cargando servicios...");
+
+      try {
+        const url = `${API_BASE}/sprivMisServicios?clavePersonal=${encodeURIComponent(CLAVE_PERSONAL_PRUEBA)}&fechaInicio=2026-06-01&fechaFin=2026-07-31&estatus=TODOS`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.ok) {
+          setStatus(data.error || "No fue posible cargar servicios.", true);
+          return;
+        }
+
+        servicios = data.items || [];
+        document.getElementById("guardiaNombre").textContent = data.guardia?.nombre || "Guardia";
+
+        setStatus(`Servicios encontrados: ${servicios.length}`);
+        renderViews();
+
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al conectar con el sistema.", true);
+      }
+    }
+
+    function setView(view) {
+      currentView = view;
+
+      document.getElementById("btnViewCalendar").classList.toggle("active", view === "calendar");
+      document.getElementById("btnViewList").classList.toggle("active", view === "list");
+
+      document.getElementById("calendarView").style.display = view === "calendar" ? "block" : "none";
+      document.getElementById("listView").style.display = view === "list" ? "block" : "none";
+    }
+
+    function renderViews() {
+      renderList();
+      renderCalendar();
+      setView(currentView);
+    }
+
+    function renderList() {
+      const root = document.getElementById("listView");
+
+      if (!servicios.length) {
+        root.innerHTML = `<div class="empty">Sin servicios asignados.</div>`;
+        return;
+      }
+
+      root.innerHTML = `
+        <div class="list">
+          ${servicios.map(item => `
+            <div class="service-card" onclick="openDetail('${item.coberturaId}')">
+              <div class="service-card-header">
+                <div class="service-card-title">${item.servicio || "Servicio"}</div>
+                <span class="badge ${String(item.estado).toLowerCase()}">${item.estado}</span>
+              </div>
+              <div class="service-card-sub">
+                ${formatDate(item.fecha)} · ${item.horario}<br>
+                ${item.posicion || ""}<br>
+                Cliente: ${item.claveCliente || ""}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderCalendar() {
+      const root = document.getElementById("calendarView");
+      const base = new Date("2026-06-01T00:00:00");
+      const year = base.getFullYear();
+      const month = base.getMonth();
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startWeekDay = firstDay.getDay();
+      const totalDays = lastDay.getDate();
+
+      const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+      let html = `<div class="calendar"><div class="calendar-title">Junio 2026</div><div class="calendar-grid">`;
+
+      names.forEach(n => html += `<div class="day-name">${n}</div>`);
+
+      for (let i = 0; i < startWeekDay; i++) {
+        html += `<div class="day"></div>`;
+      }
+
+      for (let d = 1; d <= totalDays; d++) {
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const dayItems = servicios.filter(s => s.fechaKey === key);
+
+        html += `<div class="day">
+          <div class="day-number">${d}</div>
+          ${dayItems.map(item => `
+            <div class="mini-event" onclick="openDetail('${item.coberturaId}')">
+              ${item.horaInicio || ""} ${item.servicio || ""} ${item.estado || ""}
+            </div>
+          `).join("")}
+        </div>`;
+      }
+
+      html += `</div></div>`;
+      root.innerHTML = html;
+    }
+
+    function openDetail(id) {
+      selectedItem = servicios.find(s => s.coberturaId === id);
+
+      if (!selectedItem) return;
+
+      renderDetail();
+      showScreen("screenDetail");
+    }
+
+    function renderDetail() {
+      const item = selectedItem;
+
+      let actionButton = "";
+
+      if (item.estado === "PROG") {
+        actionButton = `<button class="success" onclick="confirmarServicio()">Confirmar conocimiento</button>`;
+      }
+
+      if (item.estado === "CONF") {
+        actionButton = `<button class="warning" onclick="enRutaServicio()">En ruta</button>`;
+      }
+
+      if (item.estado === "RUTA") {
+        actionButton = `<button class="teal" onclick="presenteServicio()">Presente</button>`;
+      }
+
+      if (item.estado === "PRES" || item.estado === "CUB") {
+        actionButton = `<div class="empty">Sin acciones disponibles.</div>`;
+      }
+
+      document.getElementById("detailBox").innerHTML = `
+        <div class="detail">
+          <h2>${item.servicio || "Servicio"}</h2>
+
+          <div class="detail-row"><strong>Estado</strong>${item.estado}</div>
+          <div class="detail-row"><strong>Fecha</strong>${formatDate(item.fecha)}</div>
+          <div class="detail-row"><strong>Horario</strong>${item.horario}</div>
+          <div class="detail-row"><strong>Cliente</strong>${item.claveCliente || ""}</div>
+          <div class="detail-row"><strong>Posición</strong>${item.posicion || ""}</div>
+          <div class="detail-row"><strong>Turno</strong>${item.turno || ""}</div>
+          <div class="detail-row"><strong>Indicaciones</strong>${item.indicaciones || "Sin indicaciones."}</div>
+
+          <div class="toolbar">
+            ${actionButton}
+          </div>
+        </div>
+      `;
+    }
+
+    async function confirmarServicio() {
+      await updateEstado("sprivConfirmarServicio");
+    }
+
+    async function enRutaServicio() {
+      await updateEstado("sprivEnRutaServicio");
+    }
+
+    async function presenteServicio() {
+      await updateEstado("sprivPresenteServicio");
+    }
+
+    async function updateEstado(endpoint) {
+      if (!selectedItem) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/${endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            personalId: selectedItem.guardiaAsignado,
+            coberturaId: selectedItem.coberturaId
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.ok) {
+          alert(data.error || "No fue posible actualizar.");
+          return;
+        }
+
+        await loadServices();
+
+        selectedItem = servicios.find(s => s.coberturaId === data.coberturaId);
+        renderDetail();
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al conectar con el sistema.");
+      }
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+
+      const [y, m, d] = value.split("-");
+      return `${d}/${m}/${y}`;
+    }
+  </script>
+</body>
+</html>
