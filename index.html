@@ -615,7 +615,7 @@
   padding: 10px;
 }
 
-.top h1 {
+.app-title-row h1 {
   font-size: 21px;
 }
       .grid {
@@ -645,7 +645,7 @@
   <div class="app-top">
     <div class="app-title-row">
       <h1>SEGPRIV</h1>
-      <span class="app-version">v0.3.2</span>
+      <span class="app-version">v0.3.3</span>
     </div>
     <p>Portal operativo</p>
   </div>
@@ -677,7 +677,6 @@
 <div class="app-top">
   <div class="app-title-row">
     <h1>SEGPRIV</h1>
-    <span class="app-version">v0.3.1</span>
   </div>
   <p>Portal operativo</p>
 </div>
@@ -739,7 +738,6 @@
 <div class="app-top">
   <div class="app-title-row">
     <h1>SEGPRIV</h1>
-    <span class="app-version">v0.3.1</span>
   </div>
   <p>Portal operativo</p>
 </div>
@@ -902,6 +900,19 @@ function setCalendarMode(mode) {
       setView(currentView);
     }
 
+    function renderCalendar() {
+  if (calendarMode === "day") {
+    renderDayCalendar();
+    return;
+  }
+
+  if (calendarMode === "week") {
+    renderWeekCalendar();
+    return;
+  }
+
+  renderMonthCalendar();
+}
     function renderList() {
       const root = document.getElementById("listView");
       const data = getFilteredServices();
