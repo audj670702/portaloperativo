@@ -496,6 +496,91 @@
       margin: 12px 0;
     }
 
+.guard-progress {
+  margin: 14px 0 18px;
+}
+
+.guard-progress-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  position: relative;
+}
+
+.guard-step {
+  position: relative;
+  text-align: center;
+  padding-top: 18px;
+}
+
+.guard-step::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.guard-step:first-child::before {
+  left: 50%;
+}
+
+.guard-step:last-child::before {
+  right: 50%;
+}
+
+.guard-step-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #d1d5db;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px #d1d5db;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.guard-step.done::before,
+.guard-step.current::before {
+  background: var(--green);
+}
+
+.guard-step.done .guard-step-dot {
+  background: var(--green);
+  box-shadow: 0 0 0 2px var(--green);
+}
+
+.guard-step.current .guard-step-dot {
+  background: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+}
+
+.guard-step-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.guard-step-time {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  min-height: 26px;
+  line-height: 1.25;
+}
+
+.guard-step.pending .guard-step-label,
+.guard-step.pending .guard-step-time {
+  color: #9ca3af;
+}
+    
     .step {
       text-align: center;
       border-radius: 12px;
@@ -815,7 +900,7 @@
     <div>
       <div class="app-brand">
         <h1>SEGPRIV</h1>
-        <span class="app-version">v0.3.10</span>
+        <span class="app-version">v0.3.11</span>
       </div>
       <p>Portal operativo</p>
     </div>
@@ -1316,18 +1401,12 @@ function renderDayCalendar() {
             ${reminder}
           </div>
 
-          ${renderProgressLine(estado)}
+${renderProgressLine(item)}
 
-          <div class="detail-row"><strong>Estado</strong>${item.estado}</div>
           <div class="detail-row"><strong>Fecha</strong>${formatDate(item.fecha)}</div>
           <div class="detail-row"><strong>Horario</strong>${item.horario}</div>
-          <div class="detail-row"><strong>Cliente</strong>${item.claveCliente || ""}</div>
           <div class="detail-row"><strong>Posición</strong>${item.posicion || ""}</div>
-          <div class="detail-row"><strong>Turno</strong>${item.turno || ""}</div>
           <div class="detail-row"><strong>Indicaciones</strong>${item.indicaciones || "Sin indicaciones."}</div>
-          <div class="detail-row"><strong>Confirmación</strong>${formatDateTime(item.fechaConfirmacionConocimiento)}</div>
-          <div class="detail-row"><strong>En ruta</strong>${formatDateTime(item.fechaEnRuta)}</div>
-          <div class="detail-row"><strong>Presente</strong>${formatDateTime(item.fechaEnServicio)}</div>
 
           <div class="toolbar">
             ${actionButton}
@@ -1360,30 +1439,56 @@ function renderDayCalendar() {
       return "Servicio en consulta.";
     }
 
-    function renderProgressLine(estado) {
-      const order = ["PROG", "CONF", "RUTA", "PRES"];
-      const labels = {
-        PROG: "Programado",
-        CONF: "Confirmado",
-        RUTA: "En ruta",
-        PRES: "Presente"
-      };
+function renderProgressLine(item) {
+  const estado = String(item.estado || "").toUpperCase();
 
-      const currentIndex = order.indexOf(estado);
-
-      return `
-        <div class="progress-line">
-          ${order.map((s, i) => {
-            let cls = "";
-
-            if (currentIndex >= 0 && i < currentIndex) cls = "done";
-            if (currentIndex >= 0 && i === currentIndex) cls = "current";
-
-            return `<div class="step ${cls}">${labels[s]}</div>`;
-          }).join("")}
-        </div>
-      `;
+  const steps = [
+    {
+      key: "CONF",
+      label: "Confirmado",
+      value: item.fechaConfirmacionConocimiento
+    },
+    {
+      key: "RUTA",
+      label: "En ruta",
+      value: item.fechaEnRuta
+    },
+    {
+      key: "PRES",
+      label: "Presente",
+      value: item.fechaEnServicio
     }
+  ];
+
+  const currentIndex =
+    estado === "CONF" ? 0 :
+    estado === "RUTA" ? 1 :
+    estado === "PRES" || estado === "CUB" ? 2 :
+    -1;
+
+  return `
+    <div class="guard-progress">
+      <div class="guard-progress-track">
+        ${steps.map((step, index) => {
+          let cls = "pending";
+
+          if (currentIndex >= 0 && index < currentIndex) cls = "done";
+          if (currentIndex >= 0 && index === currentIndex) cls = "current";
+
+          if (estado === "CUB" && index <= 2) cls = "done";
+
+          return `
+            <div class="guard-step ${cls}">
+              <div class="guard-step-dot"></div>
+              <div class="guard-step-label">${step.label}</div>
+              <div class="guard-step-time">${formatProgressDateTime(step.value)}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
 
     async function confirmarServicio() {
       await updateEstado("sprivConfirmarServicio");
@@ -1452,6 +1557,23 @@ function renderDayCalendar() {
       return `${d}/${m}/${y}`;
     }
 
+function formatProgressDateTime(value) {
+  if (!value) return "Pendiente";
+
+  const d = new Date(value);
+
+  if (isNaN(d.getTime())) {
+    return "Pendiente";
+  }
+
+  return d.toLocaleString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+    
     function formatDateTime(value) {
       if (!value) return "Sin registro.";
 
