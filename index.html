@@ -84,6 +84,31 @@
   white-space: nowrap;
 }
 
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.topbar-icon-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 17px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-icon-btn:hover {
+  background: rgba(255,255,255,0.20);
+}
+    
 .module-title {
   margin: 8px 0 12px;
 }
@@ -530,8 +555,8 @@
 }
 
 .legend button {
-  padding: 6px 8px;
-  font-size: 11px;
+  padding: 5px 7px;
+  font-size: 10px;
 }
 
 .calendar {
@@ -547,6 +572,12 @@
   padding: 4px 0;
 }
 
+.dot {
+  width: 7px;
+  height: 7px;
+  margin-right: 4px;
+}
+    
 .day {
   min-height: 58px;
   border-radius: 8px;
@@ -648,6 +679,17 @@
     
     @media (max-width: 520px) {
 
+.topbar-icon-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+.legend button {
+  font-size: 10px;
+  padding: 5px 7px;
+}
+      
       .view-filter-row {
   flex-direction: column;
   align-items: stretch;
@@ -725,13 +767,19 @@
   <div class="app">
 
 <section id="screenHome" class="screen active">
-  <div class="app-top">
-    <div class="app-title-row">
+<div class="app-top">
+  <div class="app-title-row">
+    <div>
       <h1>SEGPRIV</h1>
-      <span class="app-version">v0.3.6</span>
+      <p>Portal operativo</p>
     </div>
-    <p>Portal operativo</p>
+
+    <div class="topbar-actions">
+      <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
+      <button class="topbar-icon-btn" onclick="loadServices()" title="Actualizar" aria-label="Actualizar">↻</button>
+    </div>
   </div>
+</div>
 
       <div class="grid">
         <div class="module-card" onclick="openServices()">
@@ -768,11 +816,6 @@
   <h2>Mis servicios</h2>
   <p>Guardia: <span id="guardiaNombre">Guardia</span></p>
 </div>
-
-      <div class="toolbar">
-        <button class="secondary" onclick="goHome()">Inicio</button>
-        <button onclick="loadServices()">Actualizar</button>
-      </div>
 
       <div id="statusLine" class="status-line">Cargando servicios...</div>
 
