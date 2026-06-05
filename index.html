@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>SEGPRIV</title>
 
   <meta name="theme-color" content="#111827" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
   <link rel="manifest" href="manifest.webmanifest" />
 
   <style>
@@ -30,9 +28,7 @@
       --gray: #6b7280;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -48,89 +44,73 @@
       margin: 0 auto;
     }
 
-.app-top {
-  background: var(--dark);
-  color: white;
-  border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 12px;
-}
-
-.app-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.app-title-row h1 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.app-top p {
-  margin: 5px 0 0;
-  color: #d1d5db;
-  font-size: 13px;
-}
-
-.app-version {
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(255,255,255,0.12);
-  color: #d1d5db;
-  padding: 3px 7px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-.topbar-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.topbar-icon-btn {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.12);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.18);
-  font-size: 17px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.topbar-icon-btn:hover {
-  background: rgba(255,255,255,0.20);
-}
-    
-.module-title {
-  margin: 8px 0 12px;
-}
-
-.module-title h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.module-title p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-    .screen {
-      display: none;
+    .app-top {
+      background: var(--dark);
+      color: white;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
 
-    .screen.active {
-      display: block;
+    .app-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-title-row h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .app-top p {
+      margin: 5px 0 0;
+      color: #d1d5db;
+      font-size: 13px;
+    }
+
+    .app-version {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.12);
+      color: #d1d5db;
+      padding: 3px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .topbar-icon-btn {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 17px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .topbar-icon-btn:hover { background: rgba(255,255,255,0.20); }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
 
     .grid {
       display: grid;
@@ -158,10 +138,50 @@
       color: var(--muted);
     }
 
+    .module-title {
+      margin: 8px 0 12px;
+    }
+
+    .module-title h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .module-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .module-title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 12px;
+    }
+
+    .module-title-row h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .module-title-row p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .module-status-inline {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      text-align: right;
+      margin-bottom: 1px;
+    }
+
     .toolbar,
-    .view-tabs,
-    .calendar-controls,
-    .period-controls {
+    .view-tabs {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -185,21 +205,10 @@
       border: 1px solid var(--border);
     }
 
-    button.success {
-      background: var(--green);
-    }
-
-    button.warning {
-      background: var(--orange);
-    }
-
-    button.teal {
-      background: var(--teal);
-    }
-
-    button.active {
-      background: var(--blue);
-    }
+    button.success { background: var(--green); }
+    button.warning { background: var(--orange); }
+    button.teal { background: var(--teal); }
+    button.active { background: var(--blue); }
 
     input[type="date"] {
       border: 1px solid var(--border);
@@ -210,48 +219,80 @@
       color: var(--text);
     }
 
-    .control-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      margin: 12px 0;
-    }
-
-    .control-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 5px;
-    }
-
     .status-line {
       font-size: 13px;
       color: var(--muted);
       margin: 10px 0;
     }
 
-    .status-error {
-      color: var(--red);
+    .status-error { color: var(--red); }
+
+    .view-filter-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .compact-view-tabs {
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .compact-view-tabs button {
+      padding: 9px 14px;
+      font-size: 13px;
+    }
+
+    .inline-period-controls {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .inline-period-controls label {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .inline-period-controls input[type="date"] {
+      width: 126px;
+      padding: 7px 8px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
+
+    .inline-period-controls button {
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+      white-space: nowrap;
     }
 
     .legend {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      margin: 12px 0;
+      margin: 8px 0;
       background: white;
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 10px;
+      padding: 8px;
     }
 
     .legend button {
       background: #f9fafb;
       color: var(--text);
       border: 1px solid #e5e7eb;
-      padding: 7px 10px;
-      font-size: 12px;
+      padding: 5px 7px;
+      font-size: 10px;
     }
 
     .legend button.active {
@@ -259,43 +300,34 @@
       color: white;
     }
 
-    .dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 5px;
+    .legend-split {
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .dot.prog { background: var(--blue); }
+    .legend-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .legend-group-labor { margin-left: auto; }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
     .dot.conf { background: var(--purple); }
     .dot.ruta { background: var(--orange); }
     .dot.pres { background: var(--teal); }
-    .dot.cub { background: var(--green); }
-    .dot.pend { background: var(--yellow); }
+    .dot.asistencia { background: var(--green); }
     .dot.falta { background: var(--red); }
-    .dot.canc { background: var(--gray); }
-
-.dot.asistencia { background: var(--green); }
-.dot.falta { background: var(--red); }
-.dot.observado { background: var(--yellow); }
-
-.legend-split {
-  justify-content: space-between;
-  align-items: center;
-}
-
-.legend-group {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.legend-group-labor {
-  margin-left: auto;
-}
-
+    .dot.observado { background: var(--yellow); }
 
     .list {
       display: flex;
@@ -316,9 +348,12 @@
     .service-card.conf { border-left-color: var(--purple); }
     .service-card.ruta { border-left-color: var(--orange); }
     .service-card.pres { border-left-color: var(--teal); }
-    .service-card.cub { border-left-color: var(--green); }
-    .service-card.pend { border-left-color: var(--yellow); }
-    .service-card.falta { border-left-color: var(--red); }
+    .service-card.asist,
+    .service-card.asistencia { border-left-color: var(--green); }
+    .service-card.falta,
+    .service-card.falto { border-left-color: var(--red); }
+    .service-card.obs,
+    .service-card.observado { border-left-color: var(--yellow); }
     .service-card.canc { border-left-color: var(--gray); }
 
     .service-card-header {
@@ -353,21 +388,53 @@
     .badge.conf { background: #e0e7ff; color: #4338ca; }
     .badge.ruta { background: #ffedd5; color: #c2410c; }
     .badge.pres { background: #ccfbf1; color: #0f766e; }
-    .badge.cub { background: #dcfce7; color: #15803d; }
-    .badge.pend { background: #fef9c3; color: #854d0e; }
-    .badge.falta { background: #fee2e2; color: #b91c1c; }
-    .badge.canc { background: #e5e7eb; color: #374151; }
+    .badge.asist,
+    .badge.asistencia { background: #dcfce7; color: #15803d; }
+    .badge.falta,
+    .badge.falto { background: #fee2e2; color: #b91c1c; }
+    .badge.obs,
+    .badge.observado { background: #fef9c3; color: #854d0e; }
 
     .calendar {
       background: white;
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 10px;
+      padding: 8px;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 2px 2px 8px;
     }
 
     .calendar-title {
+      font-size: 14px;
       font-weight: 700;
-      margin: 4px 4px 10px;
+      margin: 0;
+    }
+
+    .calendar-inline-modes {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .calendar-inline-modes button {
+      padding: 5px 8px;
+      font-size: 10px;
+      border-radius: 999px;
+      background: #f9fafb;
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .calendar-inline-modes button.active {
+      background: var(--dark);
+      color: white;
+      border-color: var(--dark);
     }
 
     .calendar-grid {
@@ -377,18 +444,18 @@
     }
 
     .day-name {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       text-align: center;
       color: var(--muted);
-      padding: 6px 0;
+      padding: 4px 0;
     }
 
     .day {
-      min-height: 74px;
+      min-height: 58px;
       border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 4px;
+      border-radius: 8px;
+      padding: 3px;
       font-size: 11px;
       background: #f9fafb;
       cursor: pointer;
@@ -399,20 +466,19 @@
       outline-offset: -2px;
     }
 
-    .day.today {
-      border: 2px solid var(--dark);
-    }
+    .day.today { border: 2px solid var(--dark); }
 
     .day-number {
       font-weight: 700;
       margin-bottom: 3px;
+      font-size: 11px;
     }
 
     .mini-event {
       color: white;
       border-radius: 6px;
       padding: 3px;
-      font-size: 9px;
+      font-size: 8px;
       margin-bottom: 3px;
       cursor: pointer;
       overflow: hidden;
@@ -425,10 +491,12 @@
     .mini-event.conf { background: var(--purple); }
     .mini-event.ruta { background: var(--orange); }
     .mini-event.pres { background: var(--teal); }
-    .mini-event.cub { background: var(--green); }
-    .mini-event.pend { background: #ca8a04; }
-    .mini-event.falta { background: var(--red); }
-    .mini-event.canc { background: var(--gray); }
+    .mini-event.asist,
+    .mini-event.asistencia { background: var(--green); }
+    .mini-event.falta,
+    .mini-event.falto { background: var(--red); }
+    .mini-event.obs,
+    .mini-event.observado { background: #ca8a04; }
 
     .day-mode-list {
       display: flex;
@@ -475,34 +543,93 @@
     .reminder.conf { border-left: 6px solid var(--purple); }
     .reminder.ruta { border-left: 6px solid var(--orange); }
     .reminder.pres { border-left: 6px solid var(--teal); }
-    .reminder.cub { border-left: 6px solid var(--green); }
+    .reminder.asist,
+    .reminder.asistencia { border-left: 6px solid var(--green); }
+    .reminder.falta,
+    .reminder.falto { border-left: 6px solid var(--red); }
+    .reminder.obs,
+    .reminder.observado { border-left: 6px solid var(--yellow); }
 
-    .progress-line {
+    .guard-progress {
+      margin: 16px 0 20px;
+    }
+
+    .guard-progress-track {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin: 12px 0;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      position: relative;
     }
 
-    .step {
+    .guard-step {
+      position: relative;
       text-align: center;
-      border-radius: 12px;
-      padding: 8px 4px;
-      font-size: 11px;
-      font-weight: 700;
+      padding-top: 20px;
+    }
+
+    .guard-step::before {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 0;
+      right: 0;
+      height: 4px;
       background: #e5e7eb;
-      color: #6b7280;
+      z-index: 0;
     }
 
-    .step.done {
-      background: #111827;
-      color: white;
+    .guard-step:first-child::before { left: 50%; }
+    .guard-step:last-child::before { right: 50%; }
+    .guard-step.operational::before { background: #9ca3af; }
+
+    .guard-step-dot {
+      width: 17px;
+      height: 17px;
+      border-radius: 999px;
+      background: #d1d5db;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px #d1d5db;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
     }
 
-    .step.current {
-      background: #2563eb;
-      color: white;
+    .guard-step.registered .guard-step-dot {
+      background: var(--green);
+      box-shadow: 0 0 0 2px var(--green);
     }
+
+    .guard-step.not-registered .guard-step-dot {
+      background: #9ca3af;
+      box-shadow: 0 0 0 2px #9ca3af;
+    }
+
+    .guard-step.locked .guard-step-dot {
+      background: #e5e7eb;
+      box-shadow: 0 0 0 2px #d1d5db;
+    }
+
+    .guard-step-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 5px;
+    }
+
+    .guard-step-time {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      min-height: 26px;
+      line-height: 1.25;
+    }
+
+    .guard-step.registered .guard-step-label { color: var(--green); }
+    .guard-step.not-registered .guard-step-label { color: #6b7280; }
+    .guard-step.locked .guard-step-label,
+    .guard-step.locked .guard-step-time { color: #9ca3af; }
 
     .empty {
       background: white;
@@ -514,313 +641,50 @@
       font-size: 14px;
     }
 
-.compact-controls {
-  padding: 10px;
-}
-
-.control-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-}
-
-.control-row label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.compact-toolbar {
-  margin: 8px 0 0;
-}
-
-.compact-toolbar button {
-  width: 100%;
-  padding: 9px 12px;
-  font-size: 13px;
-}
-
-.calendar-mode-bar {
-  display: flex;
-  gap: 6px;
-  margin: 8px 0 10px;
-  flex-wrap: nowrap;
-}
-
-.calendar-mode-bar button {
-  flex: 1;
-  padding: 9px 8px;
-  font-size: 13px;
-}
-
-.status-line {
-  font-size: 12px;
-}
-
-.view-tabs {
-  margin: 8px 0;
-}
-
-.view-tabs button {
-  padding: 9px 12px;
-  font-size: 13px;
-}
-
-.legend {
-  margin: 8px 0;
-  padding: 8px;
-  gap: 5px;
-}
-
-.legend button {
-  padding: 5px 7px;
-  font-size: 10px;
-}
-
-.calendar {
-  padding: 8px;
-}
-
-.calendar-title {
-  font-size: 15px;
-}
-
-.day-name {
-  font-size: 10px;
-  padding: 4px 0;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  margin-right: 4px;
-}
-    
-.day {
-  min-height: 58px;
-  border-radius: 8px;
-  padding: 3px;
-}
-
-.day-number {
-  font-size: 11px;
-}
-
-.mini-event {
-  font-size: 8px;
-  padding: 3px;
-}
-
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin: 2px 2px 8px;
-}
-
-.calendar-title {
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.calendar-inline-modes {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.calendar-inline-modes button {
-  padding: 5px 8px;
-  font-size: 10px;
-  border-radius: 999px;
-  background: #f9fafb;
-  color: var(--dark);
-  border: 1px solid var(--border);
-}
-
-.calendar-inline-modes button.active {
-  background: var(--dark);
-  color: white;
-  border-color: var(--dark);
-}
-
-.view-filter-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.compact-view-tabs {
-  margin: 0;
-  flex-shrink: 0;
-}
-
-.compact-view-tabs button {
-  padding: 9px 14px;
-  font-size: 13px;
-}
-
-.inline-period-controls {
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.inline-period-controls label {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.inline-period-controls input[type="date"] {
-  width: 126px;
-  padding: 7px 8px;
-  font-size: 12px;
-  border-radius: 10px;
-}
-
-.inline-period-controls button {
-  padding: 8px 12px;
-  font-size: 12px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-    
     @media (max-width: 520px) {
-
-
-.legend-split {
-  flex-direction: column;
-  align-items: stretch;
-}
-
-.legend-group,
-.legend-group-labor {
-  width: 100%;
-  margin-left: 0;
-}
-
-
-.topbar-icon-btn {
-  width: 32px;
-  height: 32px;
-  font-size: 16px;
-}
-
-.legend button {
-  font-size: 10px;
-  padding: 5px 7px;
-}
-      
-      .view-filter-row {
-  flex-direction: column;
-  align-items: stretch;
-}
-
-.compact-view-tabs {
-  display: flex;
-  width: 100%;
-}
-
-.compact-view-tabs button {
-  flex: 1;
-}
-
-.inline-period-controls {
-  justify-content: space-between;
-  width: 100%;
-}
-
-.inline-period-controls label {
-  flex: 1;
-  min-width: 0;
-}
-
-.inline-period-controls input[type="date"] {
-  width: 100%;
-  font-size: 11px;
-  padding: 7px 6px;
-}
-
-.inline-period-controls button {
-  width: 100%;
-  margin-top: 4px;
-}
-      .control-row {
-  grid-template-columns: 1fr;
-}
-
-.calendar-mode-bar {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: var(--bg);
-  padding: 4px 0;
-}
-
-.app {
-  padding: 10px;
-}
-
-.app-title-row h1 {
-  font-size: 21px;
-}
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .day {
-        min-height: 62px;
-      }
-
-      .mini-event {
-        font-size: 8px;
-      }
-
-      button {
-        font-size: 13px;
-        padding: 10px 12px;
-      }
+      .app { padding: 10px; }
+      .app-title-row h1 { font-size: 21px; }
+      .topbar-icon-btn { width: 32px; height: 32px; font-size: 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .module-title-row { align-items: flex-start; }
+      .module-status-inline { font-size: 11px; max-width: 45%; }
+      .view-filter-row { flex-direction: column; align-items: stretch; }
+      .compact-view-tabs { display: flex; width: 100%; }
+      .compact-view-tabs button { flex: 1; }
+      .inline-period-controls { justify-content: space-between; width: 100%; }
+      .inline-period-controls label { flex: 1; min-width: 0; }
+      .inline-period-controls input[type="date"] { width: 100%; font-size: 11px; padding: 7px 6px; }
+      .inline-period-controls button { width: 100%; margin-top: 4px; }
+      .legend-split { flex-direction: column; align-items: stretch; }
+      .legend-group, .legend-group-labor { width: 100%; margin-left: 0; }
+      .legend button { font-size: 10px; padding: 5px 7px; }
+      .day { min-height: 62px; }
+      .mini-event { font-size: 8px; }
+      button { font-size: 13px; padding: 10px 12px; }
     }
   </style>
 </head>
 
 <body>
   <div class="app">
+    <div class="app-top">
+      <div class="app-title-row">
+        <div>
+          <div class="app-brand">
+            <h1>SEGPRIV</h1>
+            <span class="app-version">v0.3.18</span>
+          </div>
+          <p>Portal operativo</p>
+        </div>
 
-<div class="app-top">
-  <div class="app-title-row">
-    <div>
-      <div class="app-brand">
-        <h1>SEGPRIV</h1>
-        <span class="app-version">v0.3.17</span>
+        <div class="topbar-actions">
+          <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
+          <button class="topbar-icon-btn" onclick="loadServices()" title="Actualizar" aria-label="Actualizar">↻</button>
+        </div>
       </div>
-      <p>Portal operativo</p>
     </div>
 
-    <div class="topbar-actions">
-      <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
-      <button class="topbar-icon-btn" onclick="loadServices()" title="Actualizar" aria-label="Actualizar">↻</button>
-    </div>
-  </div>
-</div>
-
-
-<section id="screenHome" class="screen active">
-</div>
-
+    <section id="screenHome" class="screen active">
       <div class="grid">
         <div class="module-card" onclick="openServices()">
           <h2>Mis servicios</h2>
@@ -845,150 +709,407 @@
     </section>
 
     <section id="screenServices" class="screen">
-<div class="legend legend-split">
-  <div class="legend-group">
-    <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
-    <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
-    <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
-    <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
-  </div>
+      <div class="module-title-row">
+        <div>
+          <h2>Mis servicios</h2>
+          <p>Guardia: <span id="guardiaNombre">Guardia</span></p>
+        </div>
 
-  <div class="legend-group legend-group-labor">
-    <button id="filterASISTENCIA" onclick="setStatusFilter('ASISTENCIA')"><span class="dot asistencia"></span>Asistencia</button>
-    <button id="filterFALTA" onclick="setStatusFilter('FALTA')"><span class="dot falta"></span>Falta</button>
-    <button id="filterOBSERVADO" onclick="setStatusFilter('OBSERVADO')"><span class="dot observado"></span>Observado</button>
-  </div>
-</div>
+        <div id="statusLine" class="status-line module-status-inline">Cargando servicios...</div>
+      </div>
+
+      <div class="view-filter-row">
+        <div class="view-tabs compact-view-tabs">
+          <button id="btnViewCalendar" class="active" onclick="setView('calendar')">Calendario</button>
+          <button id="btnViewList" onclick="setView('list')">Lista</button>
+        </div>
+
+        <div class="inline-period-controls">
+          <label>
+            <span>Ir a fecha</span>
+            <input id="inputGoDate" type="date" onchange="goToSelectedDate()" />
+          </label>
+
+          <label>
+            <span>Inicio</span>
+            <input id="inputStartDate" type="date" />
+          </label>
+
+          <label>
+            <span>Fin</span>
+            <input id="inputEndDate" type="date" />
+          </label>
+
+          <button onclick="loadServices()">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="legend legend-split">
+        <div class="legend-group">
+          <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
+          <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
+          <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
+          <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
+        </div>
+
+        <div class="legend-group legend-group-labor">
+          <button id="filterASISTENCIA" onclick="setStatusFilter('ASISTENCIA')"><span class="dot asistencia"></span>Asistencia</button>
+          <button id="filterFALTA" onclick="setStatusFilter('FALTA')"><span class="dot falta"></span>Falta</button>
+          <button id="filterOBSERVADO" onclick="setStatusFilter('OBSERVADO')"><span class="dot observado"></span>Observado</button>
+        </div>
+      </div>
 
       <div id="calendarView"></div>
       <div id="listView" style="display:none;"></div>
     </section>
 
     <section id="screenDetail" class="screen">
-`).join("")}
+      <div class="module-title">
+        <h2>Detalle del servicio</h2>
+        <p>Cobertura asignada</p>
+      </div>
+
+      <div class="toolbar">
+        <button class="secondary" onclick="backToServices()">Regresar</button>
+      </div>
+
+      <div id="detailBox"></div>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = "https://www.scad.mx/_functions";
+    const CLAVE_PERSONAL_PRUEBA = "JORGE";
+
+    let servicios = [];
+    let selectedItem = null;
+    let currentView = "calendar";
+    let statusFilter = "TODOS";
+    let calendarMode = "month";
+    let selectedDate = new Date();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setInitialPeriod();
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+    });
+
+    function setInitialPeriod() {
+      const today = new Date();
+      selectedDate = today;
+
+      const start = new Date(today.getFullYear(), today.getMonth(), 1);
+      const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+      document.getElementById("inputStartDate").value = toDateKey(start);
+      document.getElementById("inputEndDate").value = toDateKey(end);
+      document.getElementById("inputGoDate").value = toDateKey(today);
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function goHome() {
+      showScreen("screenHome");
+    }
+
+    function openServices() {
+      showScreen("screenServices");
+      loadServices();
+    }
+
+    function backToServices() {
+      showScreen("screenServices");
+    }
+
+    function setStatus(text, error = false) {
+      const el = document.getElementById("statusLine");
+      if (!el) return;
+
+      el.textContent = text;
+      el.className = error
+        ? "status-line module-status-inline status-error"
+        : "status-line module-status-inline";
+    }
+
+    async function loadServices() {
+      const startInput = document.getElementById("inputStartDate");
+      const endInput = document.getElementById("inputEndDate");
+
+      if (!startInput || !endInput) {
+        showScreen("screenServices");
+        setInitialPeriod();
+      }
+
+      setStatus("Cargando servicios...");
+
+      const fechaInicio = document.getElementById("inputStartDate").value;
+      const fechaFin = document.getElementById("inputEndDate").value;
+
+      try {
+        const url =
+          `${API_BASE}/sprivMisServicios?clavePersonal=${encodeURIComponent(CLAVE_PERSONAL_PRUEBA)}` +
+          `&fechaInicio=${encodeURIComponent(fechaInicio)}` +
+          `&fechaFin=${encodeURIComponent(fechaFin)}` +
+          `&estatus=TODOS`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.ok) {
+          setStatus(data.error || "No fue posible cargar servicios.", true);
+          return;
+        }
+
+        servicios = data.items || [];
+        document.getElementById("guardiaNombre").textContent = data.guardia?.nombre || "Guardia";
+
+        setStatus(`Servicios encontrados: ${servicios.length}`);
+        renderViews();
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al conectar con el sistema.", true);
+      }
+    }
+
+    function setView(view) {
+      currentView = view;
+
+      document.getElementById("btnViewCalendar").classList.toggle("active", view === "calendar");
+      document.getElementById("btnViewList").classList.toggle("active", view === "list");
+
+      document.getElementById("calendarView").style.display = view === "calendar" ? "block" : "none";
+      document.getElementById("listView").style.display = view === "list" ? "block" : "none";
+    }
+
+    function setCalendarMode(mode) {
+      calendarMode = mode;
+      renderCalendar();
+    }
+
+    function goToday() {
+      selectedDate = new Date();
+      document.getElementById("inputGoDate").value = toDateKey(selectedDate);
+      calendarMode = "day";
+      setCalendarMode("day");
+    }
+
+    function goToSelectedDate() {
+      const value = document.getElementById("inputGoDate").value;
+      if (!value) return;
+
+      selectedDate = createLocalDate(value);
+      renderCalendar();
+    }
+
+    function setStatusFilter(status) {
+      statusFilter = status;
+
+      ["TODOS", "CONF", "RUTA", "PRES", "ASISTENCIA", "FALTA", "OBSERVADO"].forEach(s => {
+        const btn = document.getElementById(`filter${s}`);
+        if (btn) btn.classList.toggle("active", s === status);
+      });
+
+      renderViews();
+    }
+
+    function getFilteredServices() {
+      if (statusFilter === "TODOS") {
+        return servicios;
+      }
+
+      if (statusFilter === "ASISTENCIA") {
+        return servicios.filter(item => {
+          const estado = String(item.estado || "").toUpperCase();
+          return estado === "ASIST" || estado === "ASISTENCIA";
+        });
+      }
+
+      if (statusFilter === "FALTA") {
+        return servicios.filter(item => {
+          const estado = String(item.estado || "").toUpperCase();
+          return estado === "FALTA" || estado === "FALTO";
+        });
+      }
+
+      if (statusFilter === "OBSERVADO") {
+        return servicios.filter(item => {
+          const estado = String(item.estado || "").toUpperCase();
+          return estado === "OBS" || estado === "OBSERVADO";
+        });
+      }
+
+      return servicios.filter(item => {
+        const estado = String(item.estado || "").toUpperCase();
+        return estado === statusFilter;
+      });
+    }
+
+    function renderViews() {
+      renderList();
+      renderCalendar();
+      setView(currentView);
+    }
+
+    function renderList() {
+      const root = document.getElementById("listView");
+      const data = getFilteredServices();
+
+      if (!data.length) {
+        root.innerHTML = `<div class="empty">Sin servicios para este filtro.</div>`;
+        return;
+      }
+
+      root.innerHTML = `
+        <div class="list">
+          ${data.map(item => `
+            <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
+              <div class="service-card-header">
+                <div class="service-card-title">${item.servicio || "Servicio"}</div>
+                <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
+              </div>
+              <div class="service-card-sub">
+                ${formatDate(item.fecha)} · ${item.horario}<br>
+                ${item.posicion || ""}
+              </div>
+            </div>
+          `).join("")}
         </div>
       `;
     }
 
-  function renderCalendarModeButtons() {
-  return `
-    <div class="calendar-inline-modes">
-      <button class="${calendarMode === "day" ? "active" : ""}" onclick="goToday()">Hoy</button>
-      <button id="btnModeMonth" class="${calendarMode === "month" ? "active" : ""}" onclick="setCalendarMode('month')">Mes</button>
-      <button id="btnModeWeek" class="${calendarMode === "week" ? "active" : ""}" onclick="setCalendarMode('week')">Sem</button>
-      <button id="btnModeDay" class="${calendarMode === "day" ? "active" : ""}" onclick="setCalendarMode('day')">Día</button>
-    </div>
-  `;
-}
+    function renderCalendar() {
+      if (calendarMode === "day") {
+        renderDayCalendar();
+        return;
+      }
 
-function renderMonthCalendar() {
-  const root = document.getElementById("calendarView");
-  const data = getFilteredServices();
+      if (calendarMode === "week") {
+        renderWeekCalendar();
+        return;
+      }
 
-  const year = selectedDate.getFullYear();
-  const month = selectedDate.getMonth();
+      renderMonthCalendar();
+    }
 
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startWeekDay = firstDay.getDay();
-  const totalDays = lastDay.getDate();
-
-  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-
-  let html = `
-    <div class="calendar">
-      <div class="calendar-header">
-        <div class="calendar-title">${monthName(month)} ${year}</div>
-        ${renderCalendarModeButtons()}
-      </div>
-      <div class="calendar-grid">
-  `;
-
-  names.forEach(n => html += `<div class="day-name">${n}</div>`);
-
-  for (let i = 0; i < startWeekDay; i++) {
-    html += `<div class="day"></div>`;
-  }
-
-  for (let d = 1; d <= totalDays; d++) {
-    const date = new Date(year, month, d);
-    const key = toDateKey(date);
-    const dayItems = data.filter(s => s.fechaKey === key);
-
-    html += renderDayCell(date, dayItems);
-  }
-
-  html += `</div></div>`;
-  root.innerHTML = html;
-}
-
-function renderWeekCalendar() {
-  const root = document.getElementById("calendarView");
-  const data = getFilteredServices();
-  const start = startOfWeek(selectedDate);
-  const end = addDays(start, 6);
-  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-
-  let html = `
-    <div class="calendar">
-      <div class="calendar-header">
-        <div class="calendar-title">Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}</div>
-        ${renderCalendarModeButtons()}
-      </div>
-      <div class="calendar-grid">
-  `;
-
-  names.forEach(n => html += `<div class="day-name">${n}</div>`);
-
-  for (let i = 0; i < 7; i++) {
-    const date = addDays(start, i);
-    const key = toDateKey(date);
-    const dayItems = data.filter(s => s.fechaKey === key);
-
-    html += renderDayCell(date, dayItems);
-  }
-
-  html += `</div></div>`;
-  root.innerHTML = html;
-}
-
-function renderDayCalendar() {
-  const root = document.getElementById("calendarView");
-  const data = getFilteredServices();
-  const key = toDateKey(selectedDate);
-  const dayItems = data.filter(s => s.fechaKey === key);
-
-  let html = `
-    <div class="calendar">
-      <div class="calendar-header">
-        <div class="calendar-title">Día ${formatDate(key)}</div>
-        ${renderCalendarModeButtons()}
-      </div>
-  `;
-
-  if (!dayItems.length) {
-    html += `<div class="empty">Sin servicios para este día.</div>`;
-  } else {
-    html += `<div class="day-mode-list">`;
-    dayItems.forEach(item => {
-      html += `
-        <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
-          <div class="service-card-header">
-            <div class="service-card-title">${item.horario} · ${item.servicio || "Servicio"}</div>
-            <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
-          </div>
-          <div class="service-card-sub">
-            ${item.posicion || ""}
-          </div>
+    function renderCalendarModeButtons() {
+      return `
+        <div class="calendar-inline-modes">
+          <button class="${calendarMode === "day" ? "active" : ""}" onclick="goToday()">Hoy</button>
+          <button id="btnModeMonth" class="${calendarMode === "month" ? "active" : ""}" onclick="setCalendarMode('month')">Mes</button>
+          <button id="btnModeWeek" class="${calendarMode === "week" ? "active" : ""}" onclick="setCalendarMode('week')">Sem</button>
+          <button id="btnModeDay" class="${calendarMode === "day" ? "active" : ""}" onclick="setCalendarMode('day')">Día</button>
         </div>
       `;
-    });
-    html += `</div>`;
-  }
+    }
 
-  html += `</div>`;
-  root.innerHTML = html;
-}
+    function renderMonthCalendar() {
+      const root = document.getElementById("calendarView");
+      const data = getFilteredServices();
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startWeekDay = firstDay.getDay();
+      const totalDays = lastDay.getDate();
+      const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+      let html = `
+        <div class="calendar">
+          <div class="calendar-header">
+            <div class="calendar-title">${monthName(month)} ${year}</div>
+            ${renderCalendarModeButtons()}
+          </div>
+          <div class="calendar-grid">
+      `;
+
+      names.forEach(n => html += `<div class="day-name">${n}</div>`);
+
+      for (let i = 0; i < startWeekDay; i++) {
+        html += `<div class="day"></div>`;
+      }
+
+      for (let d = 1; d <= totalDays; d++) {
+        const date = new Date(year, month, d);
+        const key = toDateKey(date);
+        const dayItems = data.filter(s => s.fechaKey === key);
+        html += renderDayCell(date, dayItems);
+      }
+
+      html += `</div></div>`;
+      root.innerHTML = html;
+    }
+
+    function renderWeekCalendar() {
+      const root = document.getElementById("calendarView");
+      const data = getFilteredServices();
+      const start = startOfWeek(selectedDate);
+      const end = addDays(start, 6);
+      const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+      let html = `
+        <div class="calendar">
+          <div class="calendar-header">
+            <div class="calendar-title">Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}</div>
+            ${renderCalendarModeButtons()}
+          </div>
+          <div class="calendar-grid">
+      `;
+
+      names.forEach(n => html += `<div class="day-name">${n}</div>`);
+
+      for (let i = 0; i < 7; i++) {
+        const date = addDays(start, i);
+        const key = toDateKey(date);
+        const dayItems = data.filter(s => s.fechaKey === key);
+        html += renderDayCell(date, dayItems);
+      }
+
+      html += `</div></div>`;
+      root.innerHTML = html;
+    }
+
+    function renderDayCalendar() {
+      const root = document.getElementById("calendarView");
+      const data = getFilteredServices();
+      const key = toDateKey(selectedDate);
+      const dayItems = data.filter(s => s.fechaKey === key);
+
+      let html = `
+        <div class="calendar">
+          <div class="calendar-header">
+            <div class="calendar-title">Día ${formatDate(key)}</div>
+            ${renderCalendarModeButtons()}
+          </div>
+      `;
+
+      if (!dayItems.length) {
+        html += `<div class="empty">Sin servicios para este día.</div>`;
+      } else {
+        html += `<div class="day-mode-list">`;
+        dayItems.forEach(item => {
+          html += `
+            <div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${item.coberturaId}')">
+              <div class="service-card-header">
+                <div class="service-card-title">${item.horario} · ${item.servicio || "Servicio"}</div>
+                <span class="badge ${statusClass(item.estado)}">${item.estado}</span>
+              </div>
+              <div class="service-card-sub">
+                ${item.posicion || ""}
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      root.innerHTML = html;
+    }
 
     function renderDayCell(date, dayItems) {
       const key = toDateKey(date);
@@ -1010,18 +1131,11 @@ function renderDayCalendar() {
     function selectCalendarDate(key) {
       selectedDate = createLocalDate(key);
       document.getElementById("inputGoDate").value = key;
-
-      if (calendarMode === "month") {
-        renderCalendar();
-        return;
-      }
-
       renderCalendar();
     }
 
     function openDetail(id) {
       selectedItem = servicios.find(s => s.coberturaId === id);
-
       if (!selectedItem) return;
 
       renderDetail();
@@ -1032,9 +1146,8 @@ function renderDayCalendar() {
       const item = selectedItem;
       const estado = item.estado;
       const cls = statusClass(estado);
-
       let actionButton = "";
-      let reminder = getReminderText(estado);
+      const reminder = getReminderText(estado);
 
       if (estado === "PROG") {
         actionButton = `<button class="success" onclick="confirmarServicio()">Confirmar conocimiento</button>`;
@@ -1048,7 +1161,7 @@ function renderDayCalendar() {
         actionButton = `<button class="teal" onclick="presenteServicio()">Marcar presente</button>`;
       }
 
-      if (estado === "PRES" || estado === "CUB") {
+      if (estado === "PRES" || estado === "ASIST" || estado === "ASISTENCIA" || estado === "FALTA" || estado === "OBS" || estado === "OBSERVADO") {
         actionButton = `<div class="empty">Sin acciones disponibles.</div>`;
       }
 
@@ -1060,18 +1173,12 @@ function renderDayCalendar() {
             ${reminder}
           </div>
 
-          ${renderProgressLine(estado)}
+          ${renderProgressLine(item)}
 
-          <div class="detail-row"><strong>Estado</strong>${item.estado}</div>
           <div class="detail-row"><strong>Fecha</strong>${formatDate(item.fecha)}</div>
           <div class="detail-row"><strong>Horario</strong>${item.horario}</div>
-          <div class="detail-row"><strong>Cliente</strong>${item.claveCliente || ""}</div>
           <div class="detail-row"><strong>Posición</strong>${item.posicion || ""}</div>
-          <div class="detail-row"><strong>Turno</strong>${item.turno || ""}</div>
           <div class="detail-row"><strong>Indicaciones</strong>${item.indicaciones || "Sin indicaciones."}</div>
-          <div class="detail-row"><strong>Confirmación</strong>${formatDateTime(item.fechaConfirmacionConocimiento)}</div>
-          <div class="detail-row"><strong>En ruta</strong>${formatDateTime(item.fechaEnRuta)}</div>
-          <div class="detail-row"><strong>Presente</strong>${formatDateTime(item.fechaEnServicio)}</div>
 
           <div class="toolbar">
             ${actionButton}
@@ -1097,34 +1204,81 @@ function renderDayCalendar() {
         return "Presencia registrada. Queda pendiente la validación de supervisión.";
       }
 
-      if (estado === "CUB") {
-        return "Cobertura validada.";
+      if (estado === "ASIST" || estado === "ASISTENCIA") {
+        return "Asistencia validada por supervisión.";
+      }
+
+      if (estado === "FALTA" || estado === "FALTO") {
+        return "Falta validada por supervisión.";
+      }
+
+      if (estado === "OBS" || estado === "OBSERVADO") {
+        return "Cobertura observada. Requiere revisión operativa.";
       }
 
       return "Servicio en consulta.";
     }
 
-    function renderProgressLine(estado) {
-      const order = ["PROG", "CONF", "RUTA", "PRES"];
-      const labels = {
-        PROG: "Programado",
-        CONF: "Confirmado",
-        RUTA: "En ruta",
-        PRES: "Presente"
-      };
+    function renderProgressLine(item) {
+      const inicioServicio = getServiceStartDateTime(item);
+      const ahora = new Date();
 
-      const currentIndex = order.indexOf(estado);
+      const rutaDisponible = inicioServicio
+        ? ahora >= addHours(inicioServicio, -5)
+        : false;
+
+      const presenteDisponible = inicioServicio
+        ? ahora >= addHours(inicioServicio, -1)
+        : false;
+
+      const steps = [
+        {
+          label: "Confirmado",
+          value: item.fechaConfirmacionConocimiento,
+          operational: true,
+          lockedText: "Disponible"
+        },
+        {
+          label: "En ruta",
+          value: item.fechaEnRuta,
+          operational: rutaDisponible,
+          lockedText: "Disponible 5 h antes"
+        },
+        {
+          label: "Presente",
+          value: item.fechaEnServicio,
+          operational: presenteDisponible,
+          lockedText: "Disponible 1 h antes"
+        }
+      ];
 
       return `
-        <div class="progress-line">
-          ${order.map((s, i) => {
-            let cls = "";
+        <div class="guard-progress">
+          <div class="guard-progress-track">
+            ${steps.map(step => {
+              const registrado = hasValidDate(step.value);
+              let cls = "locked";
+              let texto = step.lockedText;
 
-            if (currentIndex >= 0 && i < currentIndex) cls = "done";
-            if (currentIndex >= 0 && i === currentIndex) cls = "current";
+              if (step.operational && registrado) {
+                cls = "registered";
+                texto = formatProgressDateTime(step.value);
+              }
 
-            return `<div class="step ${cls}">${labels[s]}</div>`;
-          }).join("")}
+              if (step.operational && !registrado) {
+                cls = "not-registered operational";
+                texto = "No registrado";
+              }
+
+              return `
+                <div class="guard-step ${cls}">
+                  <div class="guard-step-dot"></div>
+                  <div class="guard-step-label">${step.label}</div>
+                  <div class="guard-step-time">${texto}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
         </div>
       `;
     }
@@ -1147,9 +1301,7 @@ function renderDayCalendar() {
       try {
         const res = await fetch(`${API_BASE}/${endpoint}`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             personalId: selectedItem.guardiaAsignado,
             coberturaId: selectedItem.coberturaId
@@ -1164,10 +1316,8 @@ function renderDayCalendar() {
         }
 
         await loadServices();
-
         selectedItem = servicios.find(s => s.coberturaId === data.coberturaId);
         renderDetail();
-
       } catch (err) {
         console.error(err);
         alert("Error al conectar con el sistema.");
@@ -1181,41 +1331,76 @@ function renderDayCalendar() {
       if (raw === "conf") return "conf";
       if (raw === "ruta") return "ruta";
       if (raw === "pres") return "pres";
-      if (raw === "cub") return "cub";
-      if (raw === "pend") return "pend";
+      if (raw === "asist") return "asist";
+      if (raw === "asistencia") return "asistencia";
       if (raw === "falta") return "falta";
-      if (raw === "canc") return "canc";
+      if (raw === "falto") return "falto";
+      if (raw === "obs") return "obs";
+      if (raw === "observado") return "observado";
 
       return "";
     }
 
-    function formatDate(value) {
-      if (!value) return "";
-
-      const [y, m, d] = value.split("-");
-      return `${d}/${m}/${y}`;
+    function hasValidDate(value) {
+      if (!value) return false;
+      const d = new Date(value);
+      return !isNaN(d.getTime());
     }
 
-    function formatDateTime(value) {
-      if (!value) return "Sin registro.";
+    function addHours(date, hours) {
+      const d = new Date(date);
+      d.setHours(d.getHours() + hours);
+      return d;
+    }
+
+    function getServiceStartDateTime(item) {
+      if (!item || !item.fecha) return null;
+
+      const fecha = String(item.fecha).split("T")[0];
+      const hora = String(item.horaInicio || "").trim();
+
+      if (!fecha || !hora) return null;
+
+      const fechaParts = fecha.split("-");
+      const horaParts = hora.split(":");
+      const y = Number(fechaParts[0]);
+      const m = Number(fechaParts[1]);
+      const d = Number(fechaParts[2]);
+      const hh = Number(horaParts[0]);
+      const mm = Number(horaParts[1] || 0);
+      const result = new Date(y, m - 1, d, hh, mm, 0, 0);
+
+      if (isNaN(result.getTime())) return null;
+      return result;
+    }
+
+    function formatProgressDateTime(value) {
+      if (!value) return "No registrado";
 
       const d = new Date(value);
 
       if (isNaN(d.getTime())) {
-        return "Sin registro.";
+        return "No registrado";
       }
 
       return d.toLocaleString("es-MX", {
-        dateStyle: "short",
-        timeStyle: "short"
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
       });
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      const [y, m, d] = value.split("-");
+      return `${d}/${m}/${y}`;
     }
 
     function toDateKey(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, "0");
       const d = String(date.getDate()).padStart(2, "0");
-
       return `${y}-${m}-${d}`;
     }
 
@@ -1246,7 +1431,6 @@ function renderDayCalendar() {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
       ];
-
       return names[index] || "";
     }
   </script>
