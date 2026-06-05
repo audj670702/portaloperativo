@@ -2008,16 +2008,21 @@ async function loadSmsPending() {
 
   const select = document.getElementById("smsPendingSelect");
 
-  if (!select) return;
+  if (!select) {
+    console.warn("No existe smsPendingSelect en la interfaz.");
+    return;
+  }
 
   select.innerHTML = `<option value="">Cargando...</option>`;
 
   try {
     const res = await fetch(
-      `${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}`
+      `${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`
     );
 
     const data = await res.json();
+
+    console.log("SMS pendientes:", data);
 
     if (!data.ok) {
       smsPendingListData = [];
@@ -2025,7 +2030,7 @@ async function loadSmsPending() {
       return;
     }
 
-smsPendingListData = data.contacts || data.pending || [];
+    smsPendingListData = data.contacts || data.pending || [];
 
     if (!smsPendingListData.length) {
       select.innerHTML = `<option value="">Sin mensajes</option>`;
@@ -2033,19 +2038,20 @@ smsPendingListData = data.contacts || data.pending || [];
     }
 
     select.innerHTML = `
-      <option value="">Seleccionar</option>
+      <option value="">Seleccionar (${data.total || smsPendingListData.length})</option>
       ${smsPendingListData.map(item => {
         const contactId = item.contactMemberId || item.senderMemberId || item.memberId || "";
         const name = item.nombreMostrar || item.displayName || item.nombreCompleto || "Contacto";
         const count = item.count || item.total || 0;
-        const label = count ? `${name} (${count})` : name;
+        const lastMessage = item.lastMessage ? ` · ${item.lastMessage}` : "";
+        const label = count ? `${name} (${count})${lastMessage}` : `${name}${lastMessage}`;
 
         return `<option value="${escapeAttr(contactId)}">${escapeHtml(label)}</option>`;
       }).join("")}
     `;
 
   } catch (err) {
-    console.error(err);
+    console.error("Error al cargar pendientes:", err);
     smsPendingListData = [];
     select.innerHTML = `<option value="">Error</option>`;
   }
