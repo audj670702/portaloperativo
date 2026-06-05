@@ -109,6 +109,30 @@
 
     .topbar-icon-btn:hover { background: rgba(255,255,255,0.20); }
 
+
+    .hidden {
+  display: none !important;
+}
+
+.pwa-install-status {
+  font-size: 11px;
+  font-weight: 700;
+  color: #d1d5db;
+  background: rgba(255,255,255,0.12);
+  padding: 5px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.installPromptPulse {
+  animation: installPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes installPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.30); }
+  70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
     .screen { display: none; }
     .screen.active { display: block; }
 
@@ -823,12 +847,15 @@
         <div>
           <div class="app-brand">
             <h1>SEGPRIV</h1>
-            <span class="app-version">v0.3.22</span>
+            <span class="app-version">v0.3.23</span>
           </div>
           <p>Portal operativo</p>
         </div>
 
 <div class="topbar-actions">
+  <span id="pwaInstallStatus" class="pwa-install-status">Web</span>
+  <button id="btnInstallPwa" class="topbar-icon-btn hidden" onclick="installSegprivPwa()" title="Instalar app" aria-label="Instalar app">⬇</button>
+  <button id="btnIosInstallHelp" class="topbar-icon-btn hidden" onclick="openIosInstallHelp()" title="Instalar en iPhone" aria-label="Instalar en iPhone">ⓘ</button>
   <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
   <button class="topbar-icon-btn" onclick="loadServices()" title="Actualizar" aria-label="Actualizar">↻</button>
   <button class="topbar-icon-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
@@ -860,6 +887,39 @@
   </div>
 </section>
 
+<div id="iosInstallHelpBox" class="screen">
+  <div class="module-title">
+    <h2>Instalar SEGPRIV en iPhone</h2>
+    <p>Instalación manual desde Safari</p>
+  </div>
+
+  <div class="detail">
+    <div class="detail-row">
+      <strong>Paso 1</strong>
+      Abre SEGPRIV en Safari.
+    </div>
+
+    <div class="detail-row">
+      <strong>Paso 2</strong>
+      Toca el botón Compartir.
+    </div>
+
+    <div class="detail-row">
+      <strong>Paso 3</strong>
+      Selecciona “Agregar a pantalla de inicio”.
+    </div>
+
+    <div class="detail-row">
+      <strong>Paso 4</strong>
+      Confirma con “Agregar”.
+    </div>
+
+    <div class="toolbar">
+      <button class="secondary" onclick="goHome()">Regresar</button>
+    </div>
+  </div>
+</div>
+    
     <section id="screenServices" class="screen">
       <div class="module-title-row">
         <div>
@@ -1018,14 +1078,32 @@ let CURRENT_EMAIL = "";
 let smsProfile = null;
 let smsSelectedContact = null;
 let smsRefreshTimer = null;
+    let deferredPrompt = null;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      setInitialPeriod();
+const ua = navigator.userAgent || "";
+const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+const isStandalone =
+  (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+  window.navigator.standalone === true;
 
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js").catch(() => {});
+document.addEventListener("DOMContentLoaded", () => {
+  setInitialPeriod();
+  initSegprivInstallFlow();
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("sw.js?v=20260604-v0323", { scope: "./" });
+        if (registration && typeof registration.update === "function") {
+          registration.update();
+        }
+      } catch (e) {
+        console.warn("SW no registrado:", e);
       }
     });
+  }
+});
 
     function setInitialPeriod() {
       const today = new Date();
@@ -2085,6 +2163,114 @@ function escapeAttr(value) {
       ];
       return names[index] || "";
     }
+
+function setPwaInstallStatus(text) {
+  const el = document.getElementById("pwaInstallStatus");
+  if (el) el.textContent = text;
+}
+
+function showInstallButton() {
+  const btn = document.getElementById("btnInstallPwa");
+  if (!btn) return;
+  btn.classList.remove("hidden");
+  btn.classList.add("installPromptPulse");
+  btn.disabled = false;
+}
+
+function hideInstallButton() {
+  const btn = document.getElementById("btnInstallPwa");
+  if (!btn) return;
+  btn.classList.add("hidden");
+  btn.classList.remove("installPromptPulse");
+  btn.disabled = false;
+}
+
+function showIosHelpButton() {
+  const btn = document.getElementById("btnIosInstallHelp");
+  if (btn) btn.classList.remove("hidden");
+}
+
+function hideIosHelpButton() {
+  const btn = document.getElementById("btnIosInstallHelp");
+  if (btn) btn.classList.add("hidden");
+}
+
+function initSegprivInstallFlow() {
+  if (isStandalone) {
+    setPwaInstallStatus("App instalada");
+    hideInstallButton();
+    hideIosHelpButton();
+    return;
+  }
+
+  if (isIOS) {
+    setPwaInstallStatus(isSafari ? "iOS Safari" : "iOS");
+    hideInstallButton();
+    showIosHelpButton();
+    return;
+  }
+
+  setPwaInstallStatus("Web");
+  hideInstallButton();
+  hideIosHelpButton();
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (isIOS || isStandalone) return;
+
+    setPwaInstallStatus("App instalable");
+    showInstallButton();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    setPwaInstallStatus("App instalada");
+    hideInstallButton();
+    hideIosHelpButton();
+  });
+}
+
+async function installSegprivPwa() {
+  if (isIOS || isStandalone) return;
+
+  if (!deferredPrompt) {
+    setPwaInstallStatus("Preparando");
+    hideInstallButton();
+    return;
+  }
+
+  const btn = document.getElementById("btnInstallPwa");
+  if (btn) btn.disabled = true;
+
+  setPwaInstallStatus("Instalando...");
+
+  try {
+    await deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+
+    if (choice && choice.outcome === "accepted") {
+      setPwaInstallStatus("Instalando...");
+      hideInstallButton();
+    } else {
+      setPwaInstallStatus("App instalable");
+      showInstallButton();
+    }
+  } catch (err) {
+    console.warn("SEGPRIV PWA: error al instalar:", err);
+    setPwaInstallStatus("App instalable");
+    showInstallButton();
+  } finally {
+    deferredPrompt = null;
+    if (btn) btn.disabled = false;
+  }
+}
+
+function openIosInstallHelp() {
+  showScreen("iosInstallHelpBox");
+}
+    
   </script>
 </body>
 </html>
