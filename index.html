@@ -913,7 +913,7 @@
         <div>
           <div class="app-brand">
             <h1>SEGPRIV</h1>
-            <span class="app-version">v0.3.30</span>
+            <span class="app-version">v0.3.31</span>
           </div>
           <p>Portal operativo</p>
         </div>
@@ -923,7 +923,7 @@
   <button id="btnInstallPwa" class="topbar-icon-btn hidden" onclick="installSegprivPwa()" title="Instalar app" aria-label="Instalar app">⬇</button>
   <button id="btnIosInstallHelp" class="topbar-icon-btn hidden" onclick="openIosInstallHelp()" title="Instalar en iPhone" aria-label="Instalar en iPhone">ⓘ</button>
   <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
-  <button class="topbar-icon-btn" onclick="loadServices()" title="Actualizar" aria-label="Actualizar">↻</button>
+<button class="topbar-icon-btn" onclick="refreshCurrentScreen()" title="Actualizar" aria-label="Actualizar">↻</button>
   <button class="topbar-icon-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
 </div>
       </div>
@@ -1209,7 +1209,50 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
     }
+    
+function getActiveScreenId() {
+  const active = document.querySelector(".screen.active");
+  return active ? active.id : "";
+}
 
+    async function refreshCurrentScreen() {
+  const screenId = getActiveScreenId();
+
+  if (screenId === "screenServices") {
+    await loadServices();
+    return;
+  }
+
+  if (screenId === "screenSms") {
+    await loadSms();
+    return;
+  }
+
+  if (screenId === "screenDetail") {
+    if (selectedItem) {
+      const currentCoberturaId = selectedItem.coberturaId;
+
+      await loadServices();
+
+      selectedItem = servicios.find(s => s.coberturaId === currentCoberturaId) || selectedItem;
+      renderDetail();
+    } else {
+      await loadServices();
+      showScreen("screenServices");
+    }
+
+    return;
+  }
+
+  if (screenId === "screenHome") {
+    return;
+  }
+
+  if (screenId === "iosInstallHelpBox") {
+    return;
+  }
+}
+    
     function goHome() {
       showScreen("screenHome");
     }
