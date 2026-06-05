@@ -1135,7 +1135,7 @@
     <div>
       <div class="app-brand">
         <h1>SEGPRIV</h1>
-        <span class="app-version">v0.3.40</span>
+        <span class="app-version">v0.3.41</span>
       </div>
       <p>Portal operativo</p>
     </div>
@@ -1435,7 +1435,6 @@
 const API_BASE = "https://www.scad.mx/_functions";
 const SEGPRIV_ACCESS_URL = "https://www.scad.mx/sp-pwa-acceso";
 const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
-const CLAVE_PERSONAL_PRUEBA = "JORGE";
 
     let servicios = [];
     let selectedItem = null;
@@ -1622,45 +1621,96 @@ function openCourses() {
         : "status-line module-status-inline";
     }
 
-    async function loadServices() {
-      const startInput = document.getElementById("inputStartDate");
-      const endInput = document.getElementById("inputEndDate");
+async function loadServices() {
+  resolveCurrentMember();
 
-      if (!startInput || !endInput) {
-        showScreen("screenServices");
-        setInitialPeriod();
-      }
+  const startInput = document.getElementById("inputStartDate");
+  const endInput = document.getElementById("inputEndDate");
 
-      setStatus("Cargando servicios...");
+  if (!startInput || !endInput) {
+    showScreen("screenServices");
+    setInitialPeriod();
+  }
 
-      const fechaInicio = document.getElementById("inputStartDate").value;
-      const fechaFin = document.getElementById("inputEndDate").value;
+  if (!CURRENT_MEMBER_ID) {
+    servicios = [];
+    setStatus("Sin sesión", true);
 
-      try {
-        const url =
-          `${API_BASE}/sprivMisServicios?clavePersonal=${encodeURIComponent(CLAVE_PERSONAL_PRUEBA)}` +
-          `&fechaInicio=${encodeURIComponent(fechaInicio)}` +
-          `&fechaFin=${encodeURIComponent(fechaFin)}` +
-          `&estatus=TODOS`;
+    const calendarRoot = document.getElementById("calendarView");
+    const listRoot = document.getElementById("listView");
 
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (!data.ok) {
-          setStatus(data.error || "No fue posible cargar servicios.", true);
-          return;
-        }
-
-        servicios = data.items || [];
-        document.getElementById("guardiaNombre").textContent = data.guardia?.nombre || "Guardia";
-
-        setStatus(`Servicios encontrados: ${servicios.length}`);
-        renderViews();
-      } catch (err) {
-        console.error(err);
-        setStatus("Error al conectar con el sistema.", true);
-      }
+    if (calendarRoot) {
+      calendarRoot.innerHTML = `
+        <div class="empty">
+          Debes entrar desde el portal Wix de acceso SEGPRIV.
+        </div>
+      `;
     }
+
+    if (listRoot) {
+      listRoot.innerHTML = `
+        <div class="empty">
+          Debes entrar desde el portal Wix de acceso SEGPRIV.
+        </div>
+      `;
+    }
+
+    return;
+  }
+
+  setStatus("Cargando servicios...");
+
+  const fechaInicio = document.getElementById("inputStartDate").value;
+  const fechaFin = document.getElementById("inputEndDate").value;
+
+  try {
+    const url =
+      `${API_BASE}/sprivMisServicios?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}` +
+      `&email=${encodeURIComponent(CURRENT_EMAIL || "")}` +
+      `&fechaInicio=${encodeURIComponent(fechaInicio)}` +
+      `&fechaFin=${encodeURIComponent(fechaFin)}` +
+      `&estatus=TODOS` +
+      `&t=${Date.now()}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.ok) {
+      servicios = [];
+      setStatus(data.error || "No fue posible cargar servicios.", true);
+
+      document.getElementById("calendarView").innerHTML = `
+        <div class="empty">${escapeHtml(data.error || "No fue posible cargar servicios.")}</div>
+      `;
+
+      document.getElementById("listView").innerHTML = `
+        <div class="empty">${escapeHtml(data.error || "No fue posible cargar servicios.")}</div>
+      `;
+
+      return;
+    }
+
+    servicios = data.items || [];
+    document.getElementById("guardiaNombre").textContent =
+      data.guardia?.nombre || "Guardia";
+
+    setStatus(`Servicios encontrados: ${servicios.length}`);
+    renderViews();
+
+  } catch (err) {
+    console.error(err);
+    servicios = [];
+    setStatus("Error al conectar con el sistema.", true);
+
+    document.getElementById("calendarView").innerHTML = `
+      <div class="empty">Error al conectar con el sistema.</div>
+    `;
+
+    document.getElementById("listView").innerHTML = `
+      <div class="empty">Error al conectar con el sistema.</div>
+    `;
+  }
+}
 
     function setView(view) {
       currentView = view;
