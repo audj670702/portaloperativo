@@ -162,7 +162,7 @@
 .install-action {
   background: transparent;
   border: none;
-  color: #93c5fd;
+  color: #ffffff;
   padding: 0;
   font-size: 11px;
   font-weight: 800;
@@ -1006,18 +1006,18 @@
     <div>
       <div class="app-brand">
         <h1>SEGPRIV</h1>
-        <span class="app-version">v0.3.33</span>
+        <span class="app-version">v0.3.34</span>
       </div>
       <p>Portal operativo</p>
     </div>
   </div>
 
   <div class="topbar-actions">
-    <div class="install-info">
-      <span id="pwaInstallStatus" class="pwa-install-status">Web</span>
-      <button id="btnInstallPwa" class="install-action hidden" onclick="installSegprivPwa()" title="Instalar app" aria-label="Instalar app">Instalar app</button>
-      <button id="btnIosInstallHelp" class="install-action hidden" onclick="openIosInstallHelp()" title="Instalar en iPhone" aria-label="Instalar en iPhone">Ver tutorial</button>
-    </div>
+<div class="install-info">
+  <button id="btnInstallPwa" class="install-action hidden" onclick="installSegprivPwa()" title="Instalar app" aria-label="Instalar app">Instalar app</button>
+  <button id="btnIosInstallHelp" class="install-action hidden" onclick="openIosInstallHelp()" title="Instalar app" aria-label="Instalar app">Instalar app</button>
+  <span id="pwaInstallStatus" class="pwa-install-status hidden">App instalada</span>
+</div>
 
     <button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
     <button class="topbar-icon-btn" onclick="refreshCurrentScreen()" title="Actualizar" aria-label="Actualizar">↻</button>
@@ -2695,57 +2695,86 @@ function escapeAttr(value) {
       return names[index] || "";
     }
 
-function setPwaInstallStatus(text) {
-  const el = document.getElementById("pwaInstallStatus");
-  if (el) el.textContent = text;
+function showInstalledStatus() {
+  const status = document.getElementById("pwaInstallStatus");
+  const androidBtn = document.getElementById("btnInstallPwa");
+  const iosBtn = document.getElementById("btnIosInstallHelp");
+
+  if (status) {
+    status.textContent = "App instalada";
+    status.classList.remove("hidden");
+  }
+
+  if (androidBtn) {
+    androidBtn.classList.add("hidden");
+    androidBtn.classList.remove("installPromptPulse");
+  }
+
+  if (iosBtn) {
+    iosBtn.classList.add("hidden");
+  }
 }
 
-function showInstallButton() {
-  const btn = document.getElementById("btnInstallPwa");
-  if (!btn) return;
+function showAndroidInstallAction(isReady = false) {
+  const status = document.getElementById("pwaInstallStatus");
+  const androidBtn = document.getElementById("btnInstallPwa");
+  const iosBtn = document.getElementById("btnIosInstallHelp");
 
-  btn.classList.remove("hidden");
-  btn.classList.add("installPromptPulse");
-  btn.disabled = false;
+  if (status) status.classList.add("hidden");
+  if (iosBtn) iosBtn.classList.add("hidden");
+
+  if (androidBtn) {
+    androidBtn.textContent = "Instalar app";
+    androidBtn.classList.remove("hidden");
+    androidBtn.classList.toggle("installPromptPulse", Boolean(isReady));
+    androidBtn.disabled = false;
+  }
 }
 
-function hideInstallButton() {
-  const btn = document.getElementById("btnInstallPwa");
-  if (!btn) return;
+function showIosInstallAction() {
+  const status = document.getElementById("pwaInstallStatus");
+  const androidBtn = document.getElementById("btnInstallPwa");
+  const iosBtn = document.getElementById("btnIosInstallHelp");
 
-  btn.classList.add("hidden");
-  btn.classList.remove("installPromptPulse");
-  btn.disabled = false;
+  if (status) status.classList.add("hidden");
+  if (androidBtn) androidBtn.classList.add("hidden");
+
+  if (iosBtn) {
+    iosBtn.textContent = "Instalar app";
+    iosBtn.classList.remove("hidden");
+  }
 }
 
-function showIosHelpButton() {
-  const btn = document.getElementById("btnIosInstallHelp");
-  if (btn) btn.classList.remove("hidden");
-}
+function hideInstallActions() {
+  const status = document.getElementById("pwaInstallStatus");
+  const androidBtn = document.getElementById("btnInstallPwa");
+  const iosBtn = document.getElementById("btnIosInstallHelp");
 
-function hideIosHelpButton() {
-  const btn = document.getElementById("btnIosInstallHelp");
-  if (btn) btn.classList.add("hidden");
+  if (status) status.classList.add("hidden");
+
+  if (androidBtn) {
+    androidBtn.classList.add("hidden");
+    androidBtn.classList.remove("installPromptPulse");
+    androidBtn.disabled = false;
+  }
+
+  if (iosBtn) {
+    iosBtn.classList.add("hidden");
+  }
 }
 
 function initSegprivInstallFlow() {
   if (isStandalone) {
-    setPwaInstallStatus("App instalada");
-    hideInstallButton();
-    hideIosHelpButton();
+    showInstalledStatus();
     return;
   }
 
   if (isIOS) {
-    setPwaInstallStatus("No instalada");
-    hideInstallButton();
-    showIosHelpButton();
+    showIosInstallAction();
     return;
   }
 
-  setPwaInstallStatus("No instalada");
-  hideInstallButton();
-  hideIosHelpButton();
+  hideInstallActions();
 
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
@@ -2753,15 +2782,12 @@ function initSegprivInstallFlow() {
 
     if (isIOS || isStandalone) return;
 
-    setPwaInstallStatus("No instalada");
-    showInstallButton();
+    showAndroidInstallAction(true);
   });
 
   window.addEventListener("appinstalled", () => {
     deferredPrompt = null;
-    setPwaInstallStatus("App instalada");
-    hideInstallButton();
-    hideIosHelpButton();
+    showInstalledStatus();
   });
 }
 
@@ -2769,31 +2795,27 @@ async function installSegprivPwa() {
   if (isIOS || isStandalone) return;
 
   if (!deferredPrompt) {
-    setPwaInstallStatus("Preparando");
-    hideInstallButton();
+    showToast("La instalación aún no está disponible en este navegador");
     return;
   }
 
   const btn = document.getElementById("btnInstallPwa");
   if (btn) btn.disabled = true;
 
-  setPwaInstallStatus("Instalando...");
-
   try {
     await deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
 
     if (choice && choice.outcome === "accepted") {
-      setPwaInstallStatus("Instalando...");
-      hideInstallButton();
+      showToast("Instalando app...");
+      showInstalledStatus();
     } else {
-      setPwaInstallStatus("No instalada");
-      showInstallButton();
+      showAndroidInstallAction(true);
     }
   } catch (err) {
     console.warn("SEGPRIV PWA: error al instalar:", err);
-    setPwaInstallStatus("No instalada");
-    showInstallButton();
+    showToast("No fue posible iniciar la instalación", "error");
+    showAndroidInstallAction(true);
   } finally {
     deferredPrompt = null;
     if (btn) btn.disabled = false;
