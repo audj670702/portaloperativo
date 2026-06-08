@@ -442,6 +442,133 @@
       color: white;
     }
 
+    .legend button {
+  min-width: 54px;
+  min-height: 44px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  line-height: 1.05;
+}
+
+.legend-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.legend-count {
+  display: block;
+  min-height: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.legend button.active .legend-count {
+  color: rgba(255,255,255,0.85);
+}
+
+.compliance-strip {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px;
+  margin: 8px 0 10px;
+}
+
+.compliance-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.compliance-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.compliance-total {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.compliance-summary {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.compliance-pill {
+  flex: 1;
+  min-width: 88px;
+  border-radius: 12px;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.compliance-pill.asistencia {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.compliance-pill.observado {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.compliance-pill.falta {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.compliance-bar {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.compliance-segment {
+  height: 100%;
+  min-width: 0;
+}
+
+.compliance-segment.asistencia {
+  background: var(--green);
+}
+
+.compliance-segment.observado {
+  background: #ca8a04;
+}
+
+.compliance-segment.falta {
+  background: var(--red);
+}
+
+.compliance-empty {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  padding: 4px 0 2px;
+}
+
     .legend-split {
       justify-content: space-between;
       align-items: center;
@@ -1152,7 +1279,7 @@
 <div>
   <div class="app-brand">
     <h1>SEGPRIV</h1>
-    <span class="app-version">v0.3.42</span>
+    <span class="app-version">v0.3.43</span>
   </div>
 
   <p>Portal operativo</p>
@@ -1334,20 +1461,50 @@
         </div>
       </div>
 
-      <div class="legend legend-split">
-        <div class="legend-group">
-          <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">Todos</button>
-          <button id="filterCONF" onclick="setStatusFilter('CONF')"><span class="dot conf"></span>CONF</button>
-          <button id="filterRUTA" onclick="setStatusFilter('RUTA')"><span class="dot ruta"></span>RUTA</button>
-          <button id="filterPRES" onclick="setStatusFilter('PRES')"><span class="dot pres"></span>PRES</button>
-        </div>
+<div class="legend legend-split">
+  <div class="legend-group">
+    <button id="filterTODOS" class="active" onclick="setStatusFilter('TODOS')">
+      <span class="legend-label">Todos</span>
+      <span id="countTODOS" class="legend-count">-</span>
+    </button>
 
-        <div class="legend-group legend-group-labor">
-          <button id="filterASISTENCIA" onclick="setStatusFilter('ASISTENCIA')"><span class="dot asistencia"></span>Asistencia</button>
-          <button id="filterFALTA" onclick="setStatusFilter('FALTA')"><span class="dot falta"></span>Falta</button>
-          <button id="filterOBSERVADO" onclick="setStatusFilter('OBSERVADO')"><span class="dot observado"></span>Observado</button>
-        </div>
-      </div>
+    <button id="filterCONF" onclick="setStatusFilter('CONF')">
+      <span class="legend-label"><span class="dot conf"></span>CONF</span>
+      <span id="countCONF" class="legend-count">-</span>
+    </button>
+
+    <button id="filterRUTA" onclick="setStatusFilter('RUTA')">
+      <span class="legend-label"><span class="dot ruta"></span>RUTA</span>
+      <span id="countRUTA" class="legend-count">-</span>
+    </button>
+
+    <button id="filterPRES" onclick="setStatusFilter('PRES')">
+      <span class="legend-label"><span class="dot pres"></span>PRES</span>
+      <span id="countPRES" class="legend-count">-</span>
+    </button>
+  </div>
+
+  <div class="legend-group legend-group-labor">
+    <button id="filterASISTENCIA" onclick="setStatusFilter('ASISTENCIA')">
+      <span class="legend-label"><span class="dot asistencia"></span>Asistencia</span>
+      <span id="countASISTENCIA" class="legend-count">-</span>
+    </button>
+
+    <button id="filterFALTA" onclick="setStatusFilter('FALTA')">
+      <span class="legend-label"><span class="dot falta"></span>Falta</span>
+      <span id="countFALTA" class="legend-count">-</span>
+    </button>
+
+    <button id="filterOBSERVADO" onclick="setStatusFilter('OBSERVADO')">
+      <span class="legend-label"><span class="dot observado"></span>Observado</span>
+      <span id="countOBSERVADO" class="legend-count">-</span>
+    </button>
+  </div>
+</div>
+
+<div id="complianceSummary" class="compliance-strip">
+  <div class="compliance-empty">Sin servicios cargados.</div>
+</div>
 
       <div id="calendarView"></div>
       <div id="listView" style="display:none;"></div>
@@ -1664,6 +1821,8 @@ async function loadServices() {
   if (!CURRENT_MEMBER_ID) {
     servicios = [];
     setStatus("Sin sesión", true);
+    renderStatusCounts();
+renderComplianceSummary();
 
     const calendarRoot = document.getElementById("calendarView");
     const listRoot = document.getElementById("listView");
@@ -1707,6 +1866,8 @@ async function loadServices() {
     if (!data.ok) {
       servicios = [];
       setStatus(data.error || "No fue posible cargar servicios.", true);
+      renderStatusCounts();
+renderComplianceSummary();
 
       document.getElementById("calendarView").innerHTML = `
         <div class="empty">${escapeHtml(data.error || "No fue posible cargar servicios.")}</div>
@@ -1730,6 +1891,8 @@ async function loadServices() {
     console.error(err);
     servicios = [];
     setStatus("Error al conectar con el sistema.", true);
+    renderStatusCounts();
+renderComplianceSummary();
 
     document.getElementById("calendarView").innerHTML = `
       <div class="empty">Error al conectar con el sistema.</div>
@@ -1782,43 +1945,134 @@ async function loadServices() {
       renderViews();
     }
 
-    function getFilteredServices() {
-      if (statusFilter === "TODOS") {
-        return servicios;
-      }
+function normalizeServiceStatus(status) {
+  const raw = String(status || "").trim().toUpperCase();
 
-      if (statusFilter === "ASISTENCIA") {
-        return servicios.filter(item => {
-          const estado = String(item.estado || "").toUpperCase();
-          return estado === "ASIST" || estado === "ASISTENCIA";
-        });
-      }
+  if (raw === "ASIST") return "ASISTENCIA";
+  if (raw === "FALTO") return "FALTA";
+  if (raw === "OBS") return "OBSERVADO";
 
-      if (statusFilter === "FALTA") {
-        return servicios.filter(item => {
-          const estado = String(item.estado || "").toUpperCase();
-          return estado === "FALTA" || estado === "FALTO";
-        });
-      }
+  return raw;
+}
 
-      if (statusFilter === "OBSERVADO") {
-        return servicios.filter(item => {
-          const estado = String(item.estado || "").toUpperCase();
-          return estado === "OBS" || estado === "OBSERVADO";
-        });
-      }
+function getServiceStatusCounts() {
+  const counts = {
+    TODOS: servicios.length,
+    CONF: 0,
+    RUTA: 0,
+    PRES: 0,
+    ASISTENCIA: 0,
+    FALTA: 0,
+    OBSERVADO: 0
+  };
 
-      return servicios.filter(item => {
-        const estado = String(item.estado || "").toUpperCase();
-        return estado === statusFilter;
-      });
+  servicios.forEach(item => {
+    const estado = normalizeServiceStatus(item.estado);
+
+    if (Object.prototype.hasOwnProperty.call(counts, estado)) {
+      counts[estado]++;
     }
+  });
 
-    function renderViews() {
-      renderList();
-      renderCalendar();
-      setView(currentView);
+  return counts;
+}
+
+function formatCountValue(value) {
+  return Number(value || 0) > 0 ? String(value) : "-";
+}
+
+function renderStatusCounts() {
+  const counts = getServiceStatusCounts();
+
+  Object.keys(counts).forEach(key => {
+    const el = document.getElementById(`count${key}`);
+    if (el) {
+      el.textContent = formatCountValue(counts[key]);
     }
+  });
+}
+
+function renderComplianceSummary() {
+  const root = document.getElementById("complianceSummary");
+  if (!root) return;
+
+  const counts = getServiceStatusCounts();
+
+  const asistencia = counts.ASISTENCIA || 0;
+  const observado = counts.OBSERVADO || 0;
+  const falta = counts.FALTA || 0;
+  const totalFinal = asistencia + observado + falta;
+
+  if (!servicios.length) {
+    root.innerHTML = `
+      <div class="compliance-empty">Sin servicios cargados.</div>
+    `;
+    return;
+  }
+
+  if (!totalFinal) {
+    root.innerHTML = `
+      <div class="compliance-header">
+        <div class="compliance-title">Cumplimiento del periodo</div>
+        <div class="compliance-total">Finalizados: -</div>
+      </div>
+      <div class="compliance-empty">
+        Sin cumplimiento final registrado.
+      </div>
+    `;
+    return;
+  }
+
+  const asistenciaPct = (asistencia / totalFinal) * 100;
+  const observadoPct = (observado / totalFinal) * 100;
+  const faltaPct = (falta / totalFinal) * 100;
+
+  root.innerHTML = `
+    <div class="compliance-header">
+      <div class="compliance-title">Cumplimiento del periodo</div>
+      <div class="compliance-total">Finalizados: ${totalFinal}</div>
+    </div>
+
+    <div class="compliance-summary">
+      <div class="compliance-pill asistencia">
+        Asistencia ${formatCountValue(asistencia)}
+      </div>
+
+      <div class="compliance-pill observado">
+        Observado ${formatCountValue(observado)}
+      </div>
+
+      <div class="compliance-pill falta">
+        Falta ${formatCountValue(falta)}
+      </div>
+    </div>
+
+    <div class="compliance-bar" title="Asistencia ${asistencia} · Observado ${observado} · Falta ${falta}">
+      ${asistencia > 0 ? `<div class="compliance-segment asistencia" style="width:${asistenciaPct}%"></div>` : ""}
+      ${observado > 0 ? `<div class="compliance-segment observado" style="width:${observadoPct}%"></div>` : ""}
+      ${falta > 0 ? `<div class="compliance-segment falta" style="width:${faltaPct}%"></div>` : ""}
+    </div>
+  `;
+}
+    
+function getFilteredServices() {
+  if (statusFilter === "TODOS") {
+    return servicios;
+  }
+
+  return servicios.filter(item => {
+    const estado = normalizeServiceStatus(item.estado);
+    return estado === statusFilter;
+  });
+}
+
+function renderViews() {
+  renderStatusCounts();
+  renderComplianceSummary();
+  renderList();
+  renderCalendar();
+  setView(currentView);
+}
 
     function renderList() {
       const root = document.getElementById("listView");
