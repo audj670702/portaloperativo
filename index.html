@@ -510,76 +510,125 @@
   white-space: nowrap;
 }
 
-.compliance-summary {
+.compliance-line-wrap {
+  margin-top: 10px;
+}
+
+.compliance-meta-row {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
   margin-bottom: 8px;
 }
 
-.compliance-pill {
-  flex: 1;
-  min-width: 88px;
-  border-radius: 12px;
-  padding: 7px 8px;
+.compliance-main-percent {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--dark);
+  line-height: 1;
+}
+
+.compliance-main-label {
   font-size: 11px;
   font-weight: 800;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .02em;
 }
 
-.compliance-pill.asistencia {
-  background: #dcfce7;
-  color: #15803d;
+.compliance-detail {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.25;
 }
 
-.compliance-pill.observado {
-  background: #fef9c3;
-  color: #854d0e;
-}
-
-.compliance-pill.falta {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.compliance-bar {
+.compliance-bar-pro {
+  position: relative;
   display: flex;
   width: 100%;
-  height: 12px;
+  height: 18px;
   border-radius: 999px;
   overflow: hidden;
   background: #e5e7eb;
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.10),
+    0 6px 14px rgba(17,24,39,0.08);
 }
 
 .compliance-segment {
   height: 100%;
   min-width: 0;
+  position: relative;
 }
 
-.compliance-segment.conf {
-  background: var(--purple);
+.compliance-segment + .compliance-segment::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 0;
+  width: 20px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.38), rgba(255,255,255,0));
 }
 
-.compliance-segment.ruta {
-  background: var(--orange);
-}
-
-.compliance-segment.pres {
-  background: var(--teal);
-}
-    
 .compliance-segment.asistencia {
-  background: var(--green);
+  background: linear-gradient(90deg, #22c55e, #16a34a);
 }
 
 .compliance-segment.observado {
-  background: #ca8a04;
+  background: linear-gradient(90deg, #facc15, #ca8a04);
 }
 
 .compliance-segment.falta {
+  background: linear-gradient(90deg, #f87171, #dc2626);
+}
+
+.compliance-segment.sinregistro {
+  background: linear-gradient(90deg, #f3f4f6, #d1d5db);
+}
+
+.compliance-legend-pro {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 9px;
+}
+
+.compliance-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.compliance-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.compliance-legend-dot.asistencia {
+  background: var(--green);
+}
+
+.compliance-legend-dot.observado {
+  background: #ca8a04;
+}
+
+.compliance-legend-dot.falta {
   background: var(--red);
+}
+
+.compliance-legend-dot.sinregistro {
+  background: #d1d5db;
 }
 
 .compliance-empty {
@@ -1299,7 +1348,7 @@
 <div>
   <div class="app-brand">
     <h1>SEGPRIV</h1>
-    <span class="app-version">v0.3.44</span>
+    <span class="app-version">v0.3.45</span>
   </div>
 
   <p>Portal operativo</p>
@@ -2044,10 +2093,6 @@ function renderComplianceSummary() {
   const counts = getServiceStatusCounts();
 
   const totalPeriodo = counts.TODOS || 0;
-
-  const conf = counts.CONF || 0;
-  const ruta = counts.RUTA || 0;
-  const pres = counts.PRES || 0;
   const asistencia = counts.ASISTENCIA || 0;
   const observado = counts.OBSERVADO || 0;
   const falta = counts.FALTA || 0;
@@ -2059,40 +2104,66 @@ function renderComplianceSummary() {
     return;
   }
 
-  const confPct = (conf / totalPeriodo) * 100;
-  const rutaPct = (ruta / totalPeriodo) * 100;
-  const presPct = (pres / totalPeriodo) * 100;
-  const asistenciaPct = (asistencia / totalPeriodo) * 100;
-  const observadoPct = (observado / totalPeriodo) * 100;
-  const faltaPct = (falta / totalPeriodo) * 100;
+  const totalCumplimiento = asistencia + observado + falta;
+  const sinRegistro = Math.max(totalPeriodo - totalCumplimiento, 0);
+
+  const asistenciaPct = Math.round((asistencia / totalPeriodo) * 100);
+  const observadoPct = Math.round((observado / totalPeriodo) * 100);
+  const faltaPct = Math.round((falta / totalPeriodo) * 100);
+  const sinRegistroPct = Math.max(100 - asistenciaPct - observadoPct - faltaPct, 0);
+
+  const cumplimientoPct = asistenciaPct;
 
   root.innerHTML = `
     <div class="compliance-header">
-<div class="compliance-title">Cumplimiento del periodo</div>
-<div class="compliance-total">Total: ${totalPeriodo}</div>
+      <div class="compliance-title">Cumplimiento del periodo</div>
+      <div class="compliance-total">Total: ${totalPeriodo}</div>
     </div>
 
-    <div class="compliance-summary">
-      <div class="compliance-pill asistencia">
-        Asistencia ${formatCountValue(asistencia)}
+    <div class="compliance-line-wrap">
+      <div class="compliance-meta-row">
+        <div>
+          <div class="compliance-main-percent">${cumplimientoPct}%</div>
+          <div class="compliance-main-label">Asistencia validada</div>
+        </div>
+
+        <div class="compliance-detail">
+          Asistencia ${asistenciaPct}% · Observado ${observadoPct}% · Falta ${faltaPct}%<br>
+          Sin registro ${sinRegistroPct}%
+        </div>
       </div>
 
-      <div class="compliance-pill observado">
-        Observado ${formatCountValue(observado)}
+      <div
+        class="compliance-bar-pro"
+        title="Asistencia ${asistenciaPct}% · Observado ${observadoPct}% · Falta ${faltaPct}% · Sin registro ${sinRegistroPct}%"
+      >
+        ${asistencia > 0 ? `<div class="compliance-segment asistencia" style="width:${asistenciaPct}%"></div>` : ""}
+        ${observado > 0 ? `<div class="compliance-segment observado" style="width:${observadoPct}%"></div>` : ""}
+        ${falta > 0 ? `<div class="compliance-segment falta" style="width:${faltaPct}%"></div>` : ""}
+        ${sinRegistro > 0 ? `<div class="compliance-segment sinregistro" style="width:${sinRegistroPct}%"></div>` : ""}
       </div>
 
-      <div class="compliance-pill falta">
-        Falta ${formatCountValue(falta)}
-      </div>
-    </div>
+      <div class="compliance-legend-pro">
+        <div class="compliance-legend-item">
+          <span class="compliance-legend-dot asistencia"></span>
+          Asistencia ${asistenciaPct}%
+        </div>
 
-    <div class="compliance-bar" title="CONF ${conf} · RUTA ${ruta} · PRES ${pres} · Asistencia ${asistencia} · Observado ${observado} · Falta ${falta}">
-      ${conf > 0 ? `<div class="compliance-segment conf" style="width:${confPct}%"></div>` : ""}
-      ${ruta > 0 ? `<div class="compliance-segment ruta" style="width:${rutaPct}%"></div>` : ""}
-      ${pres > 0 ? `<div class="compliance-segment pres" style="width:${presPct}%"></div>` : ""}
-      ${asistencia > 0 ? `<div class="compliance-segment asistencia" style="width:${asistenciaPct}%"></div>` : ""}
-      ${observado > 0 ? `<div class="compliance-segment observado" style="width:${observadoPct}%"></div>` : ""}
-      ${falta > 0 ? `<div class="compliance-segment falta" style="width:${faltaPct}%"></div>` : ""}
+        <div class="compliance-legend-item">
+          <span class="compliance-legend-dot observado"></span>
+          Observado ${observadoPct}%
+        </div>
+
+        <div class="compliance-legend-item">
+          <span class="compliance-legend-dot falta"></span>
+          Falta ${faltaPct}%
+        </div>
+
+        <div class="compliance-legend-item">
+          <span class="compliance-legend-dot sinregistro"></span>
+          Sin registro ${sinRegistroPct}%
+        </div>
+      </div>
     </div>
   `;
 }
