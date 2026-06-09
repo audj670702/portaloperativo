@@ -1345,7 +1345,7 @@
 <div>
   <div class="app-brand">
     <h1>SEGPRIV</h1>
-    <span class="app-version">v0.3.48</span>
+    <span class="app-version">v0.3.49</span>
   </div>
 
   <p>Portal operativo</p>
@@ -1405,15 +1405,27 @@
       <p>Calendario, lista y estado operativo.</p>
     </div>
 
-<div class="module-card" onclick="openCourses()">
-  <h2>Mis cursos</h2>
-  <p>Acceso a tus cursos en SCaD.</p>
-</div>
+<section id="screenHome" class="screen active">
+  <div class="grid">
+    <div class="module-card" onclick="openServices()">
+      <h2>Mis servicios</h2>
+      <p>Calendario, lista y estado operativo.</p>
+    </div>
 
-<div class="module-card" onclick="openDocuments()">
-  <h2>Documentos</h2>
-  <p>Técnicos, operativos y administrativos.</p>
-</div>
+    <div class="module-card" onclick="openSupervisor()">
+      <h2>Supervisión</h2>
+      <p>Coberturas, asistencia e incidencias.</p>
+    </div>
+
+    <div class="module-card" onclick="openCourses()">
+      <h2>Mis cursos</h2>
+      <p>Acceso a tus cursos en SCaD.</p>
+    </div>
+
+    <div class="module-card" onclick="openDocuments()">
+      <h2>Documentos</h2>
+      <p>Técnicos, operativos y administrativos.</p>
+    </div>
 
     <div class="module-card" onclick="openSms()">
       <h2>Mensajería</h2>
@@ -1601,7 +1613,120 @@
 <div id="listView" style="display:none;"></div>
     </section>
 
+<section id="screenSupervisor" class="screen">
+  <div class="module-title-row">
+    <div>
+      <h2>Supervisión</h2>
+      <p>Supervisor: <span id="supervisorNombre">Supervisor</span></p>
+    </div>
+
+    <div id="supervisorStatusLine" class="status-line module-status-inline">
+      Cargando supervisión...
+    </div>
+  </div>
+
+  <div class="view-filter-row">
+    <div class="view-tabs compact-view-tabs">
+      <button id="btnSupervisorViewCalendar" class="active" onclick="setSupervisorView('calendar')">Calendario</button>
+      <button id="btnSupervisorViewList" onclick="setSupervisorView('list')">Lista</button>
+    </div>
+
+    <div class="inline-period-controls">
+      <label>
+        <span>Ir a fecha</span>
+        <input id="supervisorInputGoDate" type="date" onchange="goToSupervisorSelectedDate()" />
+      </label>
+
+      <label>
+        <span>Inicio</span>
+        <input id="supervisorInputStartDate" type="date" />
+      </label>
+
+      <label>
+        <span>Fin</span>
+        <input id="supervisorInputEndDate" type="date" />
+      </label>
+
+      <button onclick="loadSupervisorCoverages()">Actualizar</button>
+    </div>
+  </div>
+
+  <div class="legend legend-split">
+    <div class="legend-row legend-row-status">
+      <button id="supervisorFilterTODOS" class="legend-pill active" onclick="setSupervisorStatusFilter('TODOS')">
+        <span class="legend-left">
+          <span class="dot todos"></span>
+          <span class="legend-label">Todos</span>
+        </span>
+        <span id="supervisorCountTODOS" class="legend-count">-</span>
+      </button>
+
+      <button id="supervisorFilterPROG" class="legend-pill" onclick="setSupervisorStatusFilter('PROG')">
+        <span class="legend-left">
+          <span class="dot conf"></span>
+          <span class="legend-label">PROG</span>
+        </span>
+        <span id="supervisorCountPROG" class="legend-count">-</span>
+      </button>
+
+      <button id="supervisorFilterCONF" class="legend-pill" onclick="setSupervisorStatusFilter('CONF')">
+        <span class="legend-left">
+          <span class="dot conf"></span>
+          <span class="legend-label">CONF</span>
+        </span>
+        <span id="supervisorCountCONF" class="legend-count">-</span>
+      </button>
+
+      <button id="supervisorFilterPRES" class="legend-pill" onclick="setSupervisorStatusFilter('PRES')">
+        <span class="legend-left">
+          <span class="dot pres"></span>
+          <span class="legend-label">PRES</span>
+        </span>
+        <span id="supervisorCountPRES" class="legend-count">-</span>
+      </button>
+    </div>
+
+    <div class="legend-row legend-row-compliance">
+      <button id="supervisorFilterASISTENCIA" class="legend-pill" onclick="setSupervisorStatusFilter('ASISTENCIA')">
+        <span class="legend-left">
+          <span class="dot asistencia"></span>
+          <span class="legend-label">Asistencia</span>
+        </span>
+        <span id="supervisorCountASISTENCIA" class="legend-count">-</span>
+      </button>
+
+      <button id="supervisorFilterFALTA" class="legend-pill" onclick="setSupervisorStatusFilter('FALTA')">
+        <span class="legend-left">
+          <span class="dot falta"></span>
+          <span class="legend-label">Falta</span>
+        </span>
+        <span id="supervisorCountFALTA" class="legend-count">-</span>
+      </button>
+
+      <button id="supervisorFilterOBSERVADO" class="legend-pill" onclick="setSupervisorStatusFilter('OBSERVADO')">
+        <span class="legend-left">
+          <span class="dot observado"></span>
+          <span class="legend-label">Observado</span>
+        </span>
+        <span id="supervisorCountOBSERVADO" class="legend-count">-</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="supervisorComplianceSummary" class="compliance-strip">
+    <div class="compliance-bar-pro">
+      <div class="compliance-segment sinregistro">
+        Sin registro de supervisión
+      </div>
+    </div>
+  </div>
+
+  <div id="supervisorCalendarView"></div>
+  <div id="supervisorListView" style="display:none;"></div>
+</section>
+
     <section id="screenDetail" class="screen">
+      
       <div class="module-title">
         <h2>Detalle del servicio</h2>
         <p>Cobertura asignada</p>
@@ -1614,7 +1739,21 @@
       <div id="detailBox"></div>
     </section>
 
+<section id="screenSupervisorDetail" class="screen">
+  <div class="module-title">
+    <h2>Detalle de supervisión</h2>
+    <p>Cobertura asignada</p>
+  </div>
+
+  <div class="toolbar">
+    <button class="secondary" onclick="backToSupervisor()">Regresar</button>
+  </div>
+
+  <div id="supervisorDetailBox"></div>
+</section>
+
 <section id="screenSms" class="screen">
+      
   <div class="module-title-row">
     <div>
       <h2>Mensajería</h2>
@@ -1718,7 +1857,16 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
     let statusFilter = "TODOS";
     let calendarMode = "month";
     let selectedDate = new Date();
+
+    let supervisorCoverages = [];
+    let supervisorSelectedItem = null;
+    let supervisorCurrentView = "calendar";
+    let supervisorStatusFilter = "TODOS";
+    let supervisorCalendarMode = "month";
+    let supervisorSelectedDate = new Date();
+
     let CURRENT_MEMBER_ID = "";
+    
 let CURRENT_EMAIL = "";
 let smsProfile = null;
 let smsSelectedContact = null;
@@ -1741,6 +1889,7 @@ const isStandalone =
 
 document.addEventListener("DOMContentLoaded", () => {
   setInitialPeriod();
+  setInitialSupervisorPeriod();
   initSegprivInstallFlow();
   resolveCurrentMember();
 
@@ -1768,6 +1917,22 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("inputStartDate").value = toDateKey(start);
       document.getElementById("inputEndDate").value = toDateKey(end);
       document.getElementById("inputGoDate").value = toDateKey(today);
+    }
+
+    function setInitialSupervisorPeriod() {
+      const today = new Date();
+      supervisorSelectedDate = today;
+
+      const start = new Date(today.getFullYear(), today.getMonth(), 1);
+      const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+      const startInput = document.getElementById("supervisorInputStartDate");
+      const endInput = document.getElementById("supervisorInputEndDate");
+      const goInput = document.getElementById("supervisorInputGoDate");
+
+      if (startInput) startInput.value = toDateKey(start);
+      if (endInput) endInput.value = toDateKey(end);
+      if (goInput) goInput.value = toDateKey(today);
     }
 
     function showScreen(id) {
@@ -1811,6 +1976,34 @@ async function refreshCurrentScreen() {
     if (screenId === "screenServices") {
       await loadServices();
       showToast("Servicios actualizados");
+      return;
+    }
+
+    if (screenId === "screenSupervisor") {
+      await loadSupervisorCoverages();
+      showToast("Supervisión actualizada");
+      return;
+    }
+
+    if (screenId === "screenSupervisorDetail") {
+      if (supervisorSelectedItem) {
+        const currentCoberturaId = supervisorSelectedItem.coberturaId;
+
+        await loadSupervisorCoverages();
+
+        supervisorSelectedItem =
+          supervisorCoverages.find(s => s.coberturaId === currentCoberturaId) ||
+          supervisorSelectedItem;
+
+        renderSupervisorDetail();
+
+        showToast("Detalle actualizado");
+      } else {
+        await loadSupervisorCoverages();
+        showScreen("screenSupervisor");
+        showToast("Supervisión actualizada");
+      }
+
       return;
     }
 
@@ -1875,18 +2068,28 @@ function openCourses() {
   openExternalUrl(SCAD_MIS_CURSOS_URL);
 }
 
-    function openDocuments() {
+function openDocuments() {
   showScreen("screenDocuments");
   loadDocuments();
 }
-    function openServices() {
-      showScreen("screenServices");
-      loadServices();
-    }
 
-    function backToServices() {
-      showScreen("screenServices");
-    }
+function openServices() {
+  showScreen("screenServices");
+  loadServices();
+}
+
+function backToServices() {
+  showScreen("screenServices");
+}
+
+function openSupervisor() {
+  showScreen("screenSupervisor");
+  loadSupervisorCoverages();
+}
+
+function backToSupervisor() {
+  showScreen("screenSupervisor");
+}
 
     function setStatus(text, error = false) {
       const el = document.getElementById("statusLine");
@@ -1993,6 +2196,276 @@ renderComplianceSummary();
       <div class="empty">Error al conectar con el sistema.</div>
     `;
   }
+}
+
+/* =========================
+   SUPERVISIÓN / PANEL SUP PWA
+========================= */
+
+function setSupervisorStatus(text, error = false) {
+  const el = document.getElementById("supervisorStatusLine");
+  if (!el) return;
+
+  el.textContent = text;
+  el.className = error
+    ? "status-line module-status-inline status-error"
+    : "status-line module-status-inline";
+}
+
+async function loadSupervisorCoverages() {
+  resolveCurrentMember();
+
+  const startInput = document.getElementById("supervisorInputStartDate");
+  const endInput = document.getElementById("supervisorInputEndDate");
+
+  if (!startInput || !endInput) {
+    showScreen("screenSupervisor");
+    setInitialSupervisorPeriod();
+  }
+
+  if (!CURRENT_MEMBER_ID) {
+    supervisorCoverages = [];
+    setSupervisorStatus("Sin sesión", true);
+    renderSupervisorStatusCounts();
+    renderSupervisorComplianceSummary();
+
+    const calendarRoot = document.getElementById("supervisorCalendarView");
+    const listRoot = document.getElementById("supervisorListView");
+
+    if (calendarRoot) {
+      calendarRoot.innerHTML = `
+        <div class="empty">
+          Debes entrar desde el portal Wix de acceso SEGPRIV.
+        </div>
+      `;
+    }
+
+    if (listRoot) {
+      listRoot.innerHTML = `
+        <div class="empty">
+          Debes entrar desde el portal Wix de acceso SEGPRIV.
+        </div>
+      `;
+    }
+
+    return;
+  }
+
+  setSupervisorStatus("Cargando supervisión...");
+
+  const fechaInicio = document.getElementById("supervisorInputStartDate").value;
+  const fechaFin = document.getElementById("supervisorInputEndDate").value;
+
+  try {
+    const url =
+      `${API_BASE}/sprivSupervisorCoberturas?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}` +
+      `&email=${encodeURIComponent(CURRENT_EMAIL || "")}` +
+      `&fechaInicio=${encodeURIComponent(fechaInicio)}` +
+      `&fechaFin=${encodeURIComponent(fechaFin)}` +
+      `&estatus=TODOS` +
+      `&t=${Date.now()}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.ok) {
+      supervisorCoverages = [];
+      setSupervisorStatus(data.error || "No fue posible cargar supervisión.", true);
+      renderSupervisorStatusCounts();
+      renderSupervisorComplianceSummary();
+
+      document.getElementById("supervisorCalendarView").innerHTML = `
+        <div class="empty">${escapeHtml(data.error || "No fue posible cargar supervisión.")}</div>
+      `;
+
+      document.getElementById("supervisorListView").innerHTML = `
+        <div class="empty">${escapeHtml(data.error || "No fue posible cargar supervisión.")}</div>
+      `;
+
+      return;
+    }
+
+    supervisorCoverages = data.items || [];
+
+    document.getElementById("supervisorNombre").textContent =
+      data.supervisor?.nombre || "Supervisor";
+
+    setSupervisorStatus(`Coberturas: ${supervisorCoverages.length}`);
+    renderSupervisorViews();
+
+  } catch (err) {
+    console.error(err);
+    supervisorCoverages = [];
+    setSupervisorStatus("Error al conectar con supervisión.", true);
+    renderSupervisorStatusCounts();
+    renderSupervisorComplianceSummary();
+
+    document.getElementById("supervisorCalendarView").innerHTML = `
+      <div class="empty">Error al conectar con supervisión.</div>
+    `;
+
+    document.getElementById("supervisorListView").innerHTML = `
+      <div class="empty">Error al conectar con supervisión.</div>
+    `;
+  }
+}
+
+function setSupervisorView(view) {
+  supervisorCurrentView = view;
+
+  document.getElementById("btnSupervisorViewCalendar").classList.toggle("active", view === "calendar");
+  document.getElementById("btnSupervisorViewList").classList.toggle("active", view === "list");
+
+  document.getElementById("supervisorCalendarView").style.display =
+    view === "calendar" ? "block" : "none";
+
+  document.getElementById("supervisorListView").style.display =
+    view === "list" ? "block" : "none";
+}
+
+function setSupervisorCalendarMode(mode) {
+  supervisorCalendarMode = mode;
+  renderSupervisorCalendar();
+}
+
+function goSupervisorToday() {
+  supervisorSelectedDate = new Date();
+  document.getElementById("supervisorInputGoDate").value = toDateKey(supervisorSelectedDate);
+  supervisorCalendarMode = "day";
+  setSupervisorCalendarMode("day");
+}
+
+function goToSupervisorSelectedDate() {
+  const value = document.getElementById("supervisorInputGoDate").value;
+  if (!value) return;
+
+  supervisorSelectedDate = createLocalDate(value);
+  renderSupervisorCalendar();
+}
+
+function setSupervisorStatusFilter(status) {
+  supervisorStatusFilter = status;
+
+  ["TODOS", "PROG", "CONF", "PRES", "ASISTENCIA", "FALTA", "OBSERVADO"].forEach(s => {
+    const btn = document.getElementById(`supervisorFilter${s}`);
+    if (btn) {
+      btn.classList.toggle("active", s === status);
+    }
+  });
+
+  renderSupervisorViews();
+}
+
+function getSupervisorStatusForFilter(item) {
+  const validacion = normalizeServiceStatus(item.validacionSupervisor || "");
+
+  if (["ASISTENCIA", "FALTA", "OBSERVADO"].includes(validacion)) {
+    return validacion;
+  }
+
+  return normalizeServiceStatus(item.estado);
+}
+
+function getSupervisorStatusCounts() {
+  const counts = {
+    TODOS: supervisorCoverages.length,
+    PROG: 0,
+    CONF: 0,
+    PRES: 0,
+    ASISTENCIA: 0,
+    FALTA: 0,
+    OBSERVADO: 0
+  };
+
+  supervisorCoverages.forEach(item => {
+    const estado = getSupervisorStatusForFilter(item);
+
+    if (Object.prototype.hasOwnProperty.call(counts, estado)) {
+      counts[estado]++;
+    }
+  });
+
+  return counts;
+}
+
+function renderSupervisorStatusCounts() {
+  const counts = getSupervisorStatusCounts();
+
+  Object.keys(counts).forEach(key => {
+    const el = document.getElementById(`supervisorCount${key}`);
+    if (el) {
+      el.textContent = formatCountValue(counts[key]);
+    }
+  });
+}
+
+function renderSupervisorComplianceSummary() {
+  const root = document.getElementById("supervisorComplianceSummary");
+  if (!root) return;
+
+  const counts = getSupervisorStatusCounts();
+
+  const asistencia = counts.ASISTENCIA || 0;
+  const observado = counts.OBSERVADO || 0;
+  const falta = counts.FALTA || 0;
+
+  const totalCumplimiento = asistencia + observado + falta;
+
+  if (!totalCumplimiento) {
+    root.innerHTML = `
+      <div class="compliance-bar-pro">
+        <div class="compliance-segment sinregistro">
+          Sin registro de supervisión
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const asistenciaPct = Math.round((asistencia / totalCumplimiento) * 100);
+  const observadoPct = Math.round((observado / totalCumplimiento) * 100);
+  const faltaPct = Math.max(100 - asistenciaPct - observadoPct, 0);
+
+  root.innerHTML = `
+    <div class="compliance-bar-pro">
+      ${asistencia > 0 ? `
+        <div class="compliance-segment asistencia" style="width:${asistenciaPct}%">
+          Asistencia ${asistenciaPct}%
+        </div>
+      ` : ""}
+
+      ${observado > 0 ? `
+        <div class="compliance-segment observado" style="width:${observadoPct}%">
+          Observado ${observadoPct}%
+        </div>
+      ` : ""}
+
+      ${falta > 0 ? `
+        <div class="compliance-segment falta" style="width:${faltaPct}%">
+          Falta ${faltaPct}%
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
+
+function getFilteredSupervisorCoverages() {
+  if (supervisorStatusFilter === "TODOS") {
+    return supervisorCoverages;
+  }
+
+  return supervisorCoverages.filter(item => {
+    const estado = getSupervisorStatusForFilter(item);
+    return estado === supervisorStatusFilter;
+  });
+}
+
+function renderSupervisorViews() {
+  renderSupervisorStatusCounts();
+  renderSupervisorComplianceSummary();
+  renderSupervisorList();
+  renderSupervisorCalendar();
+  setSupervisorView(supervisorCurrentView);
 }
 
     function setView(view) {
