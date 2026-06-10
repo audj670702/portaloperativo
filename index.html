@@ -233,7 +233,7 @@
   }
 }
 
-    /* SMS global colapsable v0.3.55 */
+    /* SMS global colapsable v0.3.56 */
 .global-sms-panel{
   margin-bottom:10px;
 }
@@ -243,13 +243,23 @@
   min-height:56px;
   padding:8px 12px;
   border-radius:18px;
-  background:var(--card);
+  background:linear-gradient(135deg,#ffffff 0%,#f8fbff 48%,#eef7ff 100%);
   color:var(--text);
-  border:1px solid var(--border);
+  border:1px solid #cbd5e1;
+  box-shadow:0 6px 16px rgba(15,23,42,.06);
   display:flex;
   align-items:center;
   gap:12px;
   text-align:left;
+}
+
+.global-sms-head .module-icon{
+  width:32px;
+  height:32px;
+  border-radius:12px;
+  font-size:17px;
+  background:#eef2ff;
+  border-color:#c7d2fe;
 }
 
 .global-sms-title{
@@ -261,13 +271,14 @@
   display:block;
   font-size:15px;
   line-height:1.1;
+  color:#0f172a;
 }
 
 .global-sms-title small{
   display:block;
   margin-top:3px;
   font-size:11.5px;
-  color:var(--muted);
+  color:#64748b;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -319,37 +330,46 @@
   }
 }
 
-@media(max-width:520px){
-.global-sms-head{
-  min-height:52px;
-  padding:8px 10px;
-  gap:9px;
-}
-
-  .global-sms-title strong{
-    font-size:15px;
-  }
-
-  .global-sms-title small{
-    font-size:11.5px;
-  }
-
-  .global-sms-head .module-icon{
-  width:32px;
-  height:32px;
-  border-radius:12px;
-  font-size:17px;
-}
-
-  .global-sms-head .module-icon{
-  width:30px;
-  height:30px;
-  font-size:16px;
-}
-
-  /* SMS UI compacta v0.3.56 */
 .sms-status-hidden{
   display:none !important;
+}
+
+.global-sms-status-badge{
+  min-width:58px;
+  height:24px;
+  padding:0 9px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:900;
+  white-space:nowrap;
+  border:1px solid transparent;
+}
+
+.global-sms-status-badge.status-active{
+  background:#dcfce7;
+  color:#15803d;
+  border-color:#86efac;
+}
+
+.global-sms-status-badge.status-wait{
+  background:#e0f2fe;
+  color:#0369a1;
+  border-color:#7dd3fc;
+}
+
+.global-sms-status-badge.status-off{
+  background:#f3f4f6;
+  color:#6b7280;
+  border-color:#d1d5db;
+}
+
+.global-sms-status-badge.status-error{
+  background:#fee2e2;
+  color:#b91c1c;
+  border-color:#fecaca;
 }
 
 .sms-profile-card-compact{
@@ -358,6 +378,7 @@
   justify-content:space-between;
   gap:12px;
   padding:12px 14px;
+  background:linear-gradient(135deg,#ffffff 0%,#f8fafc 100%);
 }
 
 .sms-profile-card-compact .sms-profile-text{
@@ -371,7 +392,58 @@
   font-size:12px;
 }
 
+.sms-profile-card-compact,
+.sms-card{
+  border-color:#dbe4f0;
+  box-shadow:0 4px 12px rgba(15,23,42,.04);
+}
+
+.sms-chat-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+}
+
+.sms-search-toggle{
+  background:#f8fafc;
+  border-color:#dbe4f0;
+}
+
+.sms-input,
+.sms-textarea{
+  border-color:#cbd5e1;
+}
+
 @media(max-width:520px){
+  .global-sms-head{
+    min-height:52px;
+    padding:8px 10px;
+    gap:9px;
+  }
+
+  .global-sms-head .module-icon{
+    width:30px;
+    height:30px;
+    font-size:16px;
+  }
+
+  .global-sms-title strong{
+    font-size:15px;
+  }
+
+  .global-sms-title small{
+    font-size:11.5px;
+  }
+
+  .global-sms-status-badge{
+    min-width:52px;
+    height:22px;
+    padding:0 7px;
+    font-size:10px;
+  }
+
+  .global-sms-right{
+    gap:6px;
+  }
+
   .sms-profile-card-compact{
     padding:10px 12px;
     gap:10px;
@@ -381,7 +453,6 @@
     padding:7px 11px;
     font-size:11.5px;
   }
-}
 }
 
   </style>
@@ -421,10 +492,11 @@
       <small id="homeSmsPendingText">SMS interno SEGPRIV.</small>
     </span>
 
-    <span class="global-sms-right">
-      <span id="homeSmsPendingBadge" class="home-pending-badge hidden">0</span>
-      <span id="globalSmsCaret" class="global-sms-caret">▼</span>
-    </span>
+<span class="global-sms-right">
+  <span id="globalSmsStatusBadge" class="global-sms-status-badge status-wait">Validando</span>
+  <span id="homeSmsPendingBadge" class="home-pending-badge hidden">0</span>
+  <span id="globalSmsCaret" class="global-sms-caret">▼</span>
+</span>
   </button>
 
 <div id="globalSmsBody" class="global-sms-body sms-hidden">
@@ -675,60 +747,139 @@ function getUrlParam(name){return new URLSearchParams(window.location.search).ge
 function updateSessionTopbar(){const loginBtn=document.getElementById("btnLoginSegpriv"),logoutBtn=document.querySelector(".logout-mini-btn");if(loginBtn)loginBtn.classList.toggle("hidden",Boolean(CURRENT_MEMBER_ID));if(logoutBtn)logoutBtn.classList.toggle("hidden",!CURRENT_MEMBER_ID)}function iniciarSesionSegpriv(){window.location.href=SEGPRIV_ACCESS_URL}function cerrarSesionSegpriv(){if(!confirm("¿Deseas cerrar sesión en SEGPRIV?"))return;localStorage.removeItem("SEGPRIV_MEMBER_ID");localStorage.removeItem("SEGPRIV_EMAIL");CURRENT_MEMBER_ID="";CURRENT_EMAIL="";pwaContext=null;pwaCanCoord=false;pwaCanSup=false;panelAccessOpen=false;smsProfile=null;smsSelectedContact=null;if(smsRefreshTimer){clearInterval(smsRefreshTimer);smsRefreshTimer=null}window.location.href=`${SEGPRIV_ACCESS_URL}?logout=1`}
 function setDocsStatus(text,error=false){const el=document.getElementById("docsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadDocuments(){resolveCurrentMember();const root=document.getElementById("docsList");if(!root)return;if(!CURRENT_MEMBER_ID){docsItems=[];docsCategorias=[];setDocsStatus("Sin sesión",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>";return}setDocsStatus("Cargando...");root.innerHTML="<div class='empty'>Cargando documentos...</div>";try{const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);if(!data.ok){docsItems=[];docsCategorias=[];setDocsStatus("No disponible",true);renderDocumentsCategories();root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar documentos.")}</div>`;return}docsItems=data.items||[];docsCategorias=data.categorias||[];docsCategoriaActual="TODOS";setDocsStatus(`Documentos: ${docsItems.length}`);renderDocumentsCategories();renderDocumentsList()}catch(err){console.error("Error documentos:",err);docsItems=[];docsCategorias=[];setDocsStatus("Error",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Error al conectar con documentos.</div>"}}
 function renderDocumentsCategories(){const row=document.getElementById("docsCategoryRow");if(!row)return;row.innerHTML=`<button class="docs-category-btn ${docsCategoriaActual==="TODOS"?"active":""}" onclick="setDocumentsCategory('TODOS')">Todos</button>${(docsCategorias||[]).map(cat=>`<button class="docs-category-btn ${docsCategoriaActual===cat?"active":""}" onclick="setDocumentsCategory('${escapeAttr(cat)}')">${escapeHtml(cat)}</button>`).join("")}`}function setDocumentsCategory(category){docsCategoriaActual=category||"TODOS";renderDocumentsCategories();renderDocumentsList()}function handleDocumentsSearch(){clearTimeout(docsSearchTimer);docsSearchTimer=setTimeout(renderDocumentsList,200)}function getFilteredDocuments(){const q=normalizeDocsText(getValue("docsSearchInput"));return(docsItems||[]).filter(doc=>{if(docsCategoriaActual&&docsCategoriaActual!=="TODOS"&&String(doc.categoria||"")!==docsCategoriaActual)return false;if(!q)return true;const haystack=normalizeDocsText([doc.titulo,doc.descripcion,doc.categoria,doc.tipoDocumento,doc.etiquetas,doc.versionDocumento].filter(Boolean).join(" "));return haystack.includes(q)})}function renderDocumentsList(){const root=document.getElementById("docsList");if(!root)return;const data=getFilteredDocuments();if(!data.length){root.innerHTML="<div class='empty'>Sin documentos para este filtro.</div>";return}root.innerHTML=data.map(doc=>{const titulo=doc.titulo||"Documento",categoria=doc.categoria||"General",tipo=doc.tipoDocumento||"",version=doc.versionDocumento?`Versión ${doc.versionDocumento}`:"",fecha=doc.fechaActualizacion?formatSmsDateTime(doc.fechaActualizacion):"",meta=[categoria,tipo,version,fecha].filter(Boolean).join(" · "),url=doc.urlVistaPrevia||doc.urlDocumento||"",urlDocumento=doc.urlDocumento||url,descargable=doc.descargable===true;return`<div class="docs-item"><div class="docs-item-header"><div><div class="docs-title">${escapeHtml(titulo)}</div><div class="docs-meta">${escapeHtml(meta)}</div></div><span class="docs-badge">${escapeHtml(categoria)}</span></div>${doc.descripcion?`<div class="docs-description">${escapeHtml(doc.descripcion)}</div>`:""}<div class="docs-actions">${url?`<button onclick="openDocumentUrl('${escapeAttr(url)}')">Abrir</button>`:""}${descargable&&urlDocumento?`<button class="secondary" onclick="openDocumentUrl('${escapeAttr(urlDocumento)}')">Descargar</button>`:""}</div></div>`}).join("")}function openDocumentUrl(url){if(url)window.open(url,"_blank","noopener,noreferrer")}function normalizeDocsText(value){return String(value||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
-function setSmsStatus(text,error=false){const el=document.getElementById("smsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadSms(){resolveCurrentMember();const profileBox=document.getElementById("smsProfileBox"),mainBox=document.getElementById("smsMainBox");if(!CURRENT_MEMBER_ID){smsProfile=null;setSmsStatus("Sin sesión",true);if(profileBox)profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}setSmsStatus("Validando...");if(profileBox)profileBox.innerHTML="Validando usuario SMS...";try{const data=await postJson(`${API_BASE}/sprivSmsActivate`,{memberId:CURRENT_MEMBER_ID,email:CURRENT_EMAIL});if(!data.ok){smsProfile=null;setSmsStatus("No autorizado",true);if(profileBox)profileBox.innerHTML=data.message||data.error||"Usuario no autorizado para SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}smsProfile=data.member;setSmsStatus("Activo");if(profileBox)profileBox.innerHTML=`<strong>${escapeHtml(smsProfile.nombreMostrar||"Usuario SEGPRIV")}</strong>Rol: ${escapeHtml(smsProfile.rolSegpriv||"STAFF")}${smsProfile.smsCode?` · Código: ${escapeHtml(smsProfile.smsCode)}`:""}`;if(mainBox)mainBox.classList.remove("sms-hidden");await loadSmsRegularContacts();await loadSmsPending();if(smsRefreshTimer)clearInterval(smsRefreshTimer);smsRefreshTimer=setInterval(()=>{
-  
-  if(smsPanelOpen){
-  loadSmsPending();
-  if(smsSelectedContact) loadSmsMessages(false);
-}
-},15000)}catch(err){console.error(err);smsProfile=null;setSmsStatus("Error",true);if(profileBox)profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden")}}
-async function loadSmsRegularContacts(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsRegularContactSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}`);if(!data.ok){smsRegularContactList=[];select.innerHTML="<option value=''>No disponible</option>";return}smsRegularContactList=data.contacts||[];if(!smsRegularContactList.length){select.innerHTML="<option value=''>Sin contactos</option>";return}select.innerHTML=`<option value="">Seleccionar</option>${smsRegularContactList.map(item=>`<option value="${escapeAttr(item.contactMemberId)}">${escapeHtml(item.nombreMostrar||"Contacto")}</option>`).join("")}`}catch(err){console.error(err);smsRegularContactList=[];select.innerHTML="<option value=''>Error</option>"}}
-function selectSmsRegularContactFromList(){const select=document.getElementById("smsRegularContactSelect");if(!select||!select.value)return;const item=smsRegularContactList.find(c=>c.contactMemberId===select.value);if(!item)return;openSmsConversation(item.contactMemberId,item.nombreMostrar||"Contacto",[item.rolSegpriv||"",item.smsCode?`Código: ${item.smsCode}`:""].filter(Boolean).join(" · "),true)}
-async function loadHomeSmsPending(){
-  resolveCurrentMember();
+function setSmsStatus(text,error=false){
+  const el=document.getElementById("smsStatusLine");
+  const badge=document.getElementById("globalSmsStatusBadge");
 
-  const badge = document.getElementById("homeSmsPendingBadge");
-  const text = document.getElementById("homeSmsPendingText");
+  if(el){
+    el.textContent=text;
+    el.className="status-line module-status-inline sms-status-hidden";
+  }
 
-  if(!badge || !text) return;
+  if(!badge) return;
 
-  if(!CURRENT_MEMBER_ID){
-    badge.classList.add("hidden");
-    badge.classList.remove("flash");
-    text.textContent = "SMS interno SEGPRIV.";
+  const value=String(text || "").trim();
+  badge.textContent=value || "Estado";
+
+  badge.classList.remove(
+    "status-active",
+    "status-error",
+    "status-wait",
+    "status-off"
+  );
+
+  if(error){
+    badge.classList.add("status-error");
     return;
   }
 
+  if(value.toLowerCase().includes("activo")){
+    badge.classList.add("status-active");
+    return;
+  }
+
+  if(value.toLowerCase().includes("sin sesión") || value.toLowerCase().includes("no autorizado")){
+    badge.classList.add("status-off");
+    return;
+  }
+
+  badge.classList.add("status-wait");
+}
+
+async function loadSms(){
+  resolveCurrentMember();
+
+  const profileBox=document.getElementById("smsProfileBox");
+  const mainBox=document.getElementById("smsMainBox");
+
+  if(!CURRENT_MEMBER_ID){
+    smsProfile=null;
+    setSmsStatus("Sin sesión",true);
+
+    if(profileBox){
+      profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";
+    }
+
+    if(mainBox){
+      mainBox.classList.add("sms-hidden");
+    }
+
+    return;
+  }
+
+  setSmsStatus("Validando...");
+
+  if(profileBox){
+    profileBox.innerHTML="Validando usuario SMS...";
+  }
+
   try{
-    const data = await fetchJson(`${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);
+    const data=await postJson(`${API_BASE}/sprivSmsActivate`,{
+      memberId:CURRENT_MEMBER_ID,
+      email:CURRENT_EMAIL
+    });
 
     if(!data.ok){
-      badge.classList.add("hidden");
-      badge.classList.remove("flash");
-      text.textContent = "SMS interno SEGPRIV.";
+      smsProfile=null;
+      setSmsStatus("No autorizado",true);
+
+      if(profileBox){
+        profileBox.innerHTML=data.message || data.error || "Usuario no autorizado para SMS SEGPRIV.";
+      }
+
+      if(mainBox){
+        mainBox.classList.add("sms-hidden");
+      }
+
       return;
     }
 
-    const total = Number(data.total || 0);
+    smsProfile=data.member;
+    setSmsStatus("Activo");
 
-    if(total > 0){
-      badge.textContent = String(total);
-      badge.classList.remove("hidden");
-      badge.classList.add("flash");
-      text.textContent = total === 1 ? "1 mensaje sin leer." : `${total} mensajes sin leer.`;
-    }else{
-      badge.textContent = "0";
-      badge.classList.add("hidden");
-      badge.classList.remove("flash");
-      text.textContent = "Sin mensajes pendientes.";
+    if(profileBox){
+      profileBox.innerHTML=`<strong>${escapeHtml(smsProfile.nombreMostrar || "Usuario SEGPRIV")}</strong>Rol: ${escapeHtml(smsProfile.rolSegpriv || "STAFF")}${smsProfile.smsCode ? ` · Código: ${escapeHtml(smsProfile.smsCode)}` : ""}`;
     }
+
+    if(mainBox){
+      mainBox.classList.remove("sms-hidden");
+    }
+
+    await loadSmsRegularContacts();
+    await loadSmsPending();
+    await loadHomeSmsPending();
+
+    if(smsRefreshTimer){
+      clearInterval(smsRefreshTimer);
+    }
+
+    smsRefreshTimer=setInterval(()=>{
+      loadHomeSmsPending();
+
+      if(smsPanelOpen){
+        loadSmsPending();
+
+        if(smsSelectedContact){
+          loadSmsMessages(false);
+        }
+      }
+    },15000);
+
   }catch(err){
-    console.warn("No se pudo cargar indicador SMS Home:", err);
-    badge.classList.add("hidden");
-    badge.classList.remove("flash");
-    text.textContent = "SMS interno SEGPRIV.";
+    console.error(err);
+    smsProfile=null;
+    setSmsStatus("Error",true);
+
+    if(profileBox){
+      profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";
+    }
+
+    if(mainBox){
+      mainBox.classList.add("sms-hidden");
+    }
   }
 }
+
 async function loadSmsPending(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsPendingSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);if(!data.ok){smsPendingListData=[];select.innerHTML="<option value=''>No disponible</option>";return}smsPendingListData=data.contacts||data.pending||[];if(!smsPendingListData.length){select.innerHTML="<option value=''>Sin mensajes</option>";return}select.innerHTML=`<option value="">Seleccionar (${data.total||smsPendingListData.length})</option>${smsPendingListData.map(item=>{const id=item.contactMemberId||item.senderMemberId||item.memberId||"",name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",count=item.count||item.total||0,last=item.lastMessage?` · ${item.lastMessage}`:"";return`<option value="${escapeAttr(id)}">${escapeHtml(count?`${name} (${count})${last}`:`${name}${last}`)}</option>`}).join("")}`}catch(err){console.error(err);smsPendingListData=[];select.innerHTML="<option value=''>Error</option>"}}
 function selectSmsPendingFromList(){const select=document.getElementById("smsPendingSelect");if(!select||!select.value)return;const item=smsPendingListData.find(p=>(p.contactMemberId||p.senderMemberId||p.memberId||"")===select.value);if(!item)return;const name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",isRegular=smsRegularContactList.some(c=>c.contactMemberId===select.value);openSmsConversation(select.value,name,item.rolSegpriv||"",isRegular)}function toggleSmsSearchBox(){const body=document.getElementById("smsSearchBody"),icon=document.getElementById("smsSearchToggleIcon");if(!body)return;const hidden=body.classList.contains("sms-hidden");body.classList.toggle("sms-hidden",!hidden);if(icon)icon.textContent=hidden?"▲":"▼"}function handleSmsLiveSearch(){const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");clearTimeout(smsSearchTimer);if(!root)return;if(!q){root.innerHTML="<div class='empty'>Escribe para buscar contactos.</div>";return}if(q.length<2){root.innerHTML="<div class='empty'>Escribe al menos 2 caracteres.</div>";return}root.innerHTML="<div class='empty'>Buscando...</div>";smsSearchTimer=setTimeout(searchSmsContacts,350)}async function searchSmsContacts(){if(!CURRENT_MEMBER_ID)return;const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");if(!root||!q)return;try{const data=await fetchJson(`${API_BASE}/sprivSmsSearchContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&q=${encodeURIComponent(q)}`);if(!data.ok){root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible buscar contactos.")}</div>`;return}const contacts=data.contacts||[];if(!contacts.length){root.innerHTML="<div class='empty'>Sin resultados.</div>";return}root.innerHTML=contacts.map(item=>{const name=item.nombreMostrar||item.nombreCompleto||"Contacto",meta=[item.rolSegpriv||"",item.smsCode?`Código: ${item.smsCode}`:""].filter(Boolean).join(" · "),isRegular=smsRegularContactList.some(c=>c.contactMemberId===item.memberId);return`<div class="sms-contact-item" onclick="openSmsConversation('${escapeAttr(item.memberId)}','${escapeAttr(name)}','${escapeAttr(meta)}',${isRegular})"><div class="sms-contact-name">${escapeHtml(name)}</div><div class="sms-contact-meta">${escapeHtml(meta)}</div></div>`}).join("")}catch(err){console.error(err);root.innerHTML="<div class='empty'>Error al buscar contactos.</div>"}}
 async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false){if(!CURRENT_MEMBER_ID||!contactMemberId)return;smsSelectedContact={memberId:contactMemberId,nombreMostrar:contactName||"Contacto",meta:contactMeta||"",isRegular:Boolean(isRegular)};setText("smsChatTitle",smsSelectedContact.nombreMostrar);setText("smsChatMeta",smsSelectedContact.meta||"Conversación interna");disable("smsMessageInput",false);disable("smsSendButton",false);updateSmsRegularContactButton();setHtml("smsChatBox","<div class='empty'>Abriendo conversación...</div>");try{const data=await postJson(`${API_BASE}/sprivSmsConversation`,{memberId:CURRENT_MEMBER_ID,contactMemberId});if(!data.ok){setHtml("smsChatBox",`<div class="empty">${escapeHtml(data.error||"No fue posible abrir conversación.")}</div>`);return}
