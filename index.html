@@ -125,7 +125,7 @@
   }
 }
 
-    /* Home v0.3.55 - tarjetas compactas e indicador SMS */
+    /* Home v0.3.56 - tarjetas compactas e indicador SMS */
 #screenHome > .grid .module-card{
   min-height:76px;
   padding:13px 14px;
@@ -346,6 +346,42 @@
   height:30px;
   font-size:16px;
 }
+
+  /* SMS UI compacta v0.3.56 */
+.sms-status-hidden{
+  display:none !important;
+}
+
+.sms-profile-card-compact{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+}
+
+.sms-profile-card-compact .sms-profile-text{
+  flex:1;
+  min-width:0;
+}
+
+.sms-refresh-inline-btn{
+  flex-shrink:0;
+  padding:8px 13px;
+  font-size:12px;
+}
+
+@media(max-width:520px){
+  .sms-profile-card-compact{
+    padding:10px 12px;
+    gap:10px;
+  }
+
+  .sms-refresh-inline-btn{
+    padding:7px 11px;
+    font-size:11.5px;
+  }
+}
 }
 
   </style>
@@ -391,22 +427,13 @@
     </span>
   </button>
 
-  <div id="globalSmsBody" class="global-sms-body sms-hidden">
-    <div class="module-title-row">
-      <div>
-        <h2>Mensajería</h2>
-        <p>SMS interno SEGPRIV</p>
-      </div>
-      <div id="smsStatusLine" class="status-line module-status-inline">Validando...</div>
-    </div>
+<div id="globalSmsBody" class="global-sms-body sms-hidden">
+  <div id="smsStatusLine" class="status-line module-status-inline sms-status-hidden">Validando...</div>
 
-    <div class="sms-card sms-profile-card">
-      <div class="sms-profile-actions">
-        <button class="secondary" onclick="collapseSmsPanel()">Colapsar</button>
-        <button onclick="loadSms()">Actualizar</button>
-      </div>
-      <div id="smsProfileBox" class="sms-profile-text">Validando usuario SMS...</div>
-    </div>
+  <div class="sms-card sms-profile-card sms-profile-card-compact">
+    <div id="smsProfileBox" class="sms-profile-text">Validando usuario SMS...</div>
+    <button class="secondary sms-refresh-inline-btn" onclick="loadSms()">Actualizar</button>
+  </div>
 
     <div id="smsMainBox" class="sms-hidden">
       <div class="sms-card">
