@@ -125,7 +125,7 @@
   }
 }
 
-    /* Home v0.3.59 - tarjetas compactas e indicador SMS */
+    /* Home v0.3.60 - tarjetas compactas e indicador SMS */
 #screenHome > .grid .module-card{
   min-height:76px;
   padding:13px 14px;
@@ -233,7 +233,7 @@
   }
 }
 
-    /* SMS global colapsable v0.3.59 */
+    /* SMS global colapsable v0.3.60 */
 .global-sms-panel{
   margin-bottom:10px;
 }
@@ -433,7 +433,10 @@
             <div class="sms-chat-title" id="smsChatTitle">Chat</div>
             <div class="sms-contact-meta" id="smsChatMeta">Selecciona un contacto</div>
           </div>
-          <button id="smsRegularContactBtn" class="secondary sms-small-btn hidden" onclick="toggleSmsRegularContact()">Agregar</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+  <button id="smsAliasBtn" class="secondary sms-small-btn hidden" onclick="editSmsContactAlias()">Alias</button>
+  <button id="smsRegularContactBtn" class="secondary sms-small-btn hidden" onclick="toggleSmsRegularContact()">Agregar</button>
+</div>
         </div>
 
         <div id="smsChatBox" class="sms-chat-box">
@@ -453,7 +456,7 @@
         </button>
 
         <div id="smsSearchBody" class="sms-search-body sms-hidden">
-          <input id="smsSearchInput" class="sms-input" type="text" placeholder="Nombre, código o dato de contacto" oninput="handleSmsLiveSearch()" />
+          <input id="smsSearchInput" class="sms-input" type="text" placeholder="Buscar por alias, nombre o código" oninput="handleSmsLiveSearch()" />
           <div id="smsSearchResults" class="sms-contact-list">
             <div class="empty">Escribe para buscar contactos.</div>
           </div>
@@ -1033,6 +1036,38 @@ function formatProgressDateTime(value){
 function updateSessionTopbar(){const loginBtn=document.getElementById("btnLoginSegpriv"),logoutBtn=document.querySelector(".logout-mini-btn");if(loginBtn)loginBtn.classList.toggle("hidden",Boolean(CURRENT_MEMBER_ID));if(logoutBtn)logoutBtn.classList.toggle("hidden",!CURRENT_MEMBER_ID)}function iniciarSesionSegpriv(){window.location.href=SEGPRIV_ACCESS_URL}function cerrarSesionSegpriv(){if(!confirm("¿Deseas cerrar sesión en SEGPRIV?"))return;localStorage.removeItem("SEGPRIV_MEMBER_ID");localStorage.removeItem("SEGPRIV_EMAIL");CURRENT_MEMBER_ID="";CURRENT_EMAIL="";pwaContext=null;pwaCanCoord=false;pwaCanSup=false;panelAccessOpen=false;smsProfile=null;smsSelectedContact=null;if(smsRefreshTimer){clearInterval(smsRefreshTimer);smsRefreshTimer=null}window.location.href=`${SEGPRIV_ACCESS_URL}?logout=1`}
 function setDocsStatus(text,error=false){const el=document.getElementById("docsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadDocuments(){resolveCurrentMember();const root=document.getElementById("docsList");if(!root)return;if(!CURRENT_MEMBER_ID){docsItems=[];docsCategorias=[];setDocsStatus("Sin sesión",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>";return}setDocsStatus("Cargando...");root.innerHTML="<div class='empty'>Cargando documentos...</div>";try{const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);if(!data.ok){docsItems=[];docsCategorias=[];setDocsStatus("No disponible",true);renderDocumentsCategories();root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar documentos.")}</div>`;return}docsItems=data.items||[];docsCategorias=data.categorias||[];docsCategoriaActual="TODOS";setDocsStatus(`Documentos: ${docsItems.length}`);renderDocumentsCategories();renderDocumentsList()}catch(err){console.error("Error documentos:",err);docsItems=[];docsCategorias=[];setDocsStatus("Error",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Error al conectar con documentos.</div>"}}
 function renderDocumentsCategories(){const row=document.getElementById("docsCategoryRow");if(!row)return;row.innerHTML=`<button class="docs-category-btn ${docsCategoriaActual==="TODOS"?"active":""}" onclick="setDocumentsCategory('TODOS')">Todos</button>${(docsCategorias||[]).map(cat=>`<button class="docs-category-btn ${docsCategoriaActual===cat?"active":""}" onclick="setDocumentsCategory('${escapeAttr(cat)}')">${escapeHtml(cat)}</button>`).join("")}`}function setDocumentsCategory(category){docsCategoriaActual=category||"TODOS";renderDocumentsCategories();renderDocumentsList()}function handleDocumentsSearch(){clearTimeout(docsSearchTimer);docsSearchTimer=setTimeout(renderDocumentsList,200)}function getFilteredDocuments(){const q=normalizeDocsText(getValue("docsSearchInput"));return(docsItems||[]).filter(doc=>{if(docsCategoriaActual&&docsCategoriaActual!=="TODOS"&&String(doc.categoria||"")!==docsCategoriaActual)return false;if(!q)return true;const haystack=normalizeDocsText([doc.titulo,doc.descripcion,doc.categoria,doc.tipoDocumento,doc.etiquetas,doc.versionDocumento].filter(Boolean).join(" "));return haystack.includes(q)})}function renderDocumentsList(){const root=document.getElementById("docsList");if(!root)return;const data=getFilteredDocuments();if(!data.length){root.innerHTML="<div class='empty'>Sin documentos para este filtro.</div>";return}root.innerHTML=data.map(doc=>{const titulo=doc.titulo||"Documento",categoria=doc.categoria||"General",tipo=doc.tipoDocumento||"",version=doc.versionDocumento?`Versión ${doc.versionDocumento}`:"",fecha=doc.fechaActualizacion?formatSmsDateTime(doc.fechaActualizacion):"",meta=[categoria,tipo,version,fecha].filter(Boolean).join(" · "),url=doc.urlVistaPrevia||doc.urlDocumento||"",urlDocumento=doc.urlDocumento||url,descargable=doc.descargable===true;return`<div class="docs-item"><div class="docs-item-header"><div><div class="docs-title">${escapeHtml(titulo)}</div><div class="docs-meta">${escapeHtml(meta)}</div></div><span class="docs-badge">${escapeHtml(categoria)}</span></div>${doc.descripcion?`<div class="docs-description">${escapeHtml(doc.descripcion)}</div>`:""}<div class="docs-actions">${url?`<button onclick="openDocumentUrl('${escapeAttr(url)}')">Abrir</button>`:""}${descargable&&urlDocumento?`<button class="secondary" onclick="openDocumentUrl('${escapeAttr(urlDocumento)}')">Descargar</button>`:""}</div></div>`}).join("")}function openDocumentUrl(url){if(url)window.open(url,"_blank","noopener,noreferrer")}function normalizeDocsText(value){return String(value||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+    function normalizeSmsText(value){
+  return String(value||"")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+}
+
+function getSmsContactDisplayName(item){
+  const alias = String(item?.contactAlias || "").trim();
+  const nombre = String(item?.nombreMostrar || item?.nombreCompleto || "Contacto").trim();
+  return alias || nombre || "Contacto";
+}
+
+function getSmsContactMeta(item){
+  const alias = String(item?.contactAlias || "").trim();
+  const nombre = String(item?.nombreMostrar || item?.nombreCompleto || "").trim();
+  const rol = String(item?.rolSegpriv || "").trim();
+  const code = String(item?.smsCode || "").trim();
+
+  const parts = [];
+
+  if(alias && nombre) parts.push(nombre);
+  if(rol) parts.push(rol);
+  if(code) parts.push(`Código: ${code}`);
+
+  return parts.join(" · ");
+}
+
+function findSmsRegularContact(memberId){
+  return (smsRegularContactList || []).find(c => c.contactMemberId === memberId) || null;
+}
 function setSmsStatus(text,error=false){const el=document.getElementById("smsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadSms(){resolveCurrentMember();const profileBox=document.getElementById("smsProfileBox"),mainBox=document.getElementById("smsMainBox");if(!CURRENT_MEMBER_ID){smsProfile=null;setSmsStatus("Sin sesión",true);if(profileBox)profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}setSmsStatus("Validando...");if(profileBox)profileBox.innerHTML="Validando usuario SMS...";try{const data=await postJson(`${API_BASE}/sprivSmsActivate`,{memberId:CURRENT_MEMBER_ID,email:CURRENT_EMAIL});if(!data.ok){smsProfile=null;setSmsStatus("No autorizado",true);if(profileBox)profileBox.innerHTML=data.message||data.error||"Usuario no autorizado para SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}smsProfile=data.member;setSmsStatus("Activo");if(profileBox)profileBox.innerHTML=`<strong>${escapeHtml(smsProfile.nombreMostrar||"Usuario SEGPRIV")}</strong>Rol: ${escapeHtml(smsProfile.rolSegpriv||"STAFF")}${smsProfile.smsCode?` · Código: ${escapeHtml(smsProfile.smsCode)}`:""}`;if(mainBox)mainBox.classList.remove("sms-hidden");await loadSmsRegularContacts();await loadSmsPending();if(smsRefreshTimer)clearInterval(smsRefreshTimer);smsRefreshTimer=setInterval(()=>{
   
   if(smsPanelOpen){
@@ -1040,9 +1075,70 @@ function setSmsStatus(text,error=false){const el=document.getElementById("smsSta
   if(smsSelectedContact) loadSmsMessages(false);
 }
 },15000)}catch(err){console.error(err);smsProfile=null;setSmsStatus("Error",true);if(profileBox)profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden")}}
-async function loadSmsRegularContacts(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsRegularContactSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}`);if(!data.ok){smsRegularContactList=[];select.innerHTML="<option value=''>No disponible</option>";return}smsRegularContactList=data.contacts||[];if(!smsRegularContactList.length){select.innerHTML="<option value=''>Sin contactos</option>";return}select.innerHTML=`<option value="">Seleccionar</option>${smsRegularContactList.map(item=>`<option value="${escapeAttr(item.contactMemberId)}">${escapeHtml(item.nombreMostrar||"Contacto")}</option>`).join("")}`}catch(err){console.error(err);smsRegularContactList=[];select.innerHTML="<option value=''>Error</option>"}}
-function selectSmsRegularContactFromList(){const select=document.getElementById("smsRegularContactSelect");if(!select||!select.value)return;const item=smsRegularContactList.find(c=>c.contactMemberId===select.value);if(!item)return;openSmsConversation(item.contactMemberId,item.nombreMostrar||"Contacto",[item.rolSegpriv||"",item.smsCode?`Código: ${item.smsCode}`:""].filter(Boolean).join(" · "),true)}
-async function loadHomeSmsPending(){
+async function loadSmsRegularContacts(){
+  if(!CURRENT_MEMBER_ID)return;
+
+  const select=document.getElementById("smsRegularContactSelect");
+  if(!select)return;
+
+  select.innerHTML="<option value=''>Cargando...</option>";
+
+  try{
+    const data=await fetchJson(`${API_BASE}/sprivSmsContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);
+
+    if(!data.ok){
+      smsRegularContactList=[];
+      select.innerHTML="<option value=''>No disponible</option>";
+      return;
+    }
+
+    smsRegularContactList=data.contacts||[];
+
+    if(!smsRegularContactList.length){
+      select.innerHTML="<option value=''>Sin contactos</option>";
+      return;
+    }
+
+    select.innerHTML=`<option value="">Seleccionar</option>${smsRegularContactList.map(item=>{
+      const name=getSmsContactDisplayName(item);
+      const meta=getSmsContactMeta(item);
+      const label=meta ? `${name} · ${meta}` : name;
+      return `<option value="${escapeAttr(item.contactMemberId)}">${escapeHtml(label)}</option>`;
+    }).join("")}`;
+
+    if(smsSelectedContact?.memberId){
+      const selected=findSmsRegularContact(smsSelectedContact.memberId);
+      if(selected){
+        smsSelectedContact.contactAlias=selected.contactAlias||"";
+        smsSelectedContact.nombreMostrar=selected.nombreMostrar||smsSelectedContact.nombreMostrar;
+        smsSelectedContact.meta=getSmsContactMeta(selected)||smsSelectedContact.meta;
+        smsSelectedContact.isRegular=true;
+        renderSmsSelectedContactHeader();
+      }
+    }
+
+  }catch(err){
+    console.error(err);
+    smsRegularContactList=[];
+    select.innerHTML="<option value=''>Error</option>";
+  }
+}function selectSmsRegularContactFromList(){
+  const select=document.getElementById("smsRegularContactSelect");
+  if(!select||!select.value)return;
+
+  const item=smsRegularContactList.find(c=>c.contactMemberId===select.value);
+  if(!item)return;
+
+  openSmsConversation(
+    item.contactMemberId,
+    getSmsContactDisplayName(item),
+    getSmsContactMeta(item),
+    true,
+    item.contactAlias || "",
+    item.nombreMostrar || item.nombreCompleto || "Contacto"
+  );
+}
+    async function loadHomeSmsPending(){
   resolveCurrentMember();
 
   const badge = document.getElementById("homeSmsPendingBadge");
@@ -1088,14 +1184,268 @@ async function loadHomeSmsPending(){
   }
 }
 async function loadSmsPending(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsPendingSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);if(!data.ok){smsPendingListData=[];select.innerHTML="<option value=''>No disponible</option>";return}smsPendingListData=data.contacts||data.pending||[];if(!smsPendingListData.length){select.innerHTML="<option value=''>Sin mensajes</option>";return}select.innerHTML=`<option value="">Seleccionar (${data.total||smsPendingListData.length})</option>${smsPendingListData.map(item=>{const id=item.contactMemberId||item.senderMemberId||item.memberId||"",name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",count=item.count||item.total||0,last=item.lastMessage?` · ${item.lastMessage}`:"";return`<option value="${escapeAttr(id)}">${escapeHtml(count?`${name} (${count})${last}`:`${name}${last}`)}</option>`}).join("")}`}catch(err){console.error(err);smsPendingListData=[];select.innerHTML="<option value=''>Error</option>"}}
-function selectSmsPendingFromList(){const select=document.getElementById("smsPendingSelect");if(!select||!select.value)return;const item=smsPendingListData.find(p=>(p.contactMemberId||p.senderMemberId||p.memberId||"")===select.value);if(!item)return;const name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",isRegular=smsRegularContactList.some(c=>c.contactMemberId===select.value);openSmsConversation(select.value,name,item.rolSegpriv||"",isRegular)}function toggleSmsSearchBox(){const body=document.getElementById("smsSearchBody"),icon=document.getElementById("smsSearchToggleIcon");if(!body)return;const hidden=body.classList.contains("sms-hidden");body.classList.toggle("sms-hidden",!hidden);if(icon)icon.textContent=hidden?"▲":"▼"}function handleSmsLiveSearch(){const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");clearTimeout(smsSearchTimer);if(!root)return;if(!q){root.innerHTML="<div class='empty'>Escribe para buscar contactos.</div>";return}if(q.length<2){root.innerHTML="<div class='empty'>Escribe al menos 2 caracteres.</div>";return}root.innerHTML="<div class='empty'>Buscando...</div>";smsSearchTimer=setTimeout(searchSmsContacts,350)}async function searchSmsContacts(){if(!CURRENT_MEMBER_ID)return;const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");if(!root||!q)return;try{const data=await fetchJson(`${API_BASE}/sprivSmsSearchContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&q=${encodeURIComponent(q)}`);if(!data.ok){root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible buscar contactos.")}</div>`;return}const contacts=data.contacts||[];if(!contacts.length){root.innerHTML="<div class='empty'>Sin resultados.</div>";return}root.innerHTML=contacts.map(item=>{const name=item.nombreMostrar||item.nombreCompleto||"Contacto",meta=[item.rolSegpriv||"",item.smsCode?`Código: ${item.smsCode}`:""].filter(Boolean).join(" · "),isRegular=smsRegularContactList.some(c=>c.contactMemberId===item.memberId);return`<div class="sms-contact-item" onclick="openSmsConversation('${escapeAttr(item.memberId)}','${escapeAttr(name)}','${escapeAttr(meta)}',${isRegular})"><div class="sms-contact-name">${escapeHtml(name)}</div><div class="sms-contact-meta">${escapeHtml(meta)}</div></div>`}).join("")}catch(err){console.error(err);root.innerHTML="<div class='empty'>Error al buscar contactos.</div>"}}
-async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false){if(!CURRENT_MEMBER_ID||!contactMemberId)return;smsSelectedContact={memberId:contactMemberId,nombreMostrar:contactName||"Contacto",meta:contactMeta||"",isRegular:Boolean(isRegular)};setText("smsChatTitle",smsSelectedContact.nombreMostrar);setText("smsChatMeta",smsSelectedContact.meta||"Conversación interna");disable("smsMessageInput",false);disable("smsSendButton",false);updateSmsRegularContactButton();setHtml("smsChatBox","<div class='empty'>Abriendo conversación...</div>");try{const data=await postJson(`${API_BASE}/sprivSmsConversation`,{memberId:CURRENT_MEMBER_ID,contactMemberId});if(!data.ok){setHtml("smsChatBox",`<div class="empty">${escapeHtml(data.error||"No fue posible abrir conversación.")}</div>`);return}
+function selectSmsPendingFromList(){const select=document.getElementById("smsPendingSelect");if(!select||!select.value)return;const item=smsPendingListData.find(p=>(p.contactMemberId||p.senderMemberId||p.memberId||"")===select.value);if(!item)return;const name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",isRegular=smsRegularContactList.some(c=>c.contactMemberId===select.value);openSmsConversation(select.value,name,item.rolSegpriv||"",isRegular)}function toggleSmsSearchBox(){const body=document.getElementById("smsSearchBody"),icon=document.getElementById("smsSearchToggleIcon");if(!body)return;const hidden=body.classList.contains("sms-hidden");body.classList.toggle("sms-hidden",!hidden);if(icon)icon.textContent=hidden?"▲":"▼"}function handleSmsLiveSearch(){const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");clearTimeout(smsSearchTimer);if(!root)return;if(!q){root.innerHTML="<div class='empty'>Escribe para buscar contactos.</div>";return}if(q.length<2){root.innerHTML="<div class='empty'>Escribe al menos 2 caracteres.</div>";return}root.innerHTML="<div class='empty'>Buscando...</div>";smsSearchTimer=setTimeout(searchSmsContacts,350)}
+    
+async function searchSmsContacts(){
+  if(!CURRENT_MEMBER_ID)return;
 
-await markSmsCurrentRead();
-await loadSmsMessages(true);
-await loadSmsPending();
-await loadHomeSmsPending();
-await loadSmsRegularContacts();}catch(err){console.error(err);setHtml("smsChatBox","<div class='empty'>Error al abrir conversación.</div>")}}function updateSmsRegularContactButton(){const btn=document.getElementById("smsRegularContactBtn");if(!btn||!smsSelectedContact?.memberId){if(btn)btn.classList.add("hidden");return}btn.classList.remove("hidden");btn.textContent=smsSelectedContact.isRegular?"Quitar":"Agregar"}async function toggleSmsRegularContact(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const was=Boolean(smsSelectedContact.isRegular),endpoint=was?"sprivSmsRemoveContact":"sprivSmsAddContact";try{const data=await postJson(`${API_BASE}/${endpoint}`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId});if(!data.ok){alert(data.error||"No fue posible actualizar el contacto.");return}await loadSmsRegularContacts();if(was){clearSmsActiveChat();return}smsSelectedContact.isRegular=true;updateSmsRegularContactButton()}catch(err){console.error(err);alert("Error al actualizar contacto regular.")}}function clearSmsActiveChat(){smsSelectedContact=null;setText("smsChatTitle","Chat");setText("smsChatMeta","Selecciona un contacto");setHtml("smsChatBox","<div class='empty'>Selecciona un contacto para abrir el chat.</div>");setInputValue("smsMessageInput","");disable("smsMessageInput",true);disable("smsSendButton",true);const btn=document.getElementById("smsRegularContactBtn");if(btn){btn.classList.add("hidden");btn.textContent="Agregar"}setInputValue("smsRegularContactSelect","")}
+  const q=getValue("smsSearchInput");
+  const root=document.getElementById("smsSearchResults");
+
+  if(!root||!q)return;
+
+  const qNorm = normalizeSmsText(q);
+
+  try{
+    const regularMatches = (smsRegularContactList || []).filter(item => {
+      const haystack = normalizeSmsText([
+        item.contactAlias,
+        item.nombreMostrar,
+        item.nombreCompleto,
+        item.rolSegpriv,
+        item.smsCode
+      ].filter(Boolean).join(" "));
+
+      return haystack.includes(qNorm);
+    });
+
+    const data=await fetchJson(`${API_BASE}/sprivSmsSearchContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&q=${encodeURIComponent(q)}&t=${Date.now()}`);
+
+    if(!data.ok){
+      root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible buscar contactos.")}</div>`;
+      return;
+    }
+
+    const backendContacts=data.contacts||[];
+    const merged=[];
+    const seen={};
+
+    regularMatches.forEach(item=>{
+      const id=item.contactMemberId;
+      if(!id||seen[id])return;
+      seen[id]=true;
+      merged.push({
+        memberId:id,
+        contactAlias:item.contactAlias||"",
+        nombreMostrar:item.nombreMostrar||item.nombreCompleto||"Contacto",
+        nombreCompleto:item.nombreCompleto||"",
+        rolSegpriv:item.rolSegpriv||"",
+        smsCode:item.smsCode||"",
+        isRegular:true
+      });
+    });
+
+    backendContacts.forEach(item=>{
+      const id=item.memberId;
+      if(!id||seen[id])return;
+      seen[id]=true;
+
+      const regular=findSmsRegularContact(id);
+
+      merged.push({
+        ...item,
+        contactAlias:regular?.contactAlias||"",
+        isRegular:Boolean(regular)
+      });
+    });
+
+    if(!merged.length){
+      root.innerHTML="<div class='empty'>Sin resultados.</div>";
+      return;
+    }
+
+    root.innerHTML=merged.map(item=>{
+      const regular=findSmsRegularContact(item.memberId);
+      const alias=item.contactAlias||regular?.contactAlias||"";
+      const realName=item.nombreMostrar||item.nombreCompleto||"Contacto";
+      const name=alias||realName;
+      const meta=[
+        alias ? realName : "",
+        item.rolSegpriv||"",
+        item.smsCode?`Código: ${item.smsCode}`:""
+      ].filter(Boolean).join(" · ");
+
+      return `<div class="sms-contact-item" onclick="openSmsConversation('${escapeAttr(item.memberId)}','${escapeAttr(name)}','${escapeAttr(meta)}',${Boolean(item.isRegular)},'${escapeAttr(alias)}','${escapeAttr(realName)}')">
+        <div class="sms-contact-name">${escapeHtml(name)}</div>
+        <div class="sms-contact-meta">${escapeHtml(meta)}</div>
+      </div>`;
+    }).join("");
+
+  }catch(err){
+    console.error(err);
+    root.innerHTML="<div class='empty'>Error al buscar contactos.</div>";
+  }
+}
+async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false,contactAlias="",realName=""){
+  if(!CURRENT_MEMBER_ID||!contactMemberId)return;
+
+  const regularItem=findSmsRegularContact(contactMemberId);
+
+  smsSelectedContact={
+    memberId:contactMemberId,
+    nombreMostrar:realName || regularItem?.nombreMostrar || contactName || "Contacto",
+    contactAlias:contactAlias || regularItem?.contactAlias || "",
+    meta:contactMeta || (regularItem ? getSmsContactMeta(regularItem) : "") || "Conversación interna",
+    isRegular:Boolean(isRegular || regularItem)
+  };
+
+  renderSmsSelectedContactHeader();
+
+  disable("smsMessageInput",false);
+  disable("smsSendButton",false);
+  updateSmsRegularContactButton();
+
+  setHtml("smsChatBox","<div class='empty'>Abriendo conversación...</div>");
+
+  try{
+    const data=await postJson(`${API_BASE}/sprivSmsConversation`,{
+      memberId:CURRENT_MEMBER_ID,
+      contactMemberId
+    });
+
+    if(!data.ok){
+      setHtml("smsChatBox",`<div class="empty">${escapeHtml(data.error||"No fue posible abrir conversación.")}</div>`);
+      return;
+    }
+
+    await markSmsCurrentRead();
+    await loadSmsMessages(true);
+    await loadSmsPending();
+    await loadHomeSmsPending();
+    await loadSmsRegularContacts();
+  }catch(err){
+    console.error(err);
+    setHtml("smsChatBox","<div class='empty'>Error al abrir conversación.</div>");
+  }
+}
+
+function renderSmsSelectedContactHeader(){
+  if(!smsSelectedContact){
+    setText("smsChatTitle","Chat");
+    setText("smsChatMeta","Selecciona un contacto");
+    return;
+  }
+
+  const title=smsSelectedContact.contactAlias || smsSelectedContact.nombreMostrar || "Contacto";
+
+  let meta=smsSelectedContact.meta || "Conversación interna";
+
+  if(smsSelectedContact.contactAlias && smsSelectedContact.nombreMostrar){
+    meta=smsSelectedContact.meta || smsSelectedContact.nombreMostrar;
+  }
+
+  setText("smsChatTitle",title);
+  setText("smsChatMeta",meta);
+}
+
+function updateSmsRegularContactButton(){
+  const btn=document.getElementById("smsRegularContactBtn");
+  const aliasBtn=document.getElementById("smsAliasBtn");
+
+  if(!smsSelectedContact?.memberId){
+    if(btn)btn.classList.add("hidden");
+    if(aliasBtn)aliasBtn.classList.add("hidden");
+    return;
+  }
+
+  if(btn){
+    btn.classList.remove("hidden");
+    btn.textContent=smsSelectedContact.isRegular?"Quitar":"Agregar";
+  }
+
+  if(aliasBtn){
+    aliasBtn.classList.toggle("hidden",!smsSelectedContact.isRegular);
+  }
+}
+    
+    async function toggleSmsRegularContact(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const was=Boolean(smsSelectedContact.isRegular),endpoint=was?"sprivSmsRemoveContact":"sprivSmsAddContact";try{const data=await postJson(`${API_BASE}/${endpoint}`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId});if(!data.ok){alert(data.error||"No fue posible actualizar el contacto.");return}await loadSmsRegularContacts();if(was){clearSmsActiveChat();return}smsSelectedContact.isRegular=true;updateSmsRegularContactButton()}catch(err){console.error(err);alert("Error al actualizar contacto regular.")}}
+
+async function editSmsContactAlias(){
+  if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId){
+    alert("Selecciona un contacto.");
+    return;
+  }
+
+  if(!smsSelectedContact.isRegular){
+    alert("El alias solo aplica para contactos regulares.");
+    return;
+  }
+
+  const actual=smsSelectedContact.contactAlias || "";
+  const nuevo=prompt("Alias del contacto. Deja vacío para eliminar alias.", actual);
+
+  if(nuevo===null)return;
+
+  await saveSmsContactAlias(nuevo);
+}
+
+async function saveSmsContactAlias(aliasNuevo){
+  const alias=String(aliasNuevo || "").trim();
+
+  if(alias.length>40){
+    alert("El alias no puede tener más de 40 caracteres.");
+    return;
+  }
+
+  try{
+    const data=await postJson(`${API_BASE}/sprivSmsContactAlias`,{
+      memberId:CURRENT_MEMBER_ID,
+      contactMemberId:smsSelectedContact.memberId,
+      contactAlias:alias
+    });
+
+    if(!data.ok){
+      alert(data.error || data.message || "No fue posible guardar el alias.");
+      return;
+    }
+
+    smsSelectedContact.contactAlias=data.contactAlias || "";
+
+    await loadSmsRegularContacts();
+
+    const refreshed=findSmsRegularContact(smsSelectedContact.memberId);
+
+    if(refreshed){
+      smsSelectedContact.contactAlias=refreshed.contactAlias || "";
+      smsSelectedContact.nombreMostrar=refreshed.nombreMostrar || smsSelectedContact.nombreMostrar;
+      smsSelectedContact.meta=getSmsContactMeta(refreshed) || smsSelectedContact.meta;
+      smsSelectedContact.isRegular=true;
+    }
+
+    renderSmsSelectedContactHeader();
+    updateSmsRegularContactButton();
+
+    showToast(data.message || "Alias actualizado.");
+  }catch(err){
+    console.error(err);
+    alert("Error al guardar alias.");
+  }
+}
+    
+function clearSmsActiveChat(){
+  smsSelectedContact=null;
+
+  renderSmsSelectedContactHeader();
+
+  setHtml("smsChatBox","<div class='empty'>Selecciona un contacto para abrir el chat.</div>");
+  setInputValue("smsMessageInput","");
+  disable("smsMessageInput",true);
+  disable("smsSendButton",true);
+
+  const btn=document.getElementById("smsRegularContactBtn");
+  if(btn){
+    btn.classList.add("hidden");
+    btn.textContent="Agregar";
+  }
+
+  const aliasBtn=document.getElementById("smsAliasBtn");
+  if(aliasBtn){
+    aliasBtn.classList.add("hidden");
+  }
+
+  setInputValue("smsRegularContactSelect","");
+}
+    
 async function loadSmsMessages(scrollBottom=true){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const root=document.getElementById("smsChatBox");try{const data=await fetchJson(`${API_BASE}/sprivSmsMessages?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&contactMemberId=${encodeURIComponent(smsSelectedContact.memberId)}`);if(!data.ok){if(root)root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar mensajes.")}</div>`;return}const messages=data.messages||[];if(!messages.length){if(root)root.innerHTML="<div class='empty'>Sin mensajes todavía.</div>";return}if(root){root.innerHTML=messages.map(msg=>{const mine=msg.senderMemberId===CURRENT_MEMBER_ID,text=msg.body||msg.message||msg.text||"",date=msg.createdAt||msg._createdDate||"";return`<div class="sms-bubble ${mine?"mine":"theirs"}">${escapeHtml(text)}<span class="sms-time">${formatSmsDateTime(date)}</span></div>`}).join("");if(scrollBottom)root.scrollTop=root.scrollHeight}}catch(err){console.error(err);if(root)root.innerHTML="<div class='empty'>Error al cargar mensajes.</div>"}}async function sendSmsCurrentMessage(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const text=getValue("smsMessageInput").trim();if(!text)return;disable("smsSendButton",true);try{const data=await postJson(`${API_BASE}/sprivSmsSendMessage`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId,message:text});if(!data.ok){alert(data.error||"No fue posible enviar el mensaje.");return}
 setInputValue("smsMessageInput","");
 await loadSmsMessages(true);
