@@ -91,6 +91,142 @@
   border-left-color:var(--teal);
 }
 
+    /* Manual de Operación - ayuda discreta */
+.manual-shell{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.manual-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.manual-header h2{
+  margin:0;
+  font-size:20px;
+}
+
+.manual-header p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.35;
+}
+
+.manual-role-line{
+  font-size:11px;
+  font-weight:800;
+  color:var(--muted);
+  text-align:right;
+  white-space:nowrap;
+}
+
+.manual-level-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+.manual-level-card{
+  background:#f9fafb;
+  border:1px solid var(--border);
+  border-left:7px solid var(--dark);
+  border-radius:16px;
+  padding:13px;
+  cursor:pointer;
+}
+
+.manual-level-card h3{
+  margin:0;
+  font-size:15px;
+}
+
+.manual-level-card p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+}
+
+.manual-level-card.sistema{border-left-color:var(--dark)}
+.manual-level-card.base{border-left-color:var(--blue)}
+.manual-level-card.sup{border-left-color:var(--teal)}
+.manual-level-card.coord{border-left-color:var(--purple)}
+.manual-level-card.adm{border-left-color:var(--orange)}
+
+.manual-topic{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:9px;
+  overflow:hidden;
+}
+
+.manual-topic summary{
+  list-style:none;
+  padding:13px 14px;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.manual-topic summary::-webkit-details-marker{
+  display:none;
+}
+
+.manual-topic summary::after{
+  content:"＋";
+  color:var(--blue);
+  font-weight:900;
+}
+
+.manual-topic[open] summary::after{
+  content:"−";
+}
+
+.manual-topic-body{
+  border-top:1px solid var(--border);
+  padding:12px 14px 14px;
+  color:#374151;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.manual-topic-body ul{
+  margin:7px 0 0 18px;
+  padding:0;
+}
+
+.manual-topic-body li{
+  margin-bottom:5px;
+}
+
+@media(max-width:520px){
+  .manual-header{
+    align-items:flex-start;
+  }
+
+  .manual-role-line{
+    font-size:10.5px;
+    max-width:38%;
+    white-space:normal;
+  }
+
+  .manual-level-card{
+    padding:12px;
+  }
+}
+
     @media(max-width:520px)
     {.app{padding:10px}.app-title-row h1{font-size:20px}.topbar-icon-btn{width:31px;height:31px;font-size:15px}.logout-mini-btn{width:28px;height:28px;font-size:14px}.pwa-install-status,.install-action{font-size:10px}.install-info{flex-direction:column;align-items:flex-end;gap:1px}.grid{grid-template-columns:1fr}.module-title-row{align-items:flex-start}.module-status-inline{font-size:11px;max-width:45%}.view-filter-row{flex-direction:column;align-items:stretch}.compact-view-tabs{display:flex;width:100%}.compact-view-tabs button{flex:1}.inline-period-controls{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:5px;width:100%;align-items:end}.inline-period-controls input[type="date"]{width:100%;min-width:0;font-size:10px;padding:7px 4px;text-align:center}.inline-period-controls button{min-width:38px;height:34px;padding:0 10px;font-size:0}.inline-period-controls button::before{content:"↻";font-size:16px;font-weight:900}.legend{gap:6px;padding:8px}.legend-row{gap:5px}.legend-pill{height:30px;padding:0 7px;font-size:10px}.legend-count{min-width:14px;height:15px;font-size:9.5px;padding:0 3px}.day{min-height:62px}.mini-event{font-size:8px}button{font-size:13px;padding:10px 12px}.sms-chat-box{height:360px}.sms-bubble{max-width:88%}}
   
@@ -358,7 +494,7 @@
         <div class="app-left-block">
           <button class="logout-mini-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
           <div>
-            <div class="app-brand"><h1>SEGPRIV</h1><span class="app-version">v0.3.59</span></div>
+            <div class="app-brand"><h1>SEGPRIV</h1><span class="app-version">v0.3.60</span></div>
             <p>Portal operativo</p>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
           </div>
@@ -370,8 +506,9 @@
             <span id="installNote" class="install-note hidden">Instalando... puede tardar unos minutos.</span>
             <button id="btnIosInstallHelp" class="install-action hidden" onclick="openIosInstallHelp()">Ver tutorial</button>
           </div>
-          <button class="topbar-icon-btn" onclick="goHome()" title="Inicio">⌂</button>
-          <button class="topbar-icon-btn" onclick="refreshCurrentScreen()" title="Actualizar">↻</button>
+<button class="topbar-icon-btn" onclick="goHome()" title="Inicio" aria-label="Inicio">⌂</button>
+<button class="topbar-icon-btn" onclick="refreshCurrentScreen()" title="Actualizar" aria-label="Actualizar">↻</button>
+<button class="topbar-icon-btn" onclick="openManualOperacion()" title="Manual de Operación" aria-label="Manual de Operación">ⓘ</button>
         </div>
       </div>
     </div>
@@ -523,6 +660,25 @@
       <div class="detail"><div class="detail-row"><strong>Paso 1</strong>Abre SEGPRIV en Safari.</div><div class="detail-row"><strong>Paso 2</strong>Toca el botón Compartir.</div><div class="detail-row"><strong>Paso 3</strong>Selecciona “Agregar a pantalla de inicio”.</div><div class="detail-row"><strong>Paso 4</strong>Confirma con “Agregar”.</div><div class="toolbar"><button class="secondary" onclick="goHome()">Regresar</button></div></div>
     </div>
 
+<section id="screenManualOperacion" class="screen">
+  <div class="module-title-row">
+    <div>
+      <h2>Manual de Operación</h2>
+      <p>Portal Operativo SCaD</p>
+    </div>
+    <div id="manualStatusLine" class="status-line module-status-inline">Consulta</div>
+  </div>
+
+  <div class="docs-card">
+    <div class="docs-toolbar">
+      <button class="secondary" onclick="backFromManualOperacion()">Regresar</button>
+      <button onclick="renderManualOperacion()">Actualizar</button>
+    </div>
+  </div>
+
+  <div id="manualOperacionRoot"></div>
+</section>
+    
     <section id="screenServices" class="screen">
       <div class="module-title-row"><div><h2>Mis servicios</h2><p>Guardia: <span id="guardiaNombre">Guardia</span></p></div><div id="statusLine" class="status-line module-status-inline">Cargando servicios...</div></div>
       <div class="view-filter-row"><div class="view-tabs compact-view-tabs"><button id="btnViewCalendar" class="active" onclick="setView('calendar')">Calendario</button><button id="btnViewList" onclick="setView('list')">Lista</button></div><div class="inline-period-controls"><label><span>Ir a fecha</span><input id="inputGoDate" type="date" onchange="goToSelectedDate()" /></label><label><span>Inicio</span><input id="inputStartDate" type="date" /></label><label><span>Fin</span><input id="inputEndDate" type="date" /></label><button onclick="loadServices()">Actualizar</button></div></div>
@@ -556,6 +712,8 @@ let supervisorServiceFilter="TODOS",supervisorPositionFilter="TODOS",supervisorG
 let pwaContext=null,pwaCanCoord=false,pwaCanSup=false,panelAccessOpen=false;
 let CURRENT_MEMBER_ID="",CURRENT_EMAIL="",smsProfile=null,smsSelectedContact=null,smsRefreshTimer=null,smsSearchTimer=null,smsRegularContactList=[],smsPendingListData=[],docsItems=[],docsCategorias=[],docsCategoriaActual="TODOS",docsSearchTimer=null,deferredPrompt=null;
 let smsPanelOpen=false;
+let manualReturnScreenId="screenHome";
+let manualCurrentLevel="";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
 document.addEventListener("DOMContentLoaded",()=>{setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260605-v2",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
@@ -565,7 +723,13 @@ function setInputValue(id,value){const el=document.getElementById(id);if(el)el.v
 function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));const el=document.getElementById(id);if(el)el.classList.add("active")}
 function getActiveScreenId(){const active=document.querySelector(".screen.active");return active?active.id:""}
 function showToast(message,type="normal"){let toast=document.getElementById("appToast");if(!toast){toast=document.createElement("div");toast.id="appToast";toast.className="app-toast";document.body.appendChild(toast)}toast.textContent=message;toast.className=type==="error"?"app-toast error show":"app-toast show";clearTimeout(window.__segprivToastTimer);window.__segprivToastTimer=setTimeout(()=>toast.classList.remove("show"),1800)}
-async function refreshCurrentScreen(){const screenId=getActiveScreenId();showToast("Actualizando...");try{if(screenId==="screenServices"){await loadServices();showToast("Servicios actualizados");return}if(screenId==="screenSupervisor"){await loadSupervisorCoverages();showToast("Supervisión actualizada");return}if(screenId==="screenSupervisorDetail"){if(supervisorSelectedItem){const id=supervisorSelectedItem.coberturaId;await loadSupervisorCoverages();supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===id)||supervisorSelectedItem;renderSupervisorDetail();showToast("Detalle actualizado")}else{await loadSupervisorCoverages();showScreen("screenSupervisor");showToast("Supervisión actualizada")}return}if(screenId==="screenSms"){await loadSms();showToast("Mensajería actualizada");return}if(screenId==="screenDocuments"){await loadDocuments();showToast("Documentos actualizados");return}if(screenId==="screenDetail"){if(selectedItem){const id=selectedItem.coberturaId;await loadServices();selectedItem=servicios.find(s=>s.coberturaId===id)||selectedItem;renderDetail();showToast("Detalle actualizado")}else{await loadServices();showScreen("screenServices");showToast("Servicios actualizados")}return}
+async function refreshCurrentScreen(){const screenId=getActiveScreenId();showToast("Actualizando...");try{if(screenId==="screenServices"){await loadServices();showToast("Servicios actualizados");return}if(screenId==="screenSupervisor"){await loadSupervisorCoverages();showToast("Supervisión actualizada");return}if(screenId==="screenSupervisorDetail"){if(supervisorSelectedItem){const id=supervisorSelectedItem.coberturaId;await loadSupervisorCoverages();supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===id)||supervisorSelectedItem;renderSupervisorDetail();showToast("Detalle actualizado")}else{await loadSupervisorCoverages();showScreen("screenSupervisor");showToast("Supervisión actualizada")}return}if(screenId==="screenSms"){await loadSms();showToast("Mensajería actualizada");return}if(screenId==="screenDocuments"){await loadDocuments();showToast("Documentos actualizados");return}
+                                                                                                          if(screenId==="screenManualOperacion"){
+  renderManualOperacion();
+  showToast("Manual actualizado");
+  return;
+}
+                                                                                                          if(screenId==="screenDetail"){if(selectedItem){const id=selectedItem.coberturaId;await loadServices();selectedItem=servicios.find(s=>s.coberturaId===id)||selectedItem;renderDetail();showToast("Detalle actualizado")}else{await loadServices();showScreen("screenServices");showToast("Servicios actualizados")}return}
 if(screenId==="screenHome"){
   await loadPwaContext();
   await loadHomeSmsPending();
@@ -578,6 +742,336 @@ function goHome(){
   loadHomeSmsPending();
 }
 
+const MANUAL_OPERACION_DATA = [
+  {
+    id:"sistema",
+    className:"sistema",
+    title:"Manual del Sistema",
+    description:"Referencia general del Portal Operativo SCaD y su flujo operativo.",
+    roles:["BASE","SUP","COORD","ADM"],
+    topics:[
+      {
+        title:"Qué es el Portal Operativo SCaD",
+        body:`
+          <p>El Portal Operativo SCaD centraliza la operación diaria de servicios de seguridad privada.</p>
+          <ul>
+            <li>Organiza clientes, servicios, posiciones, turnos y requerimientos.</li>
+            <li>Permite programar y consultar coberturas.</li>
+            <li>Integra marcajes operativos del personal.</li>
+            <li>Permite validación de asistencia por supervisión.</li>
+            <li>Integra mensajería interna y documentos operativos.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Roles funcionales",
+        body:`
+          <ul>
+            <li><strong>Personal base:</strong> consulta servicios, marca acciones propias y accede a documentos permitidos.</li>
+            <li><strong>Supervisión:</strong> valida asistencia y revisa coberturas bajo su ámbito operativo.</li>
+            <li><strong>Coordinación:</strong> programa, reasigna y da seguimiento operativo a coberturas.</li>
+            <li><strong>Administración:</strong> configura catálogos, personal, documentos y reglas del sistema.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Flujo operativo general",
+        body:`
+          <ul>
+            <li>Administración configura la base operativa.</li>
+            <li>Coordinación programa coberturas.</li>
+            <li>Personal base consulta servicios y realiza marcajes permitidos.</li>
+            <li>Supervisión valida asistencia o falta.</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    id:"base",
+    className:"base",
+    title:"Personal base",
+    description:"Uso básico de la PWA: servicios, marcajes, mensajes y documentos.",
+    roles:["BASE","SUP","COORD","ADM"],
+    topics:[
+      {
+        title:"Mis servicios",
+        body:`
+          <ul>
+            <li>Permite consultar coberturas asignadas.</li>
+            <li>Puede mostrarse como calendario o lista.</li>
+            <li>Cada cobertura abre una tarjeta de detalle.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Marcajes operativos",
+        body:`
+          <ul>
+            <li><strong>Confirmar:</strong> reconoce el servicio asignado.</li>
+            <li><strong>En ruta:</strong> se habilita dentro de la ventana operativa permitida.</li>
+            <li><strong>Presente:</strong> se habilita cerca del inicio del servicio.</li>
+            <li>Cuando no exista marcaje debe mostrarse <strong>No registrado</strong>.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Mensajería y documentos",
+        body:`
+          <ul>
+            <li>Mensajería es comunicación laboral interna.</li>
+            <li>Documentos muestra solo archivos autorizados para el usuario.</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    id:"supervision",
+    className:"sup",
+    title:"Supervisión",
+    description:"Validación operativa de asistencia, falta y observaciones.",
+    roles:["SUP","ADM"],
+    topics:[
+      {
+        title:"Validación de asistencia",
+        body:`
+          <ul>
+            <li>La validación SUP es distinta al marcaje del guardia.</li>
+            <li>El marcaje informa actividad del personal.</li>
+            <li>La validación confirma formalmente asistencia o falta.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Acciones disponibles",
+        body:`
+          <ul>
+            <li>Asistencia.</li>
+            <li>Falta.</li>
+            <li>Guardar observación.</li>
+            <li>Registrar incidencia.</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    id:"coordinacion",
+    className:"coord",
+    title:"Coordinación",
+    description:"Programación, reasignación y seguimiento operativo.",
+    roles:["COORD","ADM"],
+    topics:[
+      {
+        title:"Panel de Coordinación",
+        body:`
+          <ul>
+            <li>Permite consultar servicios operativos.</li>
+            <li>Permite programar coberturas.</li>
+            <li>Permite dar seguimiento a estados operativos.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Seguimiento de estatus",
+        body:`
+          <ul>
+            <li><strong>PROG:</strong> cobertura programada.</li>
+            <li><strong>CONF:</strong> confirmada por el usuario.</li>
+            <li><strong>RUTA:</strong> usuario reportó traslado.</li>
+            <li><strong>PRES:</strong> usuario reportó presencia.</li>
+            <li><strong>ASISTENCIA/FALTA:</strong> validación formal.</li>
+          </ul>
+        `
+      }
+    ]
+  },
+  {
+    id:"administracion",
+    className:"adm",
+    title:"Administración",
+    description:"Configuración del sistema, catálogos, personal, documentos y roles.",
+    roles:["ADM"],
+    topics:[
+      {
+        title:"Panel de Administración",
+        body:`
+          <ul>
+            <li>Gestión de Empresa Operadora.</li>
+            <li>Gestión de clientes, servicios, posiciones, turnos y requerimientos.</li>
+            <li>Gestión de personal.</li>
+            <li>Gestión de documentos.</li>
+            <li>Asignación de roles funcionales.</li>
+          </ul>
+        `
+      },
+      {
+        title:"Regla multiempresa",
+        body:`
+          <p>Los registros operativos deben quedar marcados por Empresa Operadora.</p>
+          <ul>
+            <li>Clientes.</li>
+            <li>Servicios.</li>
+            <li>Posiciones.</li>
+            <li>Turnos.</li>
+            <li>Requerimientos.</li>
+            <li>Coberturas.</li>
+            <li>Personal.</li>
+            <li>Documentos.</li>
+            <li>Mensajería.</li>
+          </ul>
+        `
+      }
+    ]
+  }
+];
+
+function openManualOperacion(){
+  const current=getActiveScreenId();
+  manualReturnScreenId=current && current!=="screenManualOperacion" ? current : "screenHome";
+  manualCurrentLevel="";
+  showScreen("screenManualOperacion");
+  renderManualOperacion();
+}
+
+function backFromManualOperacion(){
+  if(manualCurrentLevel){
+    manualCurrentLevel="";
+    renderManualOperacion();
+    return;
+  }
+
+  showScreen(manualReturnScreenId || "screenHome");
+}
+
+function getManualRoles(){
+  const roles=["BASE"];
+
+  if(pwaCanSup) roles.push("SUP");
+  if(pwaCanCoord) roles.push("COORD");
+
+  const ctx=pwaContext || {};
+  const rawRoles=[
+    ...(Array.isArray(ctx.rolesFuncionales) ? ctx.rolesFuncionales : []),
+    ...(Array.isArray(ctx.roles) ? ctx.roles : []),
+    ctx.rolFuncional,
+    ctx.rolSegpriv
+  ]
+    .filter(Boolean)
+    .map(r=>String(r).trim().toUpperCase());
+
+  if(
+    ctx.canAdm===true ||
+    ctx.isAdm===true ||
+    rawRoles.includes("ADM") ||
+    rawRoles.includes("ADMIN") ||
+    rawRoles.includes("ADMINISTRACION") ||
+    rawRoles.includes("ADMINISTRACIÓN")
+  ){
+    roles.push("SUP","COORD","ADM");
+  }
+
+  return [...new Set(roles)];
+}
+
+function getManualRoleLabel(roles){
+  const labels=[];
+
+  if(roles.includes("BASE")) labels.push("Personal base");
+  if(roles.includes("SUP")) labels.push("Supervisión");
+  if(roles.includes("COORD")) labels.push("Coordinación");
+  if(roles.includes("ADM")) labels.push("Administración");
+
+  return labels.join(" · ");
+}
+
+function getVisibleManuals(){
+  const roles=getManualRoles();
+
+  return MANUAL_OPERACION_DATA.filter(manual =>
+    manual.roles.some(role => roles.includes(role))
+  );
+}
+
+function renderManualOperacion(){
+  const root=document.getElementById("manualOperacionRoot");
+  if(!root)return;
+
+  const roles=getManualRoles();
+
+  if(!manualCurrentLevel){
+    const visibles=getVisibleManuals();
+
+    setText("manualStatusLine","Consulta");
+
+    root.innerHTML=`
+      <div class="manual-shell">
+        <div class="manual-header">
+          <div>
+            <h2>Manual de Operación</h2>
+            <p>Consulta de apoyo del Portal Operativo SCaD. El contenido se muestra de acuerdo con los roles funcionales del usuario.</p>
+          </div>
+          <div class="manual-role-line">${escapeHtml(getManualRoleLabel(roles))}</div>
+        </div>
+
+        <div class="manual-level-grid">
+          ${visibles.map(manual=>`
+            <div class="manual-level-card ${manual.className}" onclick="openManualLevel('${escapeAttr(manual.id)}')">
+              <h3>${escapeHtml(manual.title)}</h3>
+              <p>${escapeHtml(manual.description)}</p>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const manual=MANUAL_OPERACION_DATA.find(item=>item.id===manualCurrentLevel);
+
+  if(!manual){
+    manualCurrentLevel="";
+    renderManualOperacion();
+    return;
+  }
+
+  const autorizado=manual.roles.some(role=>roles.includes(role));
+
+  if(!autorizado){
+    manualCurrentLevel="";
+    root.innerHTML="<div class='empty'>No tienes acceso a este nivel del Manual de Operación.</div>";
+    return;
+  }
+
+  setText("manualStatusLine",manual.title);
+
+  root.innerHTML=`
+    <div class="manual-shell">
+      <div class="manual-header">
+        <div>
+          <h2>${escapeHtml(manual.title)}</h2>
+          <p>${escapeHtml(manual.description)}</p>
+        </div>
+        <div class="manual-role-line">${escapeHtml(getManualRoleLabel(roles))}</div>
+      </div>
+
+      ${manual.topics.map((topic,index)=>`
+        <details class="manual-topic" ${index===0?"open":""}>
+          <summary>${escapeHtml(topic.title)}</summary>
+          <div class="manual-topic-body">${topic.body}</div>
+        </details>
+      `).join("")}
+    </div>
+  `;
+}
+
+function openManualLevel(levelId){
+  manualCurrentLevel=levelId;
+  renderManualOperacion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+    
 function openExternalUrl(url){window.location.href=url}function openCourses(){openExternalUrl(SCAD_MIS_CURSOS_URL)}function openDocuments(){showScreen("screenDocuments");loadDocuments()}function openServices(){showScreen("screenServices");loadServices()}function backToServices(){showScreen("screenServices")}function openSupervisor(){if(!pwaCanSup){showToast("Acceso SUP no autorizado","error");return}showScreen("screenSupervisor");loadSupervisorCoverages()}function backToSupervisor(){showScreen("screenSupervisor")}function openSms(){
   expandSmsPanel();
 }function openCoordPanel(){if(!pwaCanCoord){showToast("Acceso COORD no autorizado","error");return}const sep=SEGPRIV_COORD_URL.includes("?")?"&":"?";window.location.href=`${SEGPRIV_COORD_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID||"")}&email=${encodeURIComponent(CURRENT_EMAIL||"")}`}
