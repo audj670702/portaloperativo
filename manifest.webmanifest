@@ -1,8 +1,8 @@
 {
-  "name": "SEGPRIV",
-  "short_name": "SEGPRIV",
-  "description": "Portal operativo de seguridad privada.",
-  "start_url": "./index.html?v=20260605",
+"name": "Portal Operativo SCaD",
+"short_name": "SCaD",
+"description": "Portal operativo SCaD.",
+"start_url": "./index.html?v=20260612",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
