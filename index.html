@@ -494,7 +494,7 @@
         <div class="app-left-block">
           <button class="logout-mini-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
           <div>
-            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.61</span></div>
+            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.62</span></div>
             <p>Portal operativo</p>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
           </div>
@@ -723,6 +723,15 @@ function setInputValue(id,value){const el=document.getElementById(id);if(el)el.v
 function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));const el=document.getElementById(id);if(el)el.classList.add("active")}
 function getActiveScreenId(){const active=document.querySelector(".screen.active");return active?active.id:""}
 function showToast(message,type="normal"){let toast=document.getElementById("appToast");if(!toast){toast=document.createElement("div");toast.id="appToast";toast.className="app-toast";document.body.appendChild(toast)}toast.textContent=message;toast.className=type==="error"?"app-toast error show":"app-toast show";clearTimeout(window.__segprivToastTimer);window.__segprivToastTimer=setTimeout(()=>toast.classList.remove("show"),1800)}
+function debugSegpriv(label,value){
+  console.log(label, value);
+  try{
+    console.log(`${label} JSON:`, JSON.stringify(value, null, 2));
+  }catch(e){
+    console.warn(`${label} no convertible a JSON:`, e);
+  }
+}
+    
 async function refreshCurrentScreen(){const screenId=getActiveScreenId();showToast("Actualizando...");try{if(screenId==="screenServices"){await loadServices();showToast("Servicios actualizados");return}if(screenId==="screenSupervisor"){await loadSupervisorCoverages();showToast("Supervisión actualizada");return}if(screenId==="screenSupervisorDetail"){if(supervisorSelectedItem){const id=supervisorSelectedItem.coberturaId;await loadSupervisorCoverages();supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===id)||supervisorSelectedItem;renderSupervisorDetail();showToast("Detalle actualizado")}else{await loadSupervisorCoverages();showScreen("screenSupervisor");showToast("Supervisión actualizada")}return}if(screenId==="screenSms"){await loadSms();showToast("Mensajería actualizada");return}if(screenId==="screenDocuments"){await loadDocuments();showToast("Documentos actualizados");return}
                                                                                                           if(screenId==="screenManualOperacion"){
   renderManualOperacion();
@@ -1117,8 +1126,19 @@ function normalizeServiceStatus(status){const raw=String(status||"").trim().toUp
 function renderComplianceSummary(){renderCompliance("complianceSummary",getServiceStatusCounts(),"Sin registro de cumplimiento")}function getFilteredServices(){return statusFilter==="TODOS"?servicios:servicios.filter(item=>normalizeServiceStatus(item.estado)===statusFilter)}function renderViews(){renderStatusCounts();renderComplianceSummary();renderList();renderCalendar();setView(currentView)}
 function renderList(){const root=document.getElementById("listView"),data=getFilteredServices();if(!root)return;if(!data.length){root.innerHTML="<div class='empty'>Sin servicios para este filtro.</div>";return}root.innerHTML=`<div class="list">${data.map(item=>`<div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${escapeAttr(item.coberturaId)}')"><div class="service-card-header"><div class="service-card-title">${escapeHtml(item.servicio||"Servicio")}</div><span class="badge ${statusClass(item.estado)}">${escapeHtml(item.estado||"")}</span></div><div class="service-card-sub">${formatDate(item.fecha)} · ${escapeHtml(item.horario||"")}<br>${escapeHtml(item.posicion||"")}</div></div>`).join("")}</div>`}
 function renderCalendar(){if(calendarMode==="day"){renderDayCalendar();return}if(calendarMode==="week"){renderWeekCalendar();return}renderMonthCalendar()}function renderCalendarModeButtons(){return`<div class="calendar-inline-modes"><button class="${calendarMode==="day"?"active":""}" onclick="goToday()">Hoy</button><button class="${calendarMode==="month"?"active":""}" onclick="setCalendarMode('month')">Mes</button><button class="${calendarMode==="week"?"active":""}" onclick="setCalendarMode('week')">Sem</button><button class="${calendarMode==="day"?"active":""}" onclick="setCalendarMode('day')">Día</button></div>`}function renderMonthCalendar(){renderGenericMonthCalendar("calendarView",selectedDate,getFilteredServices(),renderCalendarModeButtons(),"selectCalendarDate","openDetail")}function renderWeekCalendar(){renderGenericWeekCalendar("calendarView",selectedDate,getFilteredServices(),renderCalendarModeButtons(),"selectCalendarDate","openDetail")}function renderDayCalendar(){renderGenericDayCalendar("calendarView",selectedDate,getFilteredServices(),renderCalendarModeButtons(),"openDetail","Sin servicios para este día.")}function selectCalendarDate(key){selectedDate=createLocalDate(key);setInputValue("inputGoDate",key);calendarMode="day";renderCalendar()}
-function openDetail(id){selectedItem=servicios.find(s=>s.coberturaId===id);if(!selectedItem)return;renderDetail();showScreen("screenDetail")}
-   
+function openDetail(id){
+  selectedItem=servicios.find(s=>s.coberturaId===id);
+
+  if(!selectedItem){
+    console.warn("DEBUG SEGPRIV | No se encontró cobertura de guardia:", id);
+    return;
+  }
+
+  debugSegpriv("DEBUG SEGPRIV | OBJETO DETALLE GUARDIA", selectedItem);
+
+  renderDetail();
+  showScreen("screenDetail");
+}   
 function renderDetail(){
   const item=selectedItem;
   if(!item)return;
@@ -1214,8 +1234,39 @@ function formatGuardWindowDateTime(value){
   });
 }
     
-    async function updateEstado(endpoint){if(!selectedItem)return;try{const data=await postJson(`${API_BASE}/${endpoint}`,{personalId:selectedItem.guardiaAsignado,coberturaId:selectedItem.coberturaId});if(!data.ok){alert(data.error||"No fue posible actualizar.");return}await loadServices();selectedItem=servicios.find(s=>s.coberturaId===data.coberturaId)||selectedItem;renderDetail()}catch(err){console.error(err);alert("Error al conectar con el sistema.")}}
-function setSupervisorStatus(text,error=false){const el=document.getElementById("supervisorStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadSupervisorCoverages(){resolveCurrentMember();if(!CURRENT_MEMBER_ID){supervisorCoverages=[];setSupervisorStatus("Sin sesión",true);renderSupervisorViews();return}setSupervisorStatus("Cargando supervisión...");try{const fechaInicio=getValue("supervisorInputStartDate"),fechaFin=getValue("supervisorInputEndDate");const url=`${API_BASE}/sprivSupervisorCoberturas?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&estatus=TODOS&t=${Date.now()}`;const data=await fetchJson(url);if(!data.ok){supervisorCoverages=[];setSupervisorStatus(data.error||"No fue posible cargar supervisión.",true);renderSupervisorViews();return}supervisorCoverages=data.items||[];setText("supervisorNombre",data.supervisor?.nombre||"Supervisor");setSupervisorStatus(`Coberturas: ${supervisorCoverages.length}`);renderSupervisorViews()}catch(err){console.error("Error SUP:",err);supervisorCoverages=[];setSupervisorStatus("Error al conectar con supervisión.",true);renderSupervisorViews()}}
+async function updateEstado(endpoint){
+  if(!selectedItem)return;
+
+  const payload={
+    personalId:selectedItem.guardiaAsignado,
+    coberturaId:selectedItem.coberturaId
+  };
+
+  debugSegpriv(`DEBUG SEGPRIV | PAYLOAD GUARDIA ${endpoint}`, payload);
+  debugSegpriv(`DEBUG SEGPRIV | OBJETO ANTES GUARDIA ${endpoint}`, selectedItem);
+
+  try{
+    const data=await postJson(`${API_BASE}/${endpoint}`,payload);
+
+    debugSegpriv(`DEBUG SEGPRIV | RESPUESTA GUARDIA ${endpoint}`, data);
+
+    if(!data.ok){
+      alert(data.error||"No fue posible actualizar.");
+      return;
+    }
+
+    await loadServices();
+
+    selectedItem=servicios.find(s=>s.coberturaId===data.coberturaId)||selectedItem;
+
+    debugSegpriv(`DEBUG SEGPRIV | OBJETO DESPUES GUARDIA ${endpoint}`, selectedItem);
+
+    renderDetail();
+  }catch(err){
+    console.error(err);
+    alert("Error al conectar con el sistema.");
+  }
+}function setSupervisorStatus(text,error=false){const el=document.getElementById("supervisorStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadSupervisorCoverages(){resolveCurrentMember();if(!CURRENT_MEMBER_ID){supervisorCoverages=[];setSupervisorStatus("Sin sesión",true);renderSupervisorViews();return}setSupervisorStatus("Cargando supervisión...");try{const fechaInicio=getValue("supervisorInputStartDate"),fechaFin=getValue("supervisorInputEndDate");const url=`${API_BASE}/sprivSupervisorCoberturas?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&estatus=TODOS&t=${Date.now()}`;const data=await fetchJson(url);if(!data.ok){supervisorCoverages=[];setSupervisorStatus(data.error||"No fue posible cargar supervisión.",true);renderSupervisorViews();return}supervisorCoverages=data.items||[];setText("supervisorNombre",data.supervisor?.nombre||"Supervisor");setSupervisorStatus(`Coberturas: ${supervisorCoverages.length}`);renderSupervisorViews()}catch(err){console.error("Error SUP:",err);supervisorCoverages=[];setSupervisorStatus("Error al conectar con supervisión.",true);renderSupervisorViews()}}
 function setSupervisorView(view){supervisorCurrentView=view;toggleActive("btnSupervisorViewCalendar",view==="calendar");toggleActive("btnSupervisorViewList",view==="list");display("supervisorCalendarView",view==="calendar");display("supervisorListView",view==="list")}function setSupervisorCalendarMode(mode){supervisorCalendarMode=mode;renderSupervisorCalendar()}function goSupervisorToday(){supervisorSelectedDate=new Date();setInputValue("supervisorInputGoDate",toDateKey(supervisorSelectedDate));supervisorCalendarMode="day";renderSupervisorCalendar()}function goToSupervisorSelectedDate(){const value=getValue("supervisorInputGoDate");if(!value)return;supervisorSelectedDate=createLocalDate(value);supervisorCalendarMode="day";renderSupervisorCalendar()}function setSupervisorStatusFilter(status){supervisorStatusFilter=status;["TODOS","PROG","CONF","PRES","ASISTENCIA","FALTA","OBSERVADO"].forEach(s=>toggleActive(`supervisorFilter${s}`,s===status));renderSupervisorViews()}
 function getSupervisorStatusForFilter(item){const val=normalizeServiceStatus(item.validacionSupervisor||"");if(["ASISTENCIA","FALTA","OBSERVADO"].includes(val))return val;return normalizeServiceStatus(item.estado||item.estadoCobertura||"")}
 function getSupervisorBaseFilteredCoverages(){return supervisorCoverages.filter(item=>{const servicio=String(item.servicio||"");const posicion=String(item.posicion||"");const guardia=String(item.nombreGuardia||"No asignado");if(supervisorServiceFilter!=="TODOS"&&servicio!==supervisorServiceFilter)return false;if(supervisorPositionFilter!=="TODOS"&&posicion!==supervisorPositionFilter)return false;if(supervisorGuardFilter!=="TODOS"&&guardia!==supervisorGuardFilter)return false;return true})}
@@ -1231,16 +1282,17 @@ function renderSupervisorOperationalSummary(){const root=document.getElementById
 function renderSupervisorViews(){renderSupervisorComplementaryFilters();renderSupervisorStatusCounts();renderSupervisorOperationalSummary();renderSupervisorList();renderSupervisorCalendar();setSupervisorView(supervisorCurrentView)}
 function renderSupervisorList(){const root=document.getElementById("supervisorListView"),data=getFilteredSupervisorCoverages();if(!root)return;if(!data.length){root.innerHTML="<div class='empty'>Sin coberturas para este filtro.</div>";return}root.innerHTML=`<div class="list">${data.map(item=>{const estado=getSupervisorStatusForFilter(item);return`<div class="service-card ${statusClass(estado)}" onclick="openSupervisorDetail('${escapeAttr(item.coberturaId)}')"><div class="service-card-header"><div class="service-card-title">${escapeHtml(item.servicio||"Servicio")}</div><span class="badge ${statusClass(estado)}">${escapeHtml(estado||"")}</span></div><div class="service-card-sub">${formatDate(item.fecha)} · ${escapeHtml(item.horario||"")}<br>${escapeHtml(item.posicion||"")}<br>Guardia: ${escapeHtml(item.nombreGuardia||"No asignado")}</div></div>`}).join("")}</div>`}
 function renderSupervisorCalendar(){if(supervisorCalendarMode==="day"){renderSupervisorDayCalendar();return}if(supervisorCalendarMode==="week"){renderSupervisorWeekCalendar();return}renderSupervisorMonthCalendar()}function renderSupervisorCalendarModeButtons(){return`<div class="calendar-inline-modes"><button class="${supervisorCalendarMode==="day"?"active":""}" onclick="goSupervisorToday()">Hoy</button><button class="${supervisorCalendarMode==="month"?"active":""}" onclick="setSupervisorCalendarMode('month')">Mes</button><button class="${supervisorCalendarMode==="week"?"active":""}" onclick="setSupervisorCalendarMode('week')">Sem</button><button class="${supervisorCalendarMode==="day"?"active":""}" onclick="setSupervisorCalendarMode('day')">Día</button></div>`}function renderSupervisorMonthCalendar(){renderGenericMonthCalendar("supervisorCalendarView",supervisorSelectedDate,getFilteredSupervisorCoverages(),renderSupervisorCalendarModeButtons(),"selectSupervisorCalendarDate","openSupervisorDetail",true)}function renderSupervisorWeekCalendar(){renderGenericWeekCalendar("supervisorCalendarView",supervisorSelectedDate,getFilteredSupervisorCoverages(),renderSupervisorCalendarModeButtons(),"selectSupervisorCalendarDate","openSupervisorDetail",true)}function renderSupervisorDayCalendar(){renderGenericDayCalendar("supervisorCalendarView",supervisorSelectedDate,getFilteredSupervisorCoverages(),renderSupervisorCalendarModeButtons(),"openSupervisorDetail","Sin coberturas para este día.",true)}function selectSupervisorCalendarDate(key){supervisorSelectedDate=createLocalDate(key);setInputValue("supervisorInputGoDate",key);supervisorCalendarMode="day";renderSupervisorCalendar()}
+
 function openSupervisorDetail(id){
   supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===id);
-  if(!supervisorSelectedItem)return;
-  renderSupervisorDetail();
-  showScreen("screenSupervisorDetail");
-}
 
-    function openSupervisorDetail(id){
-  supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===id);
-  if(!supervisorSelectedItem)return;
+  if(!supervisorSelectedItem){
+    console.warn("DEBUG SEGPRIV | No se encontró cobertura SUP:", id);
+    return;
+  }
+
+  debugSegpriv("DEBUG SEGPRIV | OBJETO DETALLE SUP", supervisorSelectedItem);
+
   renderSupervisorDetail();
   showScreen("screenSupervisorDetail");
 }
@@ -1331,13 +1383,20 @@ function getSupervisorObservationValue(){
 async function supervisorPostAction(endpoint,payload={}){
   if(!supervisorSelectedItem)return;
 
+  const finalPayload={
+    memberId:CURRENT_MEMBER_ID,
+    email:CURRENT_EMAIL||"",
+    coberturaId:supervisorSelectedItem.coberturaId,
+    ...payload
+  };
+
+  debugSegpriv(`DEBUG SEGPRIV | PAYLOAD SUP ${endpoint}`, finalPayload);
+  debugSegpriv(`DEBUG SEGPRIV | OBJETO ANTES SUP ${endpoint}`, supervisorSelectedItem);
+
   try{
-    const data=await postJson(`${API_BASE}/${endpoint}`,{
-      memberId:CURRENT_MEMBER_ID,
-      email:CURRENT_EMAIL||"",
-      coberturaId:supervisorSelectedItem.coberturaId,
-      ...payload
-    });
+    const data=await postJson(`${API_BASE}/${endpoint}`,finalPayload);
+
+    debugSegpriv(`DEBUG SEGPRIV | RESPUESTA SUP ${endpoint}`, data);
 
     if(!data.ok){
       alert(data.error||"No fue posible actualizar.");
@@ -1345,7 +1404,11 @@ async function supervisorPostAction(endpoint,payload={}){
     }
 
     await loadSupervisorCoverages();
+
     supervisorSelectedItem=supervisorCoverages.find(s=>s.coberturaId===data.coberturaId)||supervisorSelectedItem;
+
+    debugSegpriv(`DEBUG SEGPRIV | OBJETO DESPUES SUP ${endpoint}`, supervisorSelectedItem);
+
     renderSupervisorDetail();
   }catch(err){
     console.error(err);
