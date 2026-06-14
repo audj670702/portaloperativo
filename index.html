@@ -123,21 +123,7 @@
     .calendar{background:white;border:1px solid var(--border);border-radius:18px;padding:8px}.calendar-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 2px 8px}.calendar-title{font-size:14px;font-weight:700;margin:0}.calendar-inline-modes{display:flex;gap:4px;flex-shrink:0}.calendar-inline-modes button{padding:5px 8px;font-size:10px;border-radius:999px;background:#f9fafb;color:var(--dark);border:1px solid var(--border)}.calendar-inline-modes button.active{background:var(--dark);color:white;border-color:var(--dark)}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day-name{font-size:10px;font-weight:700;text-align:center;color:var(--muted);padding:4px 0}.day{min-height:58px;border:1px solid #e5e7eb;border-radius:8px;padding:3px;font-size:11px;background:#f9fafb;cursor:pointer}.day.today{border:2px solid var(--dark)}.day.selected{outline:2px solid var(--blue);outline-offset:-2px}.day-number{font-weight:700;margin-bottom:3px;font-size:11px}.mini-event{color:white;border-radius:6px;padding:3px;font-size:8px;margin-bottom:3px;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;background:var(--gray)}.mini-event.prog{background:var(--blue)}.mini-event.conf{background:var(--purple)}.mini-event.ruta{background:var(--orange)}.mini-event.pres{background:var(--teal)}.mini-event.asist,.mini-event.asistencia{background:var(--green)}.mini-event.falta,.mini-event.falto{background:var(--red)}.mini-event.obs,.mini-event.observado{background:#ca8a04}.day-mode-list{display:flex;flex-direction:column;gap:10px}
     .detail{background:white;border:1px solid var(--border);border-radius:18px;padding:16px}.detail h2{margin:0 0 12px;font-size:20px}.detail-row{border-bottom:1px solid #e5e7eb;padding:9px 0;font-size:14px}.detail-row strong{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}.reminder{border-radius:14px;padding:12px;margin:12px 0;font-size:14px;line-height:1.35;background:#f9fafb;border:1px solid var(--border)}.reminder.prog{border-left:6px solid var(--blue)}.reminder.conf{border-left:6px solid var(--purple)}.reminder.ruta{border-left:6px solid var(--orange)}.reminder.pres{border-left:6px solid var(--teal)}.reminder.asist,.reminder.asistencia{border-left:6px solid var(--green)}.reminder.falta,.reminder.falto{border-left:6px solid var(--red)}.reminder.obs,.reminder.observado{border-left:6px solid var(--yellow)}.guard-progress{margin:16px 0 20px}.guard-progress-track{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative}.guard-step{position:relative;text-align:center;padding-top:20px}.guard-step::before{content:"";position:absolute;top:7px;left:0;right:0;height:4px;background:#e5e7eb;z-index:0}.guard-step:first-child::before{left:50%}.guard-step:last-child::before{right:50%}.guard-step.operational::before{background:#9ca3af}.guard-step-dot{width:17px;height:17px;border-radius:999px;background:#d1d5db;border:3px solid white;box-shadow:0 0 0 2px #d1d5db;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:2}.guard-step.registered .guard-step-dot{background:var(--green);box-shadow:0 0 0 2px var(--green)}.guard-step.not-registered .guard-step-dot{background:#9ca3af;box-shadow:0 0 0 2px #9ca3af}.guard-step-label{font-size:12px;font-weight:700;color:var(--text);margin-top:5px}.guard-step-time{margin-top:4px;font-size:11px;color:var(--muted);min-height:26px;line-height:1.25}.guard-step.registered .guard-step-label{color:var(--green)}
     .empty{background:white;border:1px dashed var(--border);border-radius:16px;padding:18px;text-align:center;color:var(--muted);font-size:14px}
-    .sms-card,.docs-card{background:white;border:1px solid var(--border);border-radius:18px;padding:12px;margin-bottom:10px}.sms-profile-actions,.docs-toolbar{display:flex;gap:8px;align-items:center;margin:0 0 8px}.sms-profile-actions button,.docs-toolbar button,.docs-actions button{padding:8px 12px;font-size:12px}
-.sms-profile-text{font-size:12px;color:var(--muted);line-height:1.25}.sms-profile-text strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
-.sms-profile-line{display:flex;align-items:center;gap:10px}
-.sms-profile-line .sms-profile-text{min-width:0}
-.sms-avatar{width:38px;height:38px;border-radius:999px;background:linear-gradient(135deg,#111827,#374151);color:white;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;overflow:hidden;flex-shrink:0;border:1px solid rgba(17,24,39,.12)}
-.sms-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.sms-avatar-mini{width:28px;height:28px;font-size:10px}
-.sms-avatar-chat{width:36px;height:36px;font-size:12px}
-.sms-contact-row{display:flex;align-items:center;gap:9px;min-width:0}
-.sms-contact-row-main{min-width:0;flex:1}
-.sms-chat-identity{display:flex;align-items:center;gap:9px;min-width:0}
-.sms-message-row{display:flex;align-items:flex-end;gap:7px;max-width:92%;align-self:flex-start}
-.sms-message-row .sms-bubble{max-width:100%}
-.sms-two-columns
-    {display:grid;grid-template-columns:1fr 1fr;gap:8px}.sms-field-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px}.sms-input,.sms-textarea,.docs-search{width:100%;border:1px solid var(--border);border-radius:14px;padding:10px;font-size:13px;background:white;color:var(--text)}.sms-chat-header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}.sms-chat-title{font-weight:700;font-size:14px}.sms-contact-meta{margin-top:2px;font-size:11px;color:var(--muted)}.sms-small-btn{padding:7px 10px;font-size:11px;flex-shrink:0}.sms-chat-box{height:340px;overflow-y:auto;background:#f9fafb;border:1px solid var(--border);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}.sms-bubble{max-width:84%;padding:9px 11px;border-radius:15px;font-size:14px;line-height:1.3;word-wrap:break-word}.sms-bubble.mine{align-self:flex-end;background:var(--blue);color:white;border-bottom-right-radius:5px}.sms-bubble.theirs{align-self:flex-start;background:white;border:1px solid var(--border);color:var(--text);border-bottom-left-radius:5px}.sms-time{display:block;margin-top:4px;font-size:10px;opacity:.7}.sms-send-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.sms-textarea{resize:none;min-height:44px;max-height:88px}.sms-send-row button{width:100%;padding:12px;font-weight:700}.sms-search-toggle{width:100%;background:white;color:var(--dark);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.sms-search-body{margin-top:10px}.sms-contact-list,.docs-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}.sms-contact-item,.docs-item{border:1px solid var(--border);background:#f9fafb;border-radius:14px;padding:10px;cursor:pointer}.sms-contact-name,.docs-title{font-size:14px;font-weight:700}.docs-category-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}.docs-category-btn{background:#f9fafb;color:var(--dark);border:1px solid var(--border);padding:6px 9px;font-size:11px}.docs-category-btn.active{background:var(--dark);color:white}.docs-item-header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.docs-meta{margin-top:4px;font-size:11px;color:var(--muted);line-height:1.3}.docs-description{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.35}.docs-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.docs-badge{border-radius:999px;padding:4px 8px;font-size:10px;font-weight:700;background:#e5e7eb;color:var(--dark);white-space:nowrap}
+    .sms-card,.docs-card{background:white;border:1px solid var(--border);border-radius:18px;padding:12px;margin-bottom:10px}.sms-profile-actions,.docs-toolbar{display:flex;gap:8px;align-items:center;margin:0 0 8px}.sms-profile-actions button,.docs-toolbar button,.docs-actions button{padding:8px 12px;font-size:12px}.sms-profile-text{font-size:12px;color:var(--muted);line-height:1.25}.sms-profile-text strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}.sms-two-columns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sms-field-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px}.sms-input,.sms-textarea,.docs-search{width:100%;border:1px solid var(--border);border-radius:14px;padding:10px;font-size:13px;background:white;color:var(--text)}.sms-chat-header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}.sms-chat-title{font-weight:700;font-size:14px}.sms-contact-meta{margin-top:2px;font-size:11px;color:var(--muted)}.sms-small-btn{padding:7px 10px;font-size:11px;flex-shrink:0}.sms-chat-box{height:340px;overflow-y:auto;background:#f9fafb;border:1px solid var(--border);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}.sms-bubble{max-width:84%;padding:9px 11px;border-radius:15px;font-size:14px;line-height:1.3;word-wrap:break-word}.sms-bubble.mine{align-self:flex-end;background:var(--blue);color:white;border-bottom-right-radius:5px}.sms-bubble.theirs{align-self:flex-start;background:white;border:1px solid var(--border);color:var(--text);border-bottom-left-radius:5px}.sms-time{display:block;margin-top:4px;font-size:10px;opacity:.7}.sms-send-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.sms-textarea{resize:none;min-height:44px;max-height:88px}.sms-send-row button{width:100%;padding:12px;font-weight:700}.sms-search-toggle{width:100%;background:white;color:var(--dark);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.sms-search-body{margin-top:10px}.sms-contact-list,.docs-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}.sms-contact-item,.docs-item{border:1px solid var(--border);background:#f9fafb;border-radius:14px;padding:10px;cursor:pointer}.sms-contact-name,.docs-title{font-size:14px;font-weight:700}.docs-category-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}.docs-category-btn{background:#f9fafb;color:var(--dark);border:1px solid var(--border);padding:6px 9px;font-size:11px}.docs-category-btn.active{background:var(--dark);color:white}.docs-item-header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.docs-meta{margin-top:4px;font-size:11px;color:var(--muted);line-height:1.3}.docs-description{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.35}.docs-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.docs-badge{border-radius:999px;padding:4px 8px;font-size:10px;font-weight:700;background:#e5e7eb;color:var(--dark);white-space:nowrap}
 
     .module-card{position:relative;display:flex;gap:13px;align-items:flex-start}
     .module-icon{width:36px;height:36px;border-radius:14px;background:#f3f4f6;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
@@ -617,7 +603,7 @@
         <div class="app-left-block">
           <button class="logout-mini-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
           <div>
-            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.69</span></div>
+            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.67</span></div>
             <p>Portal operativo</p>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
           </div>
@@ -699,16 +685,12 @@
       </div>
 
       <div class="sms-card sms-chat-card">
-<div class="sms-chat-header">
-          <div class="sms-chat-identity">
-            <div id="smsChatAvatar" class="sms-avatar sms-avatar-chat">SP</div>
-            <div>
-              <div class="sms-chat-title" id="smsChatTitle">Chat</div>
-              <div class="sms-contact-meta" id="smsChatMeta">Selecciona un contacto</div>
-            </div>
+        <div class="sms-chat-header">
+          <div>
+            <div class="sms-chat-title" id="smsChatTitle">Chat</div>
+            <div class="sms-contact-meta" id="smsChatMeta">Selecciona un contacto</div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
-            
   <button id="smsAliasBtn" class="secondary sms-small-btn hidden" onclick="editSmsContactAlias()">Alias</button>
   <button id="smsRegularContactBtn" class="secondary sms-small-btn hidden" onclick="toggleSmsRegularContact()">Agregar</button>
 </div>
@@ -1955,143 +1937,13 @@ function getSmsContactMeta(item){
 function findSmsRegularContact(memberId){
   return (smsRegularContactList || []).find(c => c.contactMemberId === memberId) || null;
 }
-
-function getSmsPhotoFromItem(item){
-  if(!item)return "";
-
-  return normalizarUrlImagenWix(
-    item.fotoPersonal ||
-    item.photo ||
-    item.fotoUrl ||
-    item.avatarUrl ||
-    item.avatar ||
-    item.profilePhoto ||
-    item.image ||
-    ""
-  );
+function setSmsStatus(text,error=false){const el=document.getElementById("smsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadSms(){resolveCurrentMember();const profileBox=document.getElementById("smsProfileBox"),mainBox=document.getElementById("smsMainBox");if(!CURRENT_MEMBER_ID){smsProfile=null;setSmsStatus("Sin sesión",true);if(profileBox)profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}setSmsStatus("Validando...");if(profileBox)profileBox.innerHTML="Validando usuario SMS...";try{const data=await postJson(`${API_BASE}/sprivSmsActivate`,{memberId:CURRENT_MEMBER_ID,email:CURRENT_EMAIL});if(!data.ok){smsProfile=null;setSmsStatus("No autorizado",true);if(profileBox)profileBox.innerHTML=data.message||data.error||"Usuario no autorizado para SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden");return}smsProfile=data.member;setSmsStatus("Activo");if(profileBox)profileBox.innerHTML=`<strong>${escapeHtml(smsProfile.nombreMostrar||"Usuario SEGPRIV")}</strong>Rol: ${escapeHtml(smsProfile.rolSegpriv||"STAFF")}${smsProfile.smsCode?` · Código: ${escapeHtml(smsProfile.smsCode)}`:""}`;if(mainBox)mainBox.classList.remove("sms-hidden");await loadSmsRegularContacts();await loadSmsPending();if(smsRefreshTimer)clearInterval(smsRefreshTimer);smsRefreshTimer=setInterval(()=>{
+  
+  if(smsPanelOpen){
+  loadSmsPending();
+  if(smsSelectedContact) loadSmsMessages(false);
 }
-
-function getSmsInitials(name){
-  return obtenerInicialesPerfil(name || "Usuario SEGPRIV");
-}
-
-function renderSmsAvatarHtml(itemOrPhoto,name="",extraClass=""){
-  const photo=typeof itemOrPhoto==="string"
-    ? normalizarUrlImagenWix(itemOrPhoto)
-    : getSmsPhotoFromItem(itemOrPhoto);
-
-  const iniciales=getSmsInitials(
-    name ||
-    itemOrPhoto?.nombreMostrar ||
-    itemOrPhoto?.displayName ||
-    itemOrPhoto?.nombreCompleto ||
-    "Usuario SEGPRIV"
-  );
-
-  const cls=extraClass ? `sms-avatar ${extraClass}` : "sms-avatar";
-
-  if(photo){
-    return `<span class="${cls}"><img src="${escapeAttr(photo)}" alt="Foto de usuario SMS" onerror="this.parentElement.textContent='${escapeAttr(iniciales)}';" /></span>`;
-  }
-
-  return `<span class="${cls}">${escapeHtml(iniciales)}</span>`;
-}
-
-function setSmsStatus(text,error=false){
-  const el=document.getElementById("smsStatusLine");
-  if(!el)return;
-  el.textContent=text;
-  el.className=error
-    ?"status-line module-status-inline status-error"
-    :"status-line module-status-inline";
-}
-
-async function loadSms(){
-  resolveCurrentMember();
-
-  const profileBox=document.getElementById("smsProfileBox");
-  const mainBox=document.getElementById("smsMainBox");
-
-  if(!CURRENT_MEMBER_ID){
-    smsProfile=null;
-    setSmsStatus("Sin sesión",true);
-
-    if(profileBox){
-      profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";
-    }
-
-    if(mainBox)mainBox.classList.add("sms-hidden");
-    return;
-  }
-
-  setSmsStatus("Validando...");
-
-  if(profileBox){
-    profileBox.innerHTML="Validando usuario SMS...";
-  }
-
-  try{
-    const data=await postJson(`${API_BASE}/sprivSmsActivate`,{
-      memberId:CURRENT_MEMBER_ID,
-      email:CURRENT_EMAIL
-    });
-
-    if(!data.ok){
-      smsProfile=null;
-      setSmsStatus("No autorizado",true);
-
-      if(profileBox){
-        profileBox.innerHTML=data.message||data.error||"Usuario no autorizado para SMS SEGPRIV.";
-      }
-
-      if(mainBox)mainBox.classList.add("sms-hidden");
-      return;
-    }
-
-    smsProfile=data.member;
-    setSmsStatus("Activo");
-
-    if(profileBox){
-      const nombreSms=smsProfile.nombreMostrar||"Usuario SEGPRIV";
-
-      profileBox.innerHTML=`
-        <div class="sms-profile-line">
-          ${renderSmsAvatarHtml(smsProfile,nombreSms)}
-          <div class="sms-profile-text">
-            <strong>${escapeHtml(nombreSms)}</strong>
-            Rol: ${escapeHtml(smsProfile.rolSegpriv||"STAFF")}${smsProfile.smsCode?` · Código: ${escapeHtml(smsProfile.smsCode)}`:""}
-          </div>
-        </div>
-      `;
-    }
-
-    if(mainBox)mainBox.classList.remove("sms-hidden");
-
-    await loadSmsRegularContacts();
-    await loadSmsPending();
-
-    if(smsRefreshTimer)clearInterval(smsRefreshTimer);
-
-    smsRefreshTimer=setInterval(()=>{
-      if(smsPanelOpen){
-        loadSmsPending();
-        if(smsSelectedContact) loadSmsMessages(false);
-      }
-    },15000);
-
-  }catch(err){
-    console.error(err);
-    smsProfile=null;
-    setSmsStatus("Error",true);
-
-    if(profileBox){
-      profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";
-    }
-
-    if(mainBox)mainBox.classList.add("sms-hidden");
-  }
-}
-    
+},15000)}catch(err){console.error(err);smsProfile=null;setSmsStatus("Error",true);if(profileBox)profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";if(mainBox)mainBox.classList.add("sms-hidden")}}
 async function loadSmsRegularContacts(){
   if(!CURRENT_MEMBER_ID)return;
 
@@ -2129,7 +1981,6 @@ async function loadSmsRegularContacts(){
         smsSelectedContact.contactAlias=selected.contactAlias||"";
         smsSelectedContact.nombreMostrar=selected.nombreMostrar||smsSelectedContact.nombreMostrar;
         smsSelectedContact.meta=getSmsContactMeta(selected)||smsSelectedContact.meta;
-        smsSelectedContact.fotoPersonal=getSmsPhotoFromItem(selected)||smsSelectedContact.fotoPersonal||"";
         smsSelectedContact.isRegular=true;
         renderSmsSelectedContactHeader();
       }
@@ -2153,8 +2004,7 @@ async function loadSmsRegularContacts(){
     getSmsContactMeta(item),
     true,
     item.contactAlias || "",
-    item.nombreMostrar || item.nombreCompleto || "Contacto",
-    getSmsPhotoFromItem(item)
+    item.nombreMostrar || item.nombreCompleto || "Contacto"
   );
 }
     async function loadHomeSmsPending(){
@@ -2203,28 +2053,7 @@ async function loadSmsRegularContacts(){
   }
 }
 async function loadSmsPending(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsPendingSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);if(!data.ok){smsPendingListData=[];select.innerHTML="<option value=''>No disponible</option>";return}smsPendingListData=data.contacts||data.pending||[];if(!smsPendingListData.length){select.innerHTML="<option value=''>Sin mensajes</option>";return}select.innerHTML=`<option value="">Seleccionar (${data.total||smsPendingListData.length})</option>${smsPendingListData.map(item=>{const id=item.contactMemberId||item.senderMemberId||item.memberId||"",name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",count=item.count||item.total||0,last=item.lastMessage?` · ${item.lastMessage}`:"";return`<option value="${escapeAttr(id)}">${escapeHtml(count?`${name} (${count})${last}`:`${name}${last}`)}</option>`}).join("")}`}catch(err){console.error(err);smsPendingListData=[];select.innerHTML="<option value=''>Error</option>"}}
-
-    function selectSmsPendingFromList(){
-  const select=document.getElementById("smsPendingSelect");
-  if(!select||!select.value)return;
-
-  const item=smsPendingListData.find(p=>(p.contactMemberId||p.senderMemberId||p.memberId||"")===select.value);
-  if(!item)return;
-
-  const name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto";
-  const isRegular=smsRegularContactList.some(c=>c.contactMemberId===select.value);
-
-  openSmsConversation(
-    select.value,
-    name,
-    item.rolSegpriv||"",
-    isRegular,
-    "",
-    name,
-    getSmsPhotoFromItem(item)
-  );
-}
-    function toggleSmsSearchBox(){const body=document.getElementById("smsSearchBody"),icon=document.getElementById("smsSearchToggleIcon");if(!body)return;const hidden=body.classList.contains("sms-hidden");body.classList.toggle("sms-hidden",!hidden);if(icon)icon.textContent=hidden?"▲":"▼"}function handleSmsLiveSearch(){const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");clearTimeout(smsSearchTimer);if(!root)return;if(!q){root.innerHTML="<div class='empty'>Escribe para buscar contactos.</div>";return}if(q.length<2){root.innerHTML="<div class='empty'>Escribe al menos 2 caracteres.</div>";return}root.innerHTML="<div class='empty'>Buscando...</div>";smsSearchTimer=setTimeout(searchSmsContacts,350)}
+function selectSmsPendingFromList(){const select=document.getElementById("smsPendingSelect");if(!select||!select.value)return;const item=smsPendingListData.find(p=>(p.contactMemberId||p.senderMemberId||p.memberId||"")===select.value);if(!item)return;const name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",isRegular=smsRegularContactList.some(c=>c.contactMemberId===select.value);openSmsConversation(select.value,name,item.rolSegpriv||"",isRegular)}function toggleSmsSearchBox(){const body=document.getElementById("smsSearchBody"),icon=document.getElementById("smsSearchToggleIcon");if(!body)return;const hidden=body.classList.contains("sms-hidden");body.classList.toggle("sms-hidden",!hidden);if(icon)icon.textContent=hidden?"▲":"▼"}function handleSmsLiveSearch(){const q=getValue("smsSearchInput"),root=document.getElementById("smsSearchResults");clearTimeout(smsSearchTimer);if(!root)return;if(!q){root.innerHTML="<div class='empty'>Escribe para buscar contactos.</div>";return}if(q.length<2){root.innerHTML="<div class='empty'>Escribe al menos 2 caracteres.</div>";return}root.innerHTML="<div class='empty'>Buscando...</div>";smsSearchTimer=setTimeout(searchSmsContacts,350)}
     
 async function searchSmsContacts(){
   if(!CURRENT_MEMBER_ID)return;
@@ -2271,8 +2100,6 @@ async function searchSmsContacts(){
         nombreCompleto:item.nombreCompleto||"",
         rolSegpriv:item.rolSegpriv||"",
         smsCode:item.smsCode||"",
-        photo:getSmsPhotoFromItem(item),
-        fotoPersonal:getSmsPhotoFromItem(item),
         isRegular:true
       });
     });
@@ -2284,12 +2111,8 @@ async function searchSmsContacts(){
 
       const regular=findSmsRegularContact(id);
 
-      const photo=getSmsPhotoFromItem(item)||getSmsPhotoFromItem(regular)||"";
-
       merged.push({
         ...item,
-        photo,
-        fotoPersonal:photo,
         contactAlias:regular?.contactAlias||"",
         isRegular:Boolean(regular)
       });
@@ -2311,16 +2134,9 @@ async function searchSmsContacts(){
         item.smsCode?`Código: ${item.smsCode}`:""
       ].filter(Boolean).join(" · ");
 
-      const photo=getSmsPhotoFromItem(item);
-
-      return `<div class="sms-contact-item" onclick="openSmsConversation('${escapeAttr(item.memberId)}','${escapeAttr(name)}','${escapeAttr(meta)}',${Boolean(item.isRegular)},'${escapeAttr(alias)}','${escapeAttr(realName)}','${escapeAttr(photo)}')">
-        <div class="sms-contact-row">
-          ${renderSmsAvatarHtml(photo,name)}
-          <div class="sms-contact-row-main">
-            <div class="sms-contact-name">${escapeHtml(name)}</div>
-            <div class="sms-contact-meta">${escapeHtml(meta)}</div>
-          </div>
-        </div>
+      return `<div class="sms-contact-item" onclick="openSmsConversation('${escapeAttr(item.memberId)}','${escapeAttr(name)}','${escapeAttr(meta)}',${Boolean(item.isRegular)},'${escapeAttr(alias)}','${escapeAttr(realName)}')">
+        <div class="sms-contact-name">${escapeHtml(name)}</div>
+        <div class="sms-contact-meta">${escapeHtml(meta)}</div>
       </div>`;
     }).join("");
 
@@ -2329,19 +2145,16 @@ async function searchSmsContacts(){
     root.innerHTML="<div class='empty'>Error al buscar contactos.</div>";
   }
 }
-
-    async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false,contactAlias="",realName="",fotoPersonal=""){
+async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false,contactAlias="",realName=""){
   if(!CURRENT_MEMBER_ID||!contactMemberId)return;
 
   const regularItem=findSmsRegularContact(contactMemberId);
-  const fotoContacto=normalizarUrlImagenWix(fotoPersonal)||getSmsPhotoFromItem(regularItem)||"";
 
   smsSelectedContact={
     memberId:contactMemberId,
     nombreMostrar:realName || regularItem?.nombreMostrar || contactName || "Contacto",
     contactAlias:contactAlias || regularItem?.contactAlias || "",
     meta:contactMeta || (regularItem ? getSmsContactMeta(regularItem) : "") || "Conversación interna",
-    fotoPersonal:fotoContacto,
     isRegular:Boolean(isRegular || regularItem)
   };
 
@@ -2369,7 +2182,6 @@ async function searchSmsContacts(){
     await loadSmsPending();
     await loadHomeSmsPending();
     await loadSmsRegularContacts();
-
   }catch(err){
     console.error(err);
     setHtml("smsChatBox","<div class='empty'>Error al abrir conversación.</div>");
@@ -2377,13 +2189,9 @@ async function searchSmsContacts(){
 }
 
 function renderSmsSelectedContactHeader(){
-  const avatar=document.getElementById("smsChatAvatar");
-
   if(!smsSelectedContact){
     setText("smsChatTitle","Chat");
     setText("smsChatMeta","Selecciona un contacto");
-
-    if(avatar)avatar.innerHTML="SP";
     return;
   }
 
@@ -2397,17 +2205,6 @@ function renderSmsSelectedContactHeader(){
 
   setText("smsChatTitle",title);
   setText("smsChatMeta",meta);
-
-  if(avatar){
-    const photo=normalizarUrlImagenWix(smsSelectedContact.fotoPersonal||"");
-    const iniciales=getSmsInitials(title);
-
-    if(photo){
-      avatar.innerHTML=`<img src="${escapeAttr(photo)}" alt="Foto del contacto SMS" onerror="this.parentElement.textContent='${escapeAttr(iniciales)}';" />`;
-    }else{
-      avatar.textContent=iniciales;
-    }
-  }
 }
 
 function updateSmsRegularContactButton(){
@@ -2481,7 +2278,6 @@ async function saveSmsContactAlias(aliasNuevo){
       smsSelectedContact.contactAlias=refreshed.contactAlias || "";
       smsSelectedContact.nombreMostrar=refreshed.nombreMostrar || smsSelectedContact.nombreMostrar;
       smsSelectedContact.meta=getSmsContactMeta(refreshed) || smsSelectedContact.meta;
-      smsSelectedContact.fotoPersonal=getSmsPhotoFromItem(refreshed)||smsSelectedContact.fotoPersonal||"";
       smsSelectedContact.isRegular=true;
     }
 
@@ -2518,59 +2314,14 @@ function clearSmsActiveChat(){
 
   setInputValue("smsRegularContactSelect","");
 }
-
-async function loadSmsMessages(scrollBottom=true){
-  if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;
-
-  const root=document.getElementById("smsChatBox");
-
-  try{
-    const data=await fetchJson(`${API_BASE}/sprivSmsMessages?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&contactMemberId=${encodeURIComponent(smsSelectedContact.memberId)}`);
-
-    if(!data.ok){
-      if(root){
-        root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar mensajes.")}</div>`;
-      }
-      return;
-    }
-
-    const messages=data.messages||[];
-
-    if(!messages.length){
-      if(root)root.innerHTML="<div class='empty'>Sin mensajes todavía.</div>";
-      return;
-    }
-
-    if(root){
-      root.innerHTML=messages.map(msg=>{
-        const mine=msg.senderMemberId===CURRENT_MEMBER_ID;
-        const text=msg.body||msg.message||msg.text||"";
-        const date=msg.createdAt||msg._createdDate||"";
-
-        if(mine){
-          return `<div class="sms-bubble mine">${escapeHtml(text)}<span class="sms-time">${formatSmsDateTime(date)}</span></div>`;
-        }
-
-        const title=smsSelectedContact.contactAlias||smsSelectedContact.nombreMostrar||"Contacto";
-
-        return `<div class="sms-message-row">
-          ${renderSmsAvatarHtml(smsSelectedContact.fotoPersonal||"",title,"sms-avatar-mini")}
-          <div class="sms-bubble theirs">${escapeHtml(text)}<span class="sms-time">${formatSmsDateTime(date)}</span></div>
-        </div>`;
-      }).join("");
-
-      if(scrollBottom)root.scrollTop=root.scrollHeight;
-    }
-
-  }catch(err){
-    console.error(err);
-
-    if(root){
-      root.innerHTML="<div class='empty'>Error al cargar mensajes.</div>";
-    }
-  }
-}
-
+    
+async function loadSmsMessages(scrollBottom=true){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const root=document.getElementById("smsChatBox");try{const data=await fetchJson(`${API_BASE}/sprivSmsMessages?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&contactMemberId=${encodeURIComponent(smsSelectedContact.memberId)}`);if(!data.ok){if(root)root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar mensajes.")}</div>`;return}const messages=data.messages||[];if(!messages.length){if(root)root.innerHTML="<div class='empty'>Sin mensajes todavía.</div>";return}if(root){root.innerHTML=messages.map(msg=>{const mine=msg.senderMemberId===CURRENT_MEMBER_ID,text=msg.body||msg.message||msg.text||"",date=msg.createdAt||msg._createdDate||"";return`<div class="sms-bubble ${mine?"mine":"theirs"}">${escapeHtml(text)}<span class="sms-time">${formatSmsDateTime(date)}</span></div>`}).join("");if(scrollBottom)root.scrollTop=root.scrollHeight}}catch(err){console.error(err);if(root)root.innerHTML="<div class='empty'>Error al cargar mensajes.</div>"}}async function sendSmsCurrentMessage(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const text=getValue("smsMessageInput").trim();if(!text)return;disable("smsSendButton",true);try{const data=await postJson(`${API_BASE}/sprivSmsSendMessage`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId,message:text});if(!data.ok){alert(data.error||"No fue posible enviar el mensaje.");return}
+setInputValue("smsMessageInput","");
+await loadSmsMessages(true);
+await loadSmsPending();
+await loadHomeSmsPending()}catch(err){console.error(err);alert("Error al enviar mensaje.")}finally{disable("smsSendButton",false)}}async function markSmsCurrentRead(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;try{await postJson(`${API_BASE}/sprivSmsMarkRead`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId})}catch(err){console.warn("No se pudo marcar como leído:",err)}}
+function fetchJson(url){return fetch(url).then(r=>r.json())}function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(r=>r.json())}function setText(id,text){const el=document.getElementById(id);if(el)el.textContent=text}function setHtml(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html}function getValue(id){const el=document.getElementById(id);return el?String(el.value||""):""}function display(id,show){const el=document.getElementById(id);if(el)el.style.display=show?"block":"none"}function toggleActive(id,active){const el=document.getElementById(id);if(el)el.classList.toggle("active",active)}function disable(id,value){const el=document.getElementById(id);if(el)el.disabled=value}function escapeHtml(value){return String(value||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function escapeAttr(value){return escapeHtml(value).replaceAll("`","&#096;")}function formatDate(value){if(!value)return"";const parts=String(value).split("T")[0].split("-");if(parts.length!==3)return String(value);return`${parts[2]}/${parts[1]}/${parts[0]}`}function toDateKey(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");return`${y}-${m}-${d}`}function createLocalDate(key){const parts=String(key||"").split("-");return new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]))}function startOfWeek(date){const d=new Date(date);d.setDate(d.getDate()-d.getDay());d.setHours(0,0,0,0);return d}function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d}function isSameDay(a,b){return toDateKey(a)===toDateKey(b)}function monthName(index){return["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][index]||""}function formatSmsDateTime(value){if(!value)return"";const d=new Date(value);if(isNaN(d.getTime()))return"";return d.toLocaleString("es-MX",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
+function setPwaInstallStatus(text){setText("pwaInstallStatus",text)}function showInstallButton(){const btn=document.getElementById("btnInstallPwa");if(btn){btn.classList.remove("hidden");btn.disabled=false}}function hideInstallButton(){const btn=document.getElementById("btnInstallPwa");if(btn){btn.classList.add("hidden");btn.disabled=false}}function showIosHelpButton(){const btn=document.getElementById("btnIosInstallHelp");if(btn)btn.classList.remove("hidden")}function hideIosHelpButton(){const btn=document.getElementById("btnIosInstallHelp");if(btn)btn.classList.add("hidden")}function showInstallNote(){const note=document.getElementById("installNote");if(note)note.classList.remove("hidden")}function hideInstallNote(){const note=document.getElementById("installNote");if(note)note.classList.add("hidden")}function initSegprivInstallFlow(){window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;if(isIOS||isStandalone)return;showInstallButton();hideIosHelpButton();hideInstallNote();setPwaInstallStatus("App instalable")});window.addEventListener("appinstalled",()=>{deferredPrompt=null;setPwaInstallStatus("App instalada");hideInstallButton();hideIosHelpButton();hideInstallNote()});if(isStandalone){setPwaInstallStatus("App instalada");hideInstallButton();hideIosHelpButton();hideInstallNote();return}if(isIOS){setPwaInstallStatus(isSafari?"iOS Safari":"iOS");hideInstallButton();hideInstallNote();showIosHelpButton();return}setPwaInstallStatus("Web");hideInstallButton();hideIosHelpButton();hideInstallNote()}async function installSegprivPwa(){if(!deferredPrompt)return;const btn=document.getElementById("btnInstallPwa");if(btn)btn.disabled=true;try{await deferredPrompt.prompt();const choice=await deferredPrompt.userChoice;if(choice&&choice.outcome==="accepted"){setPwaInstallStatus("Instalando...");hideInstallButton();hideIosHelpButton();showInstallNote();setTimeout(()=>{if(!isIOS){setPwaInstallStatus("App instalada");hideInstallNote()}},60000)}else{setPwaInstallStatus("Instalación cancelada");hideInstallNote();if(btn)btn.disabled=false}}catch(err){console.warn("SEGPRIV PWA: no se pudo abrir el instalador:",err);setPwaInstallStatus("No se pudo instalar");hideInstallNote();if(btn)btn.disabled=false}finally{deferredPrompt=null}}function openIosInstallHelp(){window.location.href="./tutorial-ios/"}
   </script>
 </body>
 </html>
