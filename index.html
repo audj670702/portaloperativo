@@ -799,6 +799,48 @@
   }
 }
 
+.home-pending-badge.service-alert{
+  background:#f59e0b;
+  color:#422006;
+  box-shadow:0 0 0 rgba(245,158,11,.45);
+}
+
+.home-pending-badge.docs-alert{
+  background:#64748b;
+  color:white;
+  box-shadow:0 0 0 rgba(100,116,139,.36);
+}
+
+.home-pending-badge.service-alert.flash{
+  animation:serviceBadgeFlash 1.05s ease-in-out infinite;
+}
+
+.home-pending-badge.docs-alert.flash{
+  animation:docsBadgeFlash 1.15s ease-in-out infinite;
+}
+
+@keyframes serviceBadgeFlash{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:0 0 0 0 rgba(245,158,11,.48);
+  }
+  50%{
+    transform:scale(1.08);
+    box-shadow:0 0 0 7px rgba(245,158,11,0);
+  }
+}
+
+@keyframes docsBadgeFlash{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:0 0 0 0 rgba(100,116,139,.38);
+  }
+  50%{
+    transform:scale(1.07);
+    box-shadow:0 0 0 7px rgba(100,116,139,0);
+  }
+}
+
 @media(max-width:520px){
   #screenHome > .grid .module-card{
     min-height:64px;
@@ -1042,7 +1084,7 @@
 
   <div class="pwa-profile-side">
     <div id="pwaProfileDiag" class="pwa-profile-diag">Em0MiD0A0AcA0Eo0</div>
-    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.80</div>
+    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.82</div>
   </div>
 </div>
 
@@ -1138,8 +1180,11 @@
 
 <div class="module-card module-servicios" onclick="openServices()">
   <span class="module-icon">📅</span>
-  <div class="module-card-content"><h2>Mis servicios</h2><p>Calendario, lista y estado operativo.</p></div>
-  <span class="home-card-right"><span class="home-card-caret">⌄</span></span>
+  <div class="module-card-content"><h2>Mis servicios</h2><p id="homeServicesUpcomingText">Calendario, lista y estado operativo.</p></div>
+  <span class="home-card-right">
+    <span id="homeServicesUpcomingBadge" class="home-pending-badge service-alert hidden">0</span>
+    <span class="home-card-caret">⌄</span>
+  </span>
 </div>
 
 <div class="module-card module-cursos" onclick="openCourses()">
@@ -1150,8 +1195,11 @@
 
 <div class="module-card module-documentos" onclick="openDocuments()">
   <span class="module-icon">📄</span>
-  <div class="module-card-content"><h2>Documentos</h2><p>Técnicos, operativos y administrativos.</p></div>
-  <span class="home-card-right"><span class="home-card-caret">⌄</span></span>
+  <div class="module-card-content"><h2>Documentos</h2><p id="homeDocsNewText">Técnicos, operativos y administrativos.</p></div>
+  <span class="home-card-right">
+    <span id="homeDocsNewBadge" class="home-pending-badge docs-alert hidden">0</span>
+    <span class="home-card-caret">⌄</span>
+  </span>
 </div>
       </div>
 
@@ -1273,7 +1321,7 @@ let manualReturnScreenId="screenHome";
 let manualCurrentLevel="";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
-document.addEventListener("DOMContentLoaded",()=>{setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260605-v2",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
+document.addEventListener("DOMContentLoaded",()=>{setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();loadHomeModuleIndicators();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260605-v2",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
 function setInitialPeriod(){const today=new Date();selectedDate=today;const start=new Date(today.getFullYear(),today.getMonth(),1),end=new Date(today.getFullYear(),today.getMonth()+1,0);setInputValue("inputStartDate",toDateKey(start));setInputValue("inputEndDate",toDateKey(end));setInputValue("inputGoDate",toDateKey(today))}
 function setInitialSupervisorPeriod(){const today=new Date();supervisorSelectedDate=today;const start=new Date(today.getFullYear(),today.getMonth(),1),end=new Date(today.getFullYear(),today.getMonth()+1,0);setInputValue("supervisorInputStartDate",toDateKey(start));setInputValue("supervisorInputEndDate",toDateKey(end));setInputValue("supervisorInputGoDate",toDateKey(today))}
 function setInputValue(id,value){const el=document.getElementById(id);if(el)el.value=value}
@@ -1290,6 +1338,7 @@ async function refreshCurrentScreen(){const screenId=getActiveScreenId();showToa
 if(screenId==="screenHome"){
   await loadPwaContext();
   await loadHomeSmsPending();
+  await loadHomeModuleIndicators();
   showToast("Inicio actualizado");
   return;
 }showToast("Actualizado")}catch(err){console.error("Error al actualizar pantalla:",err);showToast("No fue posible actualizar","error")}}
@@ -1492,6 +1541,7 @@ function renderPerfilOperativo(){
   showScreen("screenHome");
   renderPanelAccess();
   loadHomeSmsPending();
+  loadHomeModuleIndicators();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -1527,6 +1577,184 @@ function setActiveModule(moduleId){
   }
 
   showScreen("screenHome");
+}
+
+
+function loadHomeModuleIndicators(){
+  loadHomeServicesUpcoming();
+  loadHomeDocumentsNew();
+}
+
+function updateHomeServicesUpcomingBadge(total){
+  const badge=document.getElementById("homeServicesUpcomingBadge");
+  const text=document.getElementById("homeServicesUpcomingText");
+  const count=Number(total||0);
+
+  if(badge){
+    if(count>0){
+      badge.textContent=String(count);
+      badge.classList.remove("hidden");
+      badge.classList.add("flash");
+    }else{
+      badge.textContent="0";
+      badge.classList.add("hidden");
+      badge.classList.remove("flash");
+    }
+  }
+
+  if(text){
+    text.textContent=count>0
+      ? (count===1 ? "1 cobertura próxima" : `${count} coberturas próximas`)
+      : "Calendario, lista y estado operativo.";
+  }
+}
+
+function updateHomeDocumentsNewBadge(total){
+  const badge=document.getElementById("homeDocsNewBadge");
+  const text=document.getElementById("homeDocsNewText");
+  const count=Number(total||0);
+
+  if(badge){
+    if(count>0){
+      badge.textContent=String(count);
+      badge.classList.remove("hidden");
+      badge.classList.add("flash");
+    }else{
+      badge.textContent="0";
+      badge.classList.add("hidden");
+      badge.classList.remove("flash");
+    }
+  }
+
+  if(text){
+    text.textContent=count>0
+      ? (count===1 ? "1 documento nuevo" : `${count} documentos nuevos`)
+      : "Técnicos, operativos y administrativos.";
+  }
+}
+
+function isHomeUpcomingService(item){
+  const estado=normalizeServiceStatus(item?.estado||item?.estadoCobertura||"");
+
+  if(["ASISTENCIA","FALTA","OBSERVADO"].includes(estado))return false;
+
+  const inicio=getServiceStartDateTime(item);
+  if(!inicio)return false;
+
+  const ahora=new Date();
+  const limite=addHours(ahora,24);
+  const fin=getServiceEndDateTime(item);
+
+  if(fin&&fin<ahora)return false;
+
+  return inicio>=ahora && inicio<=limite;
+}
+
+async function loadHomeServicesUpcoming(){
+  resolveCurrentMember();
+
+  if(!CURRENT_MEMBER_ID){
+    updateHomeServicesUpcomingBadge(0);
+    return;
+  }
+
+  try{
+    const ahora=new Date();
+    const limite=addHours(ahora,24);
+    const fechaInicio=toDateKey(ahora);
+    const fechaFin=toDateKey(limite);
+    const url=`${API_BASE}/sprivMisServicios?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&estatus=TODOS&t=${Date.now()}`;
+    const data=await fetchJson(url);
+
+    if(!data.ok){
+      updateHomeServicesUpcomingBadge(0);
+      return;
+    }
+
+    const total=(data.items||[]).filter(isHomeUpcomingService).length;
+    updateHomeServicesUpcomingBadge(total);
+  }catch(err){
+    console.warn("No se pudo cargar indicador de servicios próximos:",err);
+    updateHomeServicesUpcomingBadge(0);
+  }
+}
+
+function getHomeDocsReviewKey(){
+  const member=String(CURRENT_MEMBER_ID||"anon").trim()||"anon";
+  return `SEGPRIV_DOCS_LAST_REVIEW_${member}`;
+}
+
+function getDocumentComparableDate(doc){
+  const raw=
+    doc?.fechaActualizacion ||
+    doc?._updatedDate ||
+    doc?.updatedAt ||
+    doc?.fechaPublicacion ||
+    doc?.fechaCreacion ||
+    doc?._createdDate ||
+    doc?.createdAt ||
+    "";
+
+  const d=new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function markDocumentsReviewed(){
+  if(!CURRENT_MEMBER_ID)return;
+
+  try{
+    localStorage.setItem(getHomeDocsReviewKey(),String(Date.now()));
+  }catch(err){
+    console.warn("No se pudo guardar revisión de documentos:",err);
+  }
+
+  updateHomeDocumentsNewBadge(0);
+}
+
+async function loadHomeDocumentsNew(){
+  resolveCurrentMember();
+
+  if(!CURRENT_MEMBER_ID){
+    updateHomeDocumentsNewBadge(0);
+    return;
+  }
+
+  let lastReview=0;
+
+  try{
+    lastReview=Number(localStorage.getItem(getHomeDocsReviewKey())||0);
+  }catch(err){
+    lastReview=0;
+  }
+
+  if(!lastReview){
+    try{
+      localStorage.setItem(getHomeDocsReviewKey(),String(Date.now()));
+    }catch(err){
+      console.warn("No se pudo inicializar revisión de documentos:",err);
+    }
+    updateHomeDocumentsNewBadge(0);
+    return;
+  }
+
+  try{
+    const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);
+
+    if(!data.ok){
+      updateHomeDocumentsNewBadge(0);
+      return;
+    }
+
+    const total=(data.items||[]).filter(doc=>{
+      const d=getDocumentComparableDate(doc);
+      return d&&d.getTime()>lastReview;
+    }).length;
+
+    updateHomeDocumentsNewBadge(total);
+  }catch(err){
+    console.warn("No se pudo cargar indicador de documentos nuevos:",err);
+    updateHomeDocumentsNewBadge(0);
+  }
 }
 
 const MANUAL_OPERACION_DATA = [
@@ -1918,7 +2146,8 @@ if(data.guardia){
 
 setText("guardiaNombre",data.guardia?.nombre||"Guardia");
 setStatus(`Servicios encontrados: ${servicios.length}`);
-renderViews()                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }catch(err){console.error(err);servicios=[];setStatus("Error al conectar con el sistema.",true);renderViews()}}
+renderViews();
+loadHomeServicesUpcoming()                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }catch(err){console.error(err);servicios=[];setStatus("Error al conectar con el sistema.",true);renderViews()}}
 function setView(view){currentView=view;toggleActive("btnViewCalendar",view==="calendar");toggleActive("btnViewList",view==="list");display("calendarView",view==="calendar");display("listView",view==="list")}function setCalendarMode(mode){calendarMode=mode;renderCalendar()}function goToday(){selectedDate=new Date();setInputValue("inputGoDate",toDateKey(selectedDate));calendarMode="day";renderCalendar()}function goToSelectedDate(){const value=getValue("inputGoDate");if(!value)return;selectedDate=createLocalDate(value);calendarMode="day";renderCalendar()}function setStatusFilter(status){statusFilter=status;["TODOS","CONF","RUTA","PRES","ASISTENCIA","FALTA","OBSERVADO"].forEach(s=>toggleActive(`filter${s}`,s===status));renderViews()}
 function normalizeServiceStatus(status){const raw=String(status||"").trim().toUpperCase();if(raw==="ASIST")return"ASISTENCIA";if(raw==="FALTO")return"FALTA";if(raw==="OBS")return"OBSERVADO";return raw}function getServiceStatusCounts(){const counts={TODOS:servicios.length,CONF:0,RUTA:0,PRES:0,ASISTENCIA:0,FALTA:0,OBSERVADO:0};servicios.forEach(item=>{const estado=normalizeServiceStatus(item.estado);if(Object.prototype.hasOwnProperty.call(counts,estado))counts[estado]++});return counts}function formatCountValue(value){return Number(value||0)>0?String(value):"-"}function renderStatusCounts(){const counts=getServiceStatusCounts();Object.keys(counts).forEach(key=>setText(`count${key}`,formatCountValue(counts[key])))}
 function renderComplianceSummary(){renderCompliance("complianceSummary",getServiceStatusCounts(),"Sin registro de cumplimiento")}function getFilteredServices(){return statusFilter==="TODOS"?servicios:servicios.filter(item=>normalizeServiceStatus(item.estado)===statusFilter)}function renderViews(){renderStatusCounts();renderComplianceSummary();renderList();renderCalendar();setView(currentView)}
@@ -2461,7 +2690,7 @@ async function loadPwaContext(){
 }    
 function renderPanelAccess(){const wrap=document.getElementById("panelAccessWrap"),cards=document.getElementById("panelAccessCards"),coord=document.getElementById("coordPanelCard"),sup=document.getElementById("supPanelCard"),caret=document.getElementById("panelAccessCaret");const hasAccess=Boolean(pwaCanCoord||pwaCanSup);if(wrap)wrap.classList.toggle("hidden",!hasAccess);if(coord)coord.classList.toggle("hidden",!pwaCanCoord);if(sup)sup.classList.toggle("hidden",!pwaCanSup);if(cards)cards.classList.toggle("hidden",!hasAccess||!panelAccessOpen);if(caret)caret.textContent=panelAccessOpen?"▲":"▼"}
 function updateSessionTopbar(){const loginBtn=document.getElementById("btnLoginSegpriv"),logoutBtn=document.querySelector(".logout-mini-btn");if(loginBtn)loginBtn.classList.toggle("hidden",Boolean(CURRENT_MEMBER_ID));if(logoutBtn)logoutBtn.classList.toggle("hidden",!CURRENT_MEMBER_ID)}function iniciarSesionSegpriv(){window.location.href=SEGPRIV_ACCESS_URL}function cerrarSesionSegpriv(){if(!confirm("¿Deseas cerrar sesión en SEGPRIV?"))return;localStorage.removeItem("SEGPRIV_MEMBER_ID");localStorage.removeItem("SEGPRIV_EMAIL");CURRENT_MEMBER_ID="";CURRENT_EMAIL="";pwaContext=null;pwaCanCoord=false;pwaCanSup=false;panelAccessOpen=false;smsProfile=null;smsSelectedContact=null;if(smsRefreshTimer){clearInterval(smsRefreshTimer);smsRefreshTimer=null}window.location.href=`${SEGPRIV_ACCESS_URL}?logout=1`}
-function setDocsStatus(text,error=false){const el=document.getElementById("docsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadDocuments(){resolveCurrentMember();const root=document.getElementById("docsList");if(!root)return;if(!CURRENT_MEMBER_ID){docsItems=[];docsCategorias=[];setDocsStatus("Sin sesión",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>";return}setDocsStatus("Cargando...");root.innerHTML="<div class='empty'>Cargando documentos...</div>";try{const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);if(!data.ok){docsItems=[];docsCategorias=[];setDocsStatus("No disponible",true);renderDocumentsCategories();root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar documentos.")}</div>`;return}docsItems=data.items||[];docsCategorias=data.categorias||[];docsCategoriaActual="TODOS";setDocsStatus(`Documentos: ${docsItems.length}`);renderDocumentsCategories();renderDocumentsList()}catch(err){console.error("Error documentos:",err);docsItems=[];docsCategorias=[];setDocsStatus("Error",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Error al conectar con documentos.</div>"}}
+function setDocsStatus(text,error=false){const el=document.getElementById("docsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadDocuments(){resolveCurrentMember();const root=document.getElementById("docsList");if(!root)return;if(!CURRENT_MEMBER_ID){docsItems=[];docsCategorias=[];setDocsStatus("Sin sesión",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>";return}setDocsStatus("Cargando...");root.innerHTML="<div class='empty'>Cargando documentos...</div>";try{const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);if(!data.ok){docsItems=[];docsCategorias=[];setDocsStatus("No disponible",true);renderDocumentsCategories();root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar documentos.")}</div>`;return}docsItems=data.items||[];docsCategorias=data.categorias||[];docsCategoriaActual="TODOS";setDocsStatus(`Documentos: ${docsItems.length}`);renderDocumentsCategories();renderDocumentsList();markDocumentsReviewed()}catch(err){console.error("Error documentos:",err);docsItems=[];docsCategorias=[];setDocsStatus("Error",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Error al conectar con documentos.</div>"}}
 function renderDocumentsCategories(){const row=document.getElementById("docsCategoryRow");if(!row)return;row.innerHTML=`<button class="docs-category-btn ${docsCategoriaActual==="TODOS"?"active":""}" onclick="setDocumentsCategory('TODOS')">Todos</button>${(docsCategorias||[]).map(cat=>`<button class="docs-category-btn ${docsCategoriaActual===cat?"active":""}" onclick="setDocumentsCategory('${escapeAttr(cat)}')">${escapeHtml(cat)}</button>`).join("")}`}function setDocumentsCategory(category){docsCategoriaActual=category||"TODOS";renderDocumentsCategories();renderDocumentsList()}function handleDocumentsSearch(){clearTimeout(docsSearchTimer);docsSearchTimer=setTimeout(renderDocumentsList,200)}function getFilteredDocuments(){const q=normalizeDocsText(getValue("docsSearchInput"));return(docsItems||[]).filter(doc=>{if(docsCategoriaActual&&docsCategoriaActual!=="TODOS"&&String(doc.categoria||"")!==docsCategoriaActual)return false;if(!q)return true;const haystack=normalizeDocsText([doc.titulo,doc.descripcion,doc.categoria,doc.tipoDocumento,doc.etiquetas,doc.versionDocumento].filter(Boolean).join(" "));return haystack.includes(q)})}function renderDocumentsList(){const root=document.getElementById("docsList");if(!root)return;const data=getFilteredDocuments();if(!data.length){root.innerHTML="<div class='empty'>Sin documentos para este filtro.</div>";return}root.innerHTML=data.map(doc=>{const titulo=doc.titulo||"Documento",categoria=doc.categoria||"General",tipo=doc.tipoDocumento||"",version=doc.versionDocumento?`Versión ${doc.versionDocumento}`:"",fecha=doc.fechaActualizacion?formatSmsDateTime(doc.fechaActualizacion):"",meta=[categoria,tipo,version,fecha].filter(Boolean).join(" · "),url=doc.urlVistaPrevia||doc.urlDocumento||"",urlDocumento=doc.urlDocumento||url,descargable=doc.descargable===true;return`<div class="docs-item"><div class="docs-item-header"><div><div class="docs-title">${escapeHtml(titulo)}</div><div class="docs-meta">${escapeHtml(meta)}</div></div><span class="docs-badge">${escapeHtml(categoria)}</span></div>${doc.descripcion?`<div class="docs-description">${escapeHtml(doc.descripcion)}</div>`:""}<div class="docs-actions">${url?`<button onclick="openDocumentUrl('${escapeAttr(url)}')">Abrir</button>`:""}${descargable&&urlDocumento?`<button class="secondary" onclick="openDocumentUrl('${escapeAttr(urlDocumento)}')">Descargar</button>`:""}</div></div>`}).join("")}function openDocumentUrl(url){if(url)window.open(url,"_blank","noopener,noreferrer")}function normalizeDocsText(value){return String(value||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
     function normalizeSmsText(value){
   return String(value||"")
