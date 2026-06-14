@@ -542,6 +542,22 @@
   font-weight:900;
 }
 
+.sms-head-refresh{
+  width:26px;
+  height:26px;
+  padding:0;
+  border-radius:999px;
+  background:#f9fafb;
+  color:var(--dark);
+  border:1px solid var(--border);
+  font-size:13px;
+  font-weight:900;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
 .global-sms-body{
   margin-top:10px;
 }
@@ -614,7 +630,7 @@
         <div class="app-left-block">
           <button class="logout-mini-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
           <div>
-            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.70</span></div>
+            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.71</span></div>
             <p>Portal operativo</p>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
           </div>
@@ -645,7 +661,7 @@
 </div>
 
     <section id="screenSms" class="global-sms-panel sms-collapsed">
-  <button class="global-sms-head" onclick="toggleSmsPanel()">
+  <div class="global-sms-head" onclick="toggleSmsPanel()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSmsPanel();}">
     <span class="module-icon">💬</span>
 
     <span class="global-sms-title">
@@ -655,27 +671,12 @@
 
     <span class="global-sms-right">
       <span id="homeSmsPendingBadge" class="home-pending-badge hidden">0</span>
+      <button class="sms-head-refresh" onclick="event.stopPropagation(); loadSms(); loadHomeSmsPending();" title="Actualizar mensajería" aria-label="Actualizar mensajería">↻</button>
       <span id="globalSmsCaret" class="global-sms-caret">▼</span>
     </span>
-  </button>
+  </div>
 
   <div id="globalSmsBody" class="global-sms-body sms-hidden">
-    <div class="module-title-row">
-      <div>
-        <h2>Mensajería</h2>
-        <p>SMS interno SEGPRIV</p>
-      </div>
-      <div id="smsStatusLine" class="status-line module-status-inline">Validando...</div>
-    </div>
-
-    <div class="sms-card sms-profile-card">
-      <div class="sms-profile-actions">
-        <button class="secondary" onclick="collapseSmsPanel()">Colapsar</button>
-        <button onclick="loadSms()">Actualizar</button>
-      </div>
-      <div id="smsProfileBox" class="sms-profile-text">Validando usuario SMS...</div>
-    </div>
-
     <div id="smsMainBox" class="sms-hidden">
       <div class="sms-card">
         <div class="sms-two-columns">
@@ -855,7 +856,7 @@ let servicios=[],selectedItem=null,currentView="calendar",statusFilter="TODOS",c
 let supervisorCoverages=[],supervisorSelectedItem=null,supervisorCurrentView="calendar",supervisorStatusFilter="TODOS",supervisorCalendarMode="month",supervisorSelectedDate=new Date();
 let supervisorServiceFilter="TODOS",supervisorPositionFilter="TODOS",supervisorGuardFilter="TODOS";
 let pwaContext=null,pwaCanCoord=false,pwaCanSup=false,panelAccessOpen=false;
-let CURRENT_MEMBER_ID="",CURRENT_EMAIL="",smsProfile=null,smsSelectedContact=null,smsRefreshTimer=null,smsSearchTimer=null,smsRegularContactList=[],smsPendingListData=[],docsItems=[],docsCategorias=[],docsCategoriaActual="TODOS",docsSearchTimer=null,deferredPrompt=null;
+let CURRENT_MEMBER_ID="",CURRENT_EMAIL="",smsProfile=null,smsSelectedContact=null,smsRefreshTimer=null,smsSearchTimer=null,smsRegularContactList=[],smsPendingListData=[],docsItems=[],docsCategorias=[],docsCategoriaActual="TODOS",docsSearchTimer=null,deferredPrompt=null,smsHeaderStatusText="",smsHeaderPendingText="SMS interno SEGPRIV.";
 let smsPanelOpen=false;
 let manualReturnScreenId="screenHome";
 let manualCurrentLevel="";
@@ -1993,38 +1994,49 @@ function renderSmsAvatarHtml(itemOrPhoto,name="",extraClass=""){
   return `<span class="${cls}">${escapeHtml(iniciales)}</span>`;
 }
 
-function setSmsStatus(text,error=false){
-  const el=document.getElementById("smsStatusLine");
+function updateSmsHeaderText(){
+  const el=document.getElementById("homeSmsPendingText");
   if(!el)return;
-  el.textContent=text;
-  el.className=error
-    ?"status-line module-status-inline status-error"
-    :"status-line module-status-inline";
+
+  const parts=[];
+  const status=String(smsHeaderStatusText||"").trim();
+  const code=String(
+    smsProfile?.smsCode ||
+    smsProfile?.codigoSms ||
+    smsProfile?.smsCodigo ||
+    ""
+  ).trim();
+  const pending=String(smsHeaderPendingText||"SMS interno SEGPRIV.").trim();
+
+  if(status)parts.push(status);
+  if(code)parts.push(`Código: ${code}`);
+  if(pending)parts.push(pending);
+
+  el.textContent=parts.join(" · ") || "SMS interno SEGPRIV.";
+}
+
+function setSmsStatus(text,error=false){
+  smsHeaderStatusText=String(text||"").replace(/\.+$/,".").trim();
+  if(smsHeaderStatusText==="Validando.")smsHeaderStatusText="Validando";
+  updateSmsHeaderText();
 }
 
 async function loadSms(){
   resolveCurrentMember();
 
-  const profileBox=document.getElementById("smsProfileBox");
   const mainBox=document.getElementById("smsMainBox");
 
   if(!CURRENT_MEMBER_ID){
     smsProfile=null;
     setSmsStatus("Sin sesión",true);
-
-    if(profileBox){
-      profileBox.innerHTML="No se recibió memberId ni existe sesión local guardada.<br>Debes entrar desde el portal Wix de acceso SEGPRIV.";
-    }
+    smsHeaderPendingText="SMS interno SEGPRIV.";
+    updateSmsHeaderText();
 
     if(mainBox)mainBox.classList.add("sms-hidden");
     return;
   }
 
-  setSmsStatus("Validando...");
-
-  if(profileBox){
-    profileBox.innerHTML="Validando usuario SMS...";
-  }
+  setSmsStatus("Validando");
 
   try{
     const data=await postJson(`${API_BASE}/sprivSmsActivate`,{
@@ -2035,10 +2047,8 @@ async function loadSms(){
     if(!data.ok){
       smsProfile=null;
       setSmsStatus("No autorizado",true);
-
-      if(profileBox){
-        profileBox.innerHTML=data.message||data.error||"Usuario no autorizado para SMS SEGPRIV.";
-      }
+      smsHeaderPendingText=data.message||data.error||"Usuario no autorizado.";
+      updateSmsHeaderText();
 
       if(mainBox)mainBox.classList.add("sms-hidden");
       return;
@@ -2047,30 +2057,18 @@ async function loadSms(){
     smsProfile=data.member;
     setSmsStatus("Activo");
 
-    if(profileBox){
-      const nombreSms=smsProfile.nombreMostrar||"Usuario SEGPRIV";
-
-      profileBox.innerHTML=`
-        <div class="sms-profile-line">
-          ${renderSmsAvatarHtml(smsProfile,nombreSms)}
-          <div class="sms-profile-text">
-            <strong>${escapeHtml(nombreSms)}</strong>
-            Rol: ${escapeHtml(smsProfile.rolSegpriv||"STAFF")}${smsProfile.smsCode?` · Código: ${escapeHtml(smsProfile.smsCode)}`:""}
-          </div>
-        </div>
-      `;
-    }
-
     if(mainBox)mainBox.classList.remove("sms-hidden");
 
     await loadSmsRegularContacts();
     await loadSmsPending();
+    await loadHomeSmsPending();
 
     if(smsRefreshTimer)clearInterval(smsRefreshTimer);
 
     smsRefreshTimer=setInterval(()=>{
       if(smsPanelOpen){
         loadSmsPending();
+        loadHomeSmsPending();
         if(smsSelectedContact) loadSmsMessages(false);
       }
     },15000);
@@ -2079,10 +2077,8 @@ async function loadSms(){
     console.error(err);
     smsProfile=null;
     setSmsStatus("Error",true);
-
-    if(profileBox){
-      profileBox.innerHTML="Error al conectar con SMS SEGPRIV.";
-    }
+    smsHeaderPendingText="Error al conectar con SMS.";
+    updateSmsHeaderText();
 
     if(mainBox)mainBox.classList.add("sms-hidden");
   }
@@ -2164,7 +2160,8 @@ async function loadSmsRegularContacts(){
   if(!CURRENT_MEMBER_ID){
     badge.classList.add("hidden");
     badge.classList.remove("flash");
-    text.textContent = "SMS interno SEGPRIV.";
+    smsHeaderPendingText = "SMS interno SEGPRIV.";
+    updateSmsHeaderText();
     return;
   }
 
@@ -2174,7 +2171,8 @@ async function loadSmsRegularContacts(){
     if(!data.ok){
       badge.classList.add("hidden");
       badge.classList.remove("flash");
-      text.textContent = "SMS interno SEGPRIV.";
+      smsHeaderPendingText = "SMS interno SEGPRIV.";
+      updateSmsHeaderText();
       return;
     }
 
@@ -2184,18 +2182,21 @@ async function loadSmsRegularContacts(){
       badge.textContent = String(total);
       badge.classList.remove("hidden");
       badge.classList.add("flash");
-      text.textContent = total === 1 ? "1 mensaje sin leer." : `${total} mensajes sin leer.`;
+      smsHeaderPendingText = total === 1 ? "1 mensaje sin leer." : `${total} mensajes sin leer.`;
+      updateSmsHeaderText();
     }else{
       badge.textContent = "0";
       badge.classList.add("hidden");
       badge.classList.remove("flash");
-      text.textContent = "Sin mensajes pendientes.";
+      smsHeaderPendingText = "Sin mensajes pendientes.";
+      updateSmsHeaderText();
     }
   }catch(err){
     console.warn("No se pudo cargar indicador SMS Home:", err);
     badge.classList.add("hidden");
     badge.classList.remove("flash");
-    text.textContent = "SMS interno SEGPRIV.";
+    smsHeaderPendingText = "SMS interno SEGPRIV.";
+    updateSmsHeaderText();
   }
 }
 async function loadSmsPending(){if(!CURRENT_MEMBER_ID)return;const select=document.getElementById("smsPendingSelect");if(!select)return;select.innerHTML="<option value=''>Cargando...</option>";try{const data=await fetchJson(`${API_BASE}/sprivSmsPending?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);if(!data.ok){smsPendingListData=[];select.innerHTML="<option value=''>No disponible</option>";return}smsPendingListData=data.contacts||data.pending||[];if(!smsPendingListData.length){select.innerHTML="<option value=''>Sin mensajes</option>";return}select.innerHTML=`<option value="">Seleccionar (${data.total||smsPendingListData.length})</option>${smsPendingListData.map(item=>{const id=item.contactMemberId||item.senderMemberId||item.memberId||"",name=item.nombreMostrar||item.displayName||item.nombreCompleto||"Contacto",count=item.count||item.total||0,last=item.lastMessage?` · ${item.lastMessage}`:"";return`<option value="${escapeAttr(id)}">${escapeHtml(count?`${name} (${count})${last}`:`${name}${last}`)}</option>`}).join("")}`}catch(err){console.error(err);smsPendingListData=[];select.innerHTML="<option value=''>Error</option>"}}
