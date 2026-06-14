@@ -256,8 +256,30 @@
 }
 
 @media(max-width:520px){
+  #screenSupervisor .module-title-row{
+    align-items:flex-start;
+    overflow:hidden;
+  }
+
+  #screenSupervisor .module-title-row > div:first-child{
+    min-width:0;
+    flex:1;
+  }
+
   .supervisor-title-actions{
-    max-width:46%;
+    max-width:40%;
+    min-width:96px;
+    overflow:hidden;
+  }
+
+  #supervisorStatusLine{
+    width:100%;
+    max-width:100%;
+    font-size:10.5px;
+    line-height:1.15;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   .supervisor-informes-btn{
@@ -685,7 +707,7 @@
         <div class="app-left-block">
           <button class="logout-mini-btn" onclick="cerrarSesionSegpriv()" title="Cerrar sesión" aria-label="Cerrar sesión">⎋</button>
           <div>
-            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.75</span></div>
+            <div class="app-brand"><h1>SCaD</h1><span class="app-version">v0.3.76</span></div>
             <p>Portal operativo</p>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
           </div>
@@ -885,7 +907,7 @@
         </div>
 
         <div class="supervisor-title-actions">
-          <div id="supervisorStatusLine" class="status-line module-status-inline">Cargando supervisión...</div>
+<div id="supervisorStatusLine" class="status-line module-status-inline">Cargando...</div>
           <button class="secondary supervisor-informes-btn" onclick="openSupervisorInformes()">Informes</button>
         </div>
       </div>
