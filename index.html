@@ -226,6 +226,55 @@
 
     .module-card{position:relative;display:flex;gap:13px;align-items:flex-start}
     .module-icon{width:36px;height:36px;border-radius:14px;background:#f3f4f6;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+    .module-card.module-servicios,
+.module-card.module-cursos,
+.module-card.module-documentos,
+.global-sms-head.module-mensajeria{
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-left-width:7px;
+  box-shadow:0 1px 3px rgba(17,24,39,.04);
+}
+
+.module-card.module-servicios{
+  border-left-color:#2563eb;
+}
+
+.module-card.module-cursos{
+  border-left-color:#7c3aed;
+}
+
+.module-card.module-documentos{
+  border-left-color:#f97316;
+}
+
+.global-sms-head.module-mensajeria{
+  border-left-color:#0f766e;
+}
+
+.module-card.module-servicios .module-icon{
+  color:#2563eb;
+  background:#eff6ff;
+  border-color:#bfdbfe;
+}
+
+.module-card.module-cursos .module-icon{
+  color:#7c3aed;
+  background:#f5f3ff;
+  border-color:#ddd6fe;
+}
+
+.module-card.module-documentos .module-icon{
+  color:#f97316;
+  background:#fff7ed;
+  border-color:#fed7aa;
+}
+
+.global-sms-head.module-mensajeria .module-icon{
+  color:#0f766e;
+  background:#ecfdf5;
+  border-color:#99f6e4;
+}
     .module-card-content{min-width:0}
     .panel-access-wrap{margin-top:14px}
     .panel-access-toggle{width:100%;border-radius:18px;background:linear-gradient(135deg,#111827,#374151);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;box-shadow:0 8px 18px rgba(17,24,39,.16)}
@@ -757,7 +806,7 @@
             <div class="app-brand">
   <img class="app-logo" src="./icons/icon-192.png" alt="SCaD" />
   <div class="app-brand-text">
-    <div class="app-version-text">v0.3.78</div>
+    <div class="app-version-text">v0.3.79</div>
     <p>Portal operativo</p>
   </div>
 </div>
@@ -790,8 +839,7 @@
 </div>
 
     <section id="screenSms" class="global-sms-panel sms-collapsed">
-  <div class="global-sms-head" onclick="toggleSmsPanel()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSmsPanel();}">
-    <span class="module-icon">💬</span>
+<div class="global-sms-head module-mensajeria" onclick="toggleSmsPanel()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSmsPanel();}">    <span class="module-icon">💬</span>
 
     <span class="global-sms-title">
       <strong>Mensajería</strong>
@@ -871,20 +919,20 @@
     <section id="screenHome" class="screen active">
       <div class="grid">
 
-        <div class="module-card" onclick="openServices()">
-          <span class="module-icon">📅</span>
-          <div class="module-card-content"><h2>Mis servicios</h2><p>Calendario, lista y estado operativo.</p></div>
-        </div>
+<div class="module-card module-servicios" onclick="openServices()">
+  <span class="module-icon">📅</span>
+  <div class="module-card-content"><h2>Mis servicios</h2><p>Calendario, lista y estado operativo.</p></div>
+</div>
 
-        <div class="module-card" onclick="openCourses()">
-          <span class="module-icon">🎓</span>
-          <div class="module-card-content"><h2>Mis cursos</h2><p>Acceso a tus cursos en SCaD.</p></div>
-        </div>
+<div class="module-card module-cursos" onclick="openCourses()">
+  <span class="module-icon">🎓</span>
+  <div class="module-card-content"><h2>Mis cursos</h2><p>Acceso a tus cursos en SCaD.</p></div>
+</div>
 
-        <div class="module-card" onclick="openDocuments()">
-          <span class="module-icon">📄</span>
-          <div class="module-card-content"><h2>Documentos</h2><p>Técnicos, operativos y administrativos.</p></div>
-        </div>
+<div class="module-card module-documentos" onclick="openDocuments()">
+  <span class="module-icon">📄</span>
+  <div class="module-card-content"><h2>Documentos</h2><p>Técnicos, operativos y administrativos.</p></div>
+</div>
       </div>
 
       <div id="panelAccessWrap" class="panel-access-wrap hidden">
