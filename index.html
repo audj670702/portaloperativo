@@ -1040,6 +1040,192 @@
 }
 }
 
+
+/* Política de privacidad - referencia discreta y modal informativo */
+body.privacy-modal-open{
+  overflow:hidden;
+}
+
+.privacy-footer{
+  margin:16px 0 6px;
+  padding:8px 4px calc(76px + env(safe-area-inset-bottom));
+  text-align:center;
+}
+
+.privacy-link{
+  background:transparent;
+  border:none;
+  color:#6b7280;
+  font-size:11px;
+  font-weight:700;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  padding:6px 8px;
+  cursor:pointer;
+}
+
+.privacy-link:active{
+  color:#111827;
+}
+
+.privacy-modal{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(17,24,39,.42);
+  backdrop-filter:blur(2px);
+}
+
+.privacy-modal.hidden{
+  display:none!important;
+}
+
+.privacy-modal-card{
+  width:min(92vw,640px);
+  max-height:84vh;
+  background:#f8fafc;
+  border:1px solid rgba(148,163,184,.65);
+  border-radius:20px;
+  box-shadow:0 18px 42px rgba(17,24,39,.24);
+  overflow:hidden;
+}
+
+.privacy-modal-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 15px 11px;
+  background:linear-gradient(135deg,#eef2ff,#ecfeff);
+  border-bottom:1px solid rgba(148,163,184,.45);
+}
+
+.privacy-modal-kicker{
+  font-size:10.5px;
+  font-weight:900;
+  letter-spacing:.35px;
+  color:#0f766e;
+  text-transform:uppercase;
+  margin-bottom:3px;
+}
+
+.privacy-modal-title{
+  margin:0;
+  font-size:15.5px;
+  line-height:1.15;
+  color:#111827;
+}
+
+.privacy-modal-subtitle{
+  margin:3px 0 0;
+  font-size:11px;
+  color:#64748b;
+  line-height:1.25;
+}
+
+.privacy-close-icon{
+  width:30px;
+  height:30px;
+  padding:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.75);
+  color:#334155;
+  border:1px solid rgba(148,163,184,.65);
+  font-size:16px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.privacy-modal-body{
+  max-height:calc(84vh - 126px);
+  overflow-y:auto;
+  padding:14px 16px 16px;
+  color:#374151;
+  font-size:12.5px;
+  line-height:1.42;
+  background:#ffffff;
+}
+
+.privacy-modal-body h4{
+  margin:14px 0 5px;
+  font-size:12.5px;
+  color:#111827;
+  line-height:1.2;
+}
+
+.privacy-modal-body h4:first-child{
+  margin-top:0;
+}
+
+.privacy-modal-body p{
+  margin:0 0 8px;
+}
+
+.privacy-modal-body ul{
+  margin:5px 0 9px 17px;
+  padding:0;
+}
+
+.privacy-modal-body li{
+  margin-bottom:4px;
+}
+
+.privacy-modal-actions{
+  padding:10px 14px 13px;
+  display:flex;
+  justify-content:flex-end;
+  background:#f8fafc;
+  border-top:1px solid rgba(148,163,184,.38);
+}
+
+.privacy-close-btn{
+  padding:9px 16px;
+  font-size:12.5px;
+  background:#111827;
+  color:white;
+}
+
+@media(max-width:520px){
+  .privacy-footer{
+    margin-top:12px;
+    padding-bottom:calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .privacy-link{
+    font-size:10.8px;
+    padding:7px 10px;
+  }
+
+  .privacy-modal{
+    align-items:flex-end;
+    padding:10px;
+  }
+
+  .privacy-modal-card{
+    width:100%;
+    max-height:86vh;
+    border-radius:18px;
+  }
+
+  .privacy-modal-title{
+    font-size:15px;
+  }
+
+  .privacy-modal-body{
+    font-size:12.2px;
+    line-height:1.4;
+    max-height:calc(86vh - 126px);
+    padding:13px 14px 15px;
+  }
+}
+
   </style>
 </head>
 
@@ -1084,7 +1270,7 @@
 
   <div class="pwa-profile-side">
     <div id="pwaProfileDiag" class="pwa-profile-diag">Em0MiD0A0AcA0Eo0</div>
-    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.82</div>
+    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.83</div>
   </div>
 </div>
 
@@ -1180,7 +1366,7 @@
 
 <div class="module-card module-servicios" onclick="openServices()">
   <span class="module-icon">📅</span>
-  <div class="module-card-content"><h2>Mis servicios</h2><p id="homeServicesUpcomingText">Calendario, lista y estado operativo.</p></div>
+  <div class="module-card-content"><h2>Mis servicios</h2><p id="homeServicesUpcomingText">Calendario y estado operativo.</p></div>
   <span class="home-card-right">
     <span id="homeServicesUpcomingBadge" class="home-pending-badge service-alert hidden">0</span>
     <span class="home-card-caret">⌄</span>
@@ -1297,6 +1483,72 @@
     <section id="screenDetail" class="screen"><div class="module-title"><h2>Detalle del servicio</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToServices()">Regresar</button></div><div id="detailBox"></div></section>
     <section id="screenSupervisorDetail" class="screen"><div class="module-title"><h2>Detalle de supervisión</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToSupervisor()">Regresar</button></div><div id="supervisorDetailBox"></div></section>
 
+
+    <div class="privacy-footer">
+      <button type="button" class="privacy-link" onclick="openPrivacyPolicyModal()">Política de privacidad</button>
+    </div>
+
+    <div id="privacyPolicyModal" class="privacy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="privacyPolicyTitle" aria-hidden="true">
+      <div class="privacy-modal-card" onclick="event.stopPropagation();">
+        <div class="privacy-modal-head">
+          <div>
+            <div class="privacy-modal-kicker">Información</div>
+            <h2 id="privacyPolicyTitle" class="privacy-modal-title">Política de privacidad</h2>
+            <p class="privacy-modal-subtitle">Portal Operativo SCaD · Consulta informativa</p>
+          </div>
+          <button type="button" id="privacyPolicyCloseIcon" class="privacy-close-icon" onclick="closePrivacyPolicyModal()" aria-label="Cerrar política de privacidad">×</button>
+        </div>
+
+        <div id="privacyPolicyBody" class="privacy-modal-body" tabindex="0">
+          <h4>Portal Operativo SCaD</h4>
+          <p>Portal Operativo SCaD es una herramienta tecnológica de apoyo para la administración, programación, comunicación y seguimiento operativo de servicios. Su finalidad es facilitar a la Empresa Operadora la organización de personal, servicios, turnos, coberturas, documentos, mensajes y registros relacionados con la operación diaria.</p>
+
+          <h4>Partes involucradas</h4>
+          <p><strong>Empresa Técnica (ET):</strong> JM Operador Integral en Servicios y Soluciones, S.A. de C.V., desarrolladora y administradora técnica de la app.</p>
+          <p><strong>Empresa Operadora (EO):</strong> empresa que contrata o emplea al usuario final y que utiliza Portal Operativo SCaD para administrar su operación.</p>
+          <p><strong>Usuario final:</strong> persona empleada, contratada o vinculada operativamente con la EO, que accede a la app para consultar, confirmar o registrar información relacionada con sus servicios.</p>
+
+          <h4>Responsable principal de los datos</h4>
+          <p>La EO es la responsable principal de los datos personales y operativos que captura, administra y utiliza dentro de Portal Operativo SCaD.</p>
+          <p>La EO determina qué información registra, actualiza, consulta o conserva sobre sus usuarios finales, de acuerdo con sus necesidades laborales, operativas, administrativas y de prestación de servicios.</p>
+
+          <h4>Datos que puede administrar la EO</h4>
+          <ul>
+            <li>Datos de identificación del usuario: nombre, clave interna, correo, teléfono, fotografía o datos de registro.</li>
+            <li>Datos laborales u operativos: puesto, estatus activo, rol funcional, asignaciones, servicios, turnos, horarios, coberturas y responsables.</li>
+            <li>Datos de operación diaria: confirmaciones, rutas, presencia, asistencia, faltas, observaciones, validaciones de supervisión y registros relacionados con el cumplimiento del servicio.</li>
+            <li>Datos de comunicación interna: mensajes laborales, contactos internos y notificaciones relacionadas con la operación.</li>
+            <li>Datos documentales: acceso o disponibilidad de documentos, circulares, instrucciones, procedimientos o materiales operativos.</li>
+          </ul>
+          <p>Estos datos se utilizan para fines de organización interna, programación de servicios, control operativo, comunicación laboral, supervisión, cumplimiento de obligaciones de servicio y administración de personal relacionado con la EO.</p>
+
+          <h4>Alcance de la Empresa Técnica</h4>
+          <p>La ET desarrolla, mantiene y proporciona soporte técnico a Portal Operativo SCaD. No sustituye a la EO en la administración laboral, operativa o legal de los datos del usuario final.</p>
+          <p>La ET podrá tener acceso técnico a información almacenada en la plataforma cuando sea necesario para mantenimiento, soporte, corrección de fallas, depuración, mejora del sistema, análisis de desempeño de la app, generación de información estadística, orientación de uso, comunicación sobre mejoras, disponibilidad de recursos o terminación del servicio.</p>
+          <p>Cuando la ET utilice información con fines estadísticos o de análisis de desempeño, procurará que dicha información sea utilizada de forma general, agregada o funcional, sin que su finalidad sea evaluar individualmente al usuario final fuera del contexto operativo de la app.</p>
+
+          <h4>Conservación y eliminación de datos</h4>
+          <p>Los datos integrados en las bases de datos de Portal Operativo SCaD podrán ser actualizados, corregidos, depurados o eliminados conforme a la administración de la EO, procesos técnicos de mantenimiento o terminación del uso del servicio por parte de la EO.</p>
+          <p>La ET no asume obligación de conservar indefinidamente la información registrada por la EO en la plataforma.</p>
+          <p>La información registrada en Portal Operativo SCaD tiene una finalidad operativa y tecnológica. Por sí misma, no representa necesariamente el expediente laboral, administrativo o legal formal del usuario final frente a la EO, ni sustituye los registros internos, contractuales, contables, laborales o legales que correspondan a la EO conforme a sus propias obligaciones.</p>
+
+          <h4>Responsabilidad del usuario final</h4>
+          <p>El usuario final debe utilizar Portal Operativo SCaD únicamente para fines laborales u operativos autorizados por la EO. También es responsable de mantener la confidencialidad de sus accesos, no compartir sus credenciales y registrar información veraz cuando la app solicite confirmaciones, marcajes, mensajes o datos relacionados con su operación.</p>
+
+          <h4>Uso de la información</h4>
+          <p>La información registrada en Portal Operativo SCaD no se utilizará para fines ajenos a la operación, administración, supervisión, mejora técnica, comunicación interna o funcionamiento de la plataforma, salvo autorización correspondiente o requerimiento legal aplicable.</p>
+
+          <h4>Contacto</h4>
+          <p>Para temas relacionados con el funcionamiento técnico de la app, puede contactarse a la ET en: <strong>jmoperadoradeservicios@gmail.com</strong>.</p>
+          <p>Para aclaraciones, correcciones, baja, actualización o administración de datos personales y operativos, el usuario final deberá dirigirse principalmente a la EO que administra su registro dentro de Portal Operativo SCaD.</p>
+        </div>
+
+        <div class="privacy-modal-actions">
+          <button type="button" class="privacy-close-btn" onclick="closePrivacyPolicyModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <button id="smsFloatButton" class="sms-float-btn" onclick="openSms()" title="Mensajería" aria-label="Mensajería">
@@ -1322,6 +1574,47 @@ let manualCurrentLevel="";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
 document.addEventListener("DOMContentLoaded",()=>{setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();loadHomeModuleIndicators();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260605-v2",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
+document.addEventListener("keydown",handlePrivacyModalKeydown);
+
+
+function openPrivacyPolicyModal(){
+  const modal=document.getElementById("privacyPolicyModal");
+  const body=document.getElementById("privacyPolicyBody");
+  const closeBtn=document.getElementById("privacyPolicyCloseIcon");
+
+  if(!modal)return;
+
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("privacy-modal-open");
+
+  if(body)body.scrollTop=0;
+
+  setTimeout(()=>{
+    if(closeBtn)closeBtn.focus();
+  },30);
+}
+
+function closePrivacyPolicyModal(){
+  const modal=document.getElementById("privacyPolicyModal");
+
+  if(!modal)return;
+
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("privacy-modal-open");
+}
+
+function handlePrivacyModalKeydown(event){
+  if(event.key!=="Escape")return;
+
+  const modal=document.getElementById("privacyPolicyModal");
+
+  if(modal&&!modal.classList.contains("hidden")){
+    closePrivacyPolicyModal();
+  }
+}
+
 function setInitialPeriod(){const today=new Date();selectedDate=today;const start=new Date(today.getFullYear(),today.getMonth(),1),end=new Date(today.getFullYear(),today.getMonth()+1,0);setInputValue("inputStartDate",toDateKey(start));setInputValue("inputEndDate",toDateKey(end));setInputValue("inputGoDate",toDateKey(today))}
 function setInitialSupervisorPeriod(){const today=new Date();supervisorSelectedDate=today;const start=new Date(today.getFullYear(),today.getMonth(),1),end=new Date(today.getFullYear(),today.getMonth()+1,0);setInputValue("supervisorInputStartDate",toDateKey(start));setInputValue("supervisorInputEndDate",toDateKey(end));setInputValue("supervisorInputGoDate",toDateKey(today))}
 function setInputValue(id,value){const el=document.getElementById(id);if(el)el.value=value}
