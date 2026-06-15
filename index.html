@@ -1864,7 +1864,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v0.3.90";
+const APP_VERSION = "v1.0";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -1879,8 +1879,35 @@ let manualReturnScreenId="screenHome";
 let manualCurrentLevel="";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
-document.addEventListener("DOMContentLoaded",()=>{initAppIntroSplash();setAppVersion();setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();loadHomeModuleIndicators();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260614-intro-v389",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
+document.addEventListener("DOMContentLoaded",()=>{
+  initAppIntroSplash();
+  setAppVersion();
+  setInitialPeriod();
+  setInitialSupervisorPeriod();
+  initSegprivInstallFlow();
+  resolveCurrentMember();
+  loadPwaContext();
+  loadHomeSmsPending();
+  loadHomeModuleIndicators();
+  initHomeLightRefresh();
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",async()=>{
+      try{
+        const r=await navigator.serviceWorker.register("./sw.js?v=20260615-v10",{scope:"./"});
+        if(r&&typeof r.update==="function")r.update();
+      }catch(e){
+        console.warn("SW no registrado:",e);
+      }
+    });
+  }
+});
+
 document.addEventListener("keydown",handlePrivacyModalKeydown);
+document.addEventListener("visibilitychange",handlePwaVisibilityChange);
+window.addEventListener("focus",handlePwaWindowFocus);
+    
+    document.addEventListener("keydown",handlePrivacyModalKeydown);
 
 
 function setAppVersion(){
