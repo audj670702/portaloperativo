@@ -1236,7 +1236,7 @@ body.privacy-modal-open{
   }
 }
 
-/* SMS - tarjeta institucional Avisos de sistema v0.3.88 */
+/* SMS - tarjeta institucional Avisos de sistema v0.3.89 */
 .sms-system-card{
   align-self:stretch;
   width:100%;
@@ -1352,19 +1352,19 @@ body.privacy-modal-open{
   }
 }
     
-/* Intro / Splash interno SCaD HUB v0.3.86 */
+/* Intro / Splash interno SCaD HUB v0.3.89 */
 body.splash-running{
   overflow:hidden;
 }
 
 body.splash-running .app{
   opacity:0;
-  transform:translateY(8px) scale(.992);
-  filter:blur(1.5px);
+  transform:translateY(6px) scale(.995);
+  filter:blur(1px);
 }
 
 .app{
-  transition:opacity .72s ease,transform .72s ease,filter .72s ease;
+  transition:opacity .46s ease, transform .46s ease, filter .46s ease;
 }
 
 .app-intro-splash{
@@ -1374,13 +1374,13 @@ body.splash-running .app{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:28px;
+  padding:26px;
   background:
-    radial-gradient(circle at 50% 36%, rgba(255,255,255,.98) 0%, rgba(248,250,252,.96) 38%, rgba(239,246,255,.86) 72%, rgba(226,232,240,.72) 100%),
-    linear-gradient(145deg,#ffffff,#f8fafc 48%,#eef3fa);
+    radial-gradient(circle at 50% 36%, rgba(255,255,255,.98) 0%, rgba(248,250,252,.97) 42%, rgba(239,246,255,.86) 74%, rgba(226,232,240,.70) 100%),
+    linear-gradient(145deg,#ffffff,#f8fafc 52%,#eef3fa);
   opacity:1;
   visibility:visible;
-  transition:opacity .72s ease,visibility .72s ease;
+  transition:opacity .42s ease, visibility .42s ease;
 }
 
 .app-intro-splash::before{
@@ -1389,8 +1389,8 @@ body.splash-running .app{
   inset:18px;
   border-radius:32px;
   background:
-    radial-gradient(circle at 26% 18%, rgba(255,255,255,.82), transparent 34%),
-    radial-gradient(circle at 76% 80%, rgba(219,234,254,.46), transparent 38%);
+    radial-gradient(circle at 26% 18%, rgba(255,255,255,.84), transparent 34%),
+    radial-gradient(circle at 76% 80%, rgba(219,234,254,.42), transparent 38%);
   pointer-events:none;
 }
 
@@ -1401,13 +1401,13 @@ body.splash-running .app{
 
 .app-intro-card{
   position:relative;
-  width:min(76vw,310px);
-  min-height:218px;
+  width:min(78vw,310px);
+  min-height:206px;
   border-radius:30px;
-  background:rgba(255,255,255,.86);
+  background:rgba(255,255,255,.88);
   border:1px solid rgba(203,213,225,.58);
   box-shadow:
-    0 26px 60px rgba(15,23,42,.13),
+    0 28px 62px rgba(15,23,42,.13),
     0 10px 24px rgba(15,23,42,.08),
     inset 0 1px 0 rgba(255,255,255,.92);
   backdrop-filter:blur(12px);
@@ -1415,74 +1415,38 @@ body.splash-running .app{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:30px 26px 26px;
-  animation:introCardIn .78s cubic-bezier(.2,.78,.22,1) both;
-}
-
-.app-intro-logo-wrap{
-  width:104px;
-  height:104px;
-  border-radius:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(248,250,252,.86));
-  box-shadow:
-    0 18px 36px rgba(15,23,42,.10),
-    inset 0 1px 0 rgba(255,255,255,.96);
-  border:1px solid rgba(226,232,240,.86);
+  padding:30px 26px 28px;
+  animation:introCardIn .46s cubic-bezier(.2,.78,.22,1) both;
 }
 
 .app-intro-logo{
-  width:82px;
-  height:82px;
+  width:132px;
+  height:132px;
   object-fit:contain;
-  filter:drop-shadow(0 8px 16px rgba(15,23,42,.11));
-}
-
-.app-intro-title{
-  margin-top:18px;
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:.08em;
-  color:#111827;
-  line-height:1;
+  display:block;
+  filter:drop-shadow(0 12px 22px rgba(15,23,42,.12));
+  opacity:0;
+  transform:scale(.94);
+  animation:introLogoIn .42s ease .05s forwards;
 }
 
 .app-intro-subtitle{
-  margin-top:6px;
-  font-size:10.5px;
-  font-weight:800;
+  margin-top:14px;
+  font-size:22px;
+  font-weight:900;
   letter-spacing:.34em;
   color:#64748b;
   text-transform:uppercase;
   line-height:1;
-}
-
-.app-intro-loader{
-  position:absolute;
-  bottom:18px;
-  width:52px;
-  height:3px;
-  border-radius:999px;
-  overflow:hidden;
-  background:#e5e7eb;
-}
-
-.app-intro-loader::after{
-  content:"";
-  display:block;
-  width:44%;
-  height:100%;
-  border-radius:999px;
-  background:#111827;
-  animation:introLoaderMove 1.05s ease-in-out infinite;
+  opacity:0;
+  transform:scale(.9) translateY(8px);
+  animation:introHubIn .52s ease .16s forwards;
 }
 
 @keyframes introCardIn{
   from{
     opacity:0;
-    transform:translateY(14px) scale(.94);
+    transform:translateY(12px) scale(.955);
   }
   to{
     opacity:1;
@@ -1490,10 +1454,26 @@ body.splash-running .app{
   }
 }
 
-@keyframes introLoaderMove{
-  0%{transform:translateX(-120%)}
-  50%{transform:translateX(80%)}
-  100%{transform:translateX(240%)}
+@keyframes introLogoIn{
+  from{
+    opacity:0;
+    transform:scale(.94);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@keyframes introHubIn{
+  from{
+    opacity:0;
+    transform:scale(.9) translateY(8px);
+  }
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
 }
 
 @media(max-width:520px){
@@ -1503,32 +1483,30 @@ body.splash-running .app{
 
   .app-intro-card{
     width:min(82vw,292px);
-    min-height:202px;
+    min-height:190px;
     border-radius:28px;
     padding:26px 22px 24px;
   }
 
-  .app-intro-logo-wrap{
-    width:94px;
-    height:94px;
-    border-radius:25px;
-  }
-
   .app-intro-logo{
-    width:74px;
-    height:74px;
+    width:112px;
+    height:112px;
   }
 
-  .app-intro-title{
-    margin-top:16px;
-    font-size:17px;
+  .app-intro-subtitle{
+    margin-top:12px;
+    font-size:19px;
+    letter-spacing:.32em;
   }
 }
 
 @media(prefers-reduced-motion:reduce){
   .app-intro-card,
-  .app-intro-loader::after{
+  .app-intro-logo,
+  .app-intro-subtitle{
     animation:none;
+    opacity:1;
+    transform:none;
   }
 
   .app-intro-splash,
@@ -1536,7 +1514,6 @@ body.splash-running .app{
     transition:none;
   }
 }
-
   </style>
 </head>
 
@@ -1544,12 +1521,8 @@ body.splash-running .app{
 
   <div id="appIntroSplash" class="app-intro-splash" aria-hidden="true">
     <div class="app-intro-card">
-      <div class="app-intro-logo-wrap">
-        <img class="app-intro-logo" src="./icons/icon-512.png" alt="SCaD HUB" />
-      </div>
-      <div class="app-intro-title">SCaD</div>
+      <img class="app-intro-logo" src="./icons/LOGO%20SCaD%20PNG.png" alt="SCaD HUB" />
       <div class="app-intro-subtitle">HUB</div>
-      <div class="app-intro-loader"></div>
     </div>
   </div>
 
@@ -1891,10 +1864,10 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/sp-gestion-servicios";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v0.3.87";
+const APP_VERSION = "v0.3.89";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
-const INTRO_TOTAL_MS = 4200;
-const INTRO_FADE_MS = 740;
+const INTRO_TOTAL_MS = 2200;
+const INTRO_FADE_MS = 420;
 let servicios=[],selectedItem=null,currentView="calendar",statusFilter="TODOS",calendarMode="month",selectedDate=new Date();
 let supervisorCoverages=[],supervisorSelectedItem=null,supervisorCurrentView="calendar",supervisorStatusFilter="TODOS",supervisorCalendarMode="month",supervisorSelectedDate=new Date();
 let supervisorServiceFilter="TODOS",supervisorPositionFilter="TODOS",supervisorGuardFilter="TODOS";
@@ -1906,7 +1879,7 @@ let manualReturnScreenId="screenHome";
 let manualCurrentLevel="";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
-document.addEventListener("DOMContentLoaded",()=>{initAppIntroSplash();setAppVersion();setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();loadHomeModuleIndicators();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260605-v2",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
+document.addEventListener("DOMContentLoaded",()=>{initAppIntroSplash();setAppVersion();setInitialPeriod();setInitialSupervisorPeriod();initSegprivInstallFlow();resolveCurrentMember();loadPwaContext();loadHomeSmsPending();loadHomeModuleIndicators();if("serviceWorker" in navigator){window.addEventListener("load",async()=>{try{const r=await navigator.serviceWorker.register("./sw.js?v=20260614-intro-v389",{scope:"./"});if(r&&typeof r.update==="function")r.update()}catch(e){console.warn("SW no registrado:",e)}})}});
 document.addEventListener("keydown",handlePrivacyModalKeydown);
 
 
