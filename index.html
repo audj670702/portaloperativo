@@ -1226,7 +1226,7 @@ body.privacy-modal-open{
   }
 }
 
-/* SMS - tarjeta institucional Avisos de sistema v0.3.85 */
+/* SMS - tarjeta institucional Avisos de sistema v0.3.86 */
 .sms-system-card{
   align-self:stretch;
   width:100%;
@@ -3941,12 +3941,7 @@ async function loadSmsMessages(scrollBottom=true){
           return `${separator}<div class="sms-bubble mine">${escapeHtml(text)}${timeHtml}</div>`;
         }
 
-        const title=smsSelectedContact.contactAlias||smsSelectedContact.nombreMostrar||"Contacto";
-
-        return `${separator}<div class="sms-message-row">
-          ${renderSmsAvatarHtml(smsSelectedContact.fotoPersonal||"",title,"sms-avatar-mini")}
-          <div class="sms-bubble theirs">${escapeHtml(text)}${timeHtml}</div>
-        </div>`;
+        return `${separator}<div class="sms-bubble theirs">${escapeHtml(text)}${timeHtml}</div>`;
       }).join("");
 
       if(scrollBottom)root.scrollTop=root.scrollHeight;
