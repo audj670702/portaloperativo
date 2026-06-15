@@ -1270,7 +1270,7 @@ body.privacy-modal-open{
 
   <div class="pwa-profile-side">
     <div id="pwaProfileDiag" class="pwa-profile-diag">Em0MiD0A0AcA0Eo0</div>
-    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.83</div>
+    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.84</div>
   </div>
 </div>
 
@@ -2993,6 +2993,34 @@ function renderDocumentsCategories(){const row=document.getElementById("docsCate
     .replace(/[\u0300-\u036f]/g,"");
 }
 
+    function isSmsSystemContactId(value){
+  const id=String(value||"").trim();
+  return id==="AVISOS_SISTEMA" || id==="SYSTEM_SEGPRIV" || id==="SYSTEM_PROGRAMACION" || id==="PROGRAMACION";
+}
+
+function getSmsSystemContact(){
+  return {
+    contactMemberId:"AVISOS_SISTEMA",
+    memberId:"AVISOS_SISTEMA",
+    contactAlias:"",
+    nombreMostrar:"Avisos de sistema",
+    nombreCompleto:"Avisos de sistema",
+    rolSegpriv:"Canal institucional",
+    smsCode:"",
+    photo:"",
+    fotoPersonal:"",
+    isRegular:true,
+    systemConversation:true
+  };
+}
+
+function isSmsSystemSelected(){
+  return Boolean(
+    smsSelectedContact?.systemConversation===true ||
+    isSmsSystemContactId(smsSelectedContact?.memberId)
+  );
+}
+
 function getSmsContactDisplayName(item){
   const alias = String(item?.contactAlias || "").trim();
   const nombre = String(item?.nombreMostrar || item?.nombreCompleto || "Contacto").trim();
@@ -3164,28 +3192,36 @@ async function loadSmsRegularContacts(){
   try{
     const data=await fetchJson(`${API_BASE}/sprivSmsContacts?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&t=${Date.now()}`);
 
-    if(!data.ok){
-      smsRegularContactList=[];
-      select.innerHTML="<option value=''>No disponible</option>";
-      return;
-    }
+    const systemContact=getSmsSystemContact();
+    const backendContacts=data.ok ? (data.contacts||[]) : [];
 
-    smsRegularContactList=data.contacts||[];
-
-    if(!smsRegularContactList.length){
-      select.innerHTML="<option value=''>Sin contactos</option>";
-      return;
-    }
+    smsRegularContactList=[
+      systemContact,
+      ...backendContacts.filter(item=>!isSmsSystemContactId(item.contactMemberId||item.memberId))
+    ];
 
     select.innerHTML=`<option value="">Seleccionar</option>${smsRegularContactList.map(item=>{
+      if(isSmsSystemContactId(item.contactMemberId||item.memberId)){
+        return `<option value="AVISOS_SISTEMA">Avisos de sistema</option>`;
+      }
+
       const name=getSmsContactDisplayName(item);
       const meta=getSmsContactMeta(item);
       const label=meta ? `${name} · ${meta}` : name;
+
       return `<option value="${escapeAttr(item.contactMemberId)}">${escapeHtml(label)}</option>`;
     }).join("")}`;
 
     if(smsSelectedContact?.memberId){
+      if(isSmsSystemSelected()){
+        select.value="AVISOS_SISTEMA";
+        renderSmsSelectedContactHeader();
+        updateSmsRegularContactButton();
+        return;
+      }
+
       const selected=findSmsRegularContact(smsSelectedContact.memberId);
+
       if(selected){
         smsSelectedContact.contactAlias=selected.contactAlias||"";
         smsSelectedContact.nombreMostrar=selected.nombreMostrar||smsSelectedContact.nombreMostrar;
@@ -3198,12 +3234,35 @@ async function loadSmsRegularContacts(){
 
   }catch(err){
     console.error(err);
-    smsRegularContactList=[];
-    select.innerHTML="<option value=''>Error</option>";
+
+    const systemContact=getSmsSystemContact();
+
+    smsRegularContactList=[systemContact];
+    select.innerHTML=`<option value="">Seleccionar</option><option value="AVISOS_SISTEMA">Avisos de sistema</option>`;
   }
-}function selectSmsRegularContactFromList(){
+}
+  
+}
+    
+function selectSmsRegularContactFromList(){
   const select=document.getElementById("smsRegularContactSelect");
   if(!select||!select.value)return;
+
+  if(isSmsSystemContactId(select.value)){
+    const systemContact=getSmsSystemContact();
+
+    openSmsConversation(
+      "AVISOS_SISTEMA",
+      systemContact.nombreMostrar,
+      "Canal institucional",
+      true,
+      "",
+      systemContact.nombreMostrar,
+      ""
+    );
+
+    return;
+  }
 
   const item=smsRegularContactList.find(c=>c.contactMemberId===select.value);
   if(!item)return;
@@ -3401,45 +3460,62 @@ async function searchSmsContacts(){
     root.innerHTML="<div class='empty'>Error al buscar contactos.</div>";
   }
 }
+    
 async function openSmsConversation(contactMemberId,contactName,contactMeta="",isRegular=false,contactAlias="",realName="",fotoPersonal=""){
   if(!CURRENT_MEMBER_ID||!contactMemberId)return;
 
-  const regularItem=findSmsRegularContact(contactMemberId);
-  const fotoContacto=normalizarUrlImagenWix(fotoPersonal)||getSmsPhotoFromItem(regularItem)||"";
+  const isSystem=isSmsSystemContactId(contactMemberId);
+  const regularItem=isSystem ? getSmsSystemContact() : findSmsRegularContact(contactMemberId);
+  const fotoContacto=isSystem ? "" : (normalizarUrlImagenWix(fotoPersonal)||getSmsPhotoFromItem(regularItem)||"");
 
   smsSelectedContact={
-    memberId:contactMemberId,
-    nombreMostrar:realName || regularItem?.nombreMostrar || contactName || "Contacto",
-    contactAlias:contactAlias || regularItem?.contactAlias || "",
-    meta:contactMeta || (regularItem ? getSmsContactMeta(regularItem) : "") || "Conversación interna",
+    memberId:isSystem ? "AVISOS_SISTEMA" : contactMemberId,
+    nombreMostrar:isSystem ? "Avisos de sistema" : (realName || regularItem?.nombreMostrar || contactName || "Contacto"),
+    contactAlias:isSystem ? "" : (contactAlias || regularItem?.contactAlias || ""),
+    meta:isSystem ? "Canal institucional" : (contactMeta || (regularItem ? getSmsContactMeta(regularItem) : "") || "Conversación interna"),
     fotoPersonal:fotoContacto,
-    isRegular:Boolean(isRegular || regularItem)
+    isRegular:isSystem ? true : Boolean(isRegular || regularItem),
+    systemConversation:isSystem
   };
 
   renderSmsSelectedContactHeader();
 
-  disable("smsMessageInput",false);
-  disable("smsSendButton",false);
+  disable("smsMessageInput",isSystem);
+  disable("smsSendButton",isSystem);
+
+  if(isSystem){
+    setInputValue("smsMessageInput","");
+  }
+
   updateSmsRegularContactButton();
 
   setHtml("smsChatBox","<div class='empty'>Abriendo conversación...</div>");
 
   try{
-    const data=await postJson(`${API_BASE}/sprivSmsConversation`,{
-      memberId:CURRENT_MEMBER_ID,
-      contactMemberId
-    });
+    if(!isSystem){
+      const data=await postJson(`${API_BASE}/sprivSmsConversation`,{
+        memberId:CURRENT_MEMBER_ID,
+        contactMemberId
+      });
 
-    if(!data.ok){
-      setHtml("smsChatBox",`<div class="empty">${escapeHtml(data.error||"No fue posible abrir conversación.")}</div>`);
-      return;
+      if(!data.ok){
+        setHtml("smsChatBox",`<div class="empty">${escapeHtml(data.error||"No fue posible abrir conversación.")}</div>`);
+        return;
+      }
     }
 
     await markSmsCurrentRead();
     await loadSmsMessages(true);
     await loadSmsPending();
     await loadHomeSmsPending();
-    await loadSmsRegularContacts();
+
+    if(!isSystem){
+      await loadSmsRegularContacts();
+    }else{
+      const select=document.getElementById("smsRegularContactSelect");
+      if(select)select.value="AVISOS_SISTEMA";
+    }
+
   }catch(err){
     console.error(err);
     setHtml("smsChatBox","<div class='empty'>Error al abrir conversación.</div>");
@@ -3468,6 +3544,11 @@ function renderSmsSelectedContactHeader(){
   setText("smsChatMeta",meta);
 
   if(avatar){
+    if(isSmsSystemSelected()){
+      avatar.textContent="⚙";
+      return;
+    }
+
     const photo=normalizarUrlImagenWix(smsSelectedContact.fotoPersonal||"");
     const iniciales=getSmsInitials(title);
 
@@ -3483,7 +3564,7 @@ function updateSmsRegularContactButton(){
   const btn=document.getElementById("smsRegularContactBtn");
   const aliasBtn=document.getElementById("smsAliasBtn");
 
-  if(!smsSelectedContact?.memberId){
+  if(!smsSelectedContact?.memberId || isSmsSystemSelected()){
     if(btn)btn.classList.add("hidden");
     if(aliasBtn)aliasBtn.classList.add("hidden");
     return;
@@ -3651,12 +3732,45 @@ async function loadSmsMessages(scrollBottom=true){
   }
 }
 
-async function sendSmsCurrentMessage(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;const text=getValue("smsMessageInput").trim();if(!text)return;disable("smsSendButton",true);try{const data=await postJson(`${API_BASE}/sprivSmsSendMessage`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId,message:text});if(!data.ok){alert(data.error||"No fue posible enviar el mensaje.");return}
-setInputValue("smsMessageInput","");
-await loadSmsMessages(true);
-await loadSmsPending();
-await loadHomeSmsPending()}catch(err){console.error(err);alert("Error al enviar mensaje.")}finally{disable("smsSendButton",false)}}async function markSmsCurrentRead(){if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;try{await postJson(`${API_BASE}/sprivSmsMarkRead`,{memberId:CURRENT_MEMBER_ID,contactMemberId:smsSelectedContact.memberId})}catch(err){console.warn("No se pudo marcar como leído:",err)}}
-function fetchJson(url){return fetch(url).then(r=>r.json())}function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(r=>r.json())}function setText(id,text){const el=document.getElementById(id);if(el)el.textContent=text}function setHtml(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html}function getValue(id){const el=document.getElementById(id);return el?String(el.value||""):""}function display(id,show){const el=document.getElementById(id);if(el)el.style.display=show?"block":"none"}function toggleActive(id,active){const el=document.getElementById(id);if(el)el.classList.toggle("active",active)}function disable(id,value){const el=document.getElementById(id);if(el)el.disabled=value}function escapeHtml(value){return String(value||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function escapeAttr(value){return escapeHtml(value).replaceAll("`","&#096;")}function formatDate(value){if(!value)return"";const parts=String(value).split("T")[0].split("-");if(parts.length!==3)return String(value);return`${parts[2]}/${parts[1]}/${parts[0]}`}function toDateKey(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");return`${y}-${m}-${d}`}function createLocalDate(key){const parts=String(key||"").split("-");return new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]))}function startOfWeek(date){const d=new Date(date);d.setDate(d.getDate()-d.getDay());d.setHours(0,0,0,0);return d}function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d}function isSameDay(a,b){return toDateKey(a)===toDateKey(b)}function monthName(index){return["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][index]||""}function getSmsMessageDate(value){if(!value)return null;const d=new Date(value);return isNaN(d.getTime())?null:d}function getSmsMessageDayKey(value){const d=getSmsMessageDate(value);return d?toDateKey(d):""}function formatSmsTimeOnly(value){const d=getSmsMessageDate(value);if(!d)return"";return d.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}function formatSmsMessageDayLabel(value){const d=getSmsMessageDate(value);if(!d)return"";const today=new Date();const yesterday=addDays(today,-1);if(isSameDay(d,today))return"Hoy";if(isSameDay(d,yesterday))return"Ayer";return formatDate(toDateKey(d))}function formatSmsDateTime(value){if(!value)return"";const d=new Date(value);if(isNaN(d.getTime()))return"";return d.toLocaleString("es-MX",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
+async function sendSmsCurrentMessage(){
+  if(!CURRENT_MEMBER_ID||!smsSelectedContact?.memberId)return;
+
+  if(isSmsSystemSelected()){
+    showToast("Avisos de sistema es un canal institucional.");
+    return;
+  }
+
+  const text=getValue("smsMessageInput").trim();
+
+  if(!text)return;
+
+  disable("smsSendButton",true);
+
+  try{
+    const data=await postJson(`${API_BASE}/sprivSmsSendMessage`,{
+      memberId:CURRENT_MEMBER_ID,
+      contactMemberId:smsSelectedContact.memberId,
+      message:text
+    });
+
+    if(!data.ok){
+      alert(data.error||"No fue posible enviar el mensaje.");
+      return;
+    }
+
+    setInputValue("smsMessageInput","");
+    await loadSmsMessages(true);
+    await loadSmsPending();
+    await loadHomeSmsPending();
+
+  }catch(err){
+    console.error(err);
+    alert("Error al enviar mensaje.");
+  }finally{
+    disable("smsSendButton",false);
+  }
+}
+    function fetchJson(url){return fetch(url).then(r=>r.json())}function postJson(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).then(r=>r.json())}function setText(id,text){const el=document.getElementById(id);if(el)el.textContent=text}function setHtml(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html}function getValue(id){const el=document.getElementById(id);return el?String(el.value||""):""}function display(id,show){const el=document.getElementById(id);if(el)el.style.display=show?"block":"none"}function toggleActive(id,active){const el=document.getElementById(id);if(el)el.classList.toggle("active",active)}function disable(id,value){const el=document.getElementById(id);if(el)el.disabled=value}function escapeHtml(value){return String(value||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}function escapeAttr(value){return escapeHtml(value).replaceAll("`","&#096;")}function formatDate(value){if(!value)return"";const parts=String(value).split("T")[0].split("-");if(parts.length!==3)return String(value);return`${parts[2]}/${parts[1]}/${parts[0]}`}function toDateKey(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");return`${y}-${m}-${d}`}function createLocalDate(key){const parts=String(key||"").split("-");return new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]))}function startOfWeek(date){const d=new Date(date);d.setDate(d.getDate()-d.getDay());d.setHours(0,0,0,0);return d}function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d}function isSameDay(a,b){return toDateKey(a)===toDateKey(b)}function monthName(index){return["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][index]||""}function getSmsMessageDate(value){if(!value)return null;const d=new Date(value);return isNaN(d.getTime())?null:d}function getSmsMessageDayKey(value){const d=getSmsMessageDate(value);return d?toDateKey(d):""}function formatSmsTimeOnly(value){const d=getSmsMessageDate(value);if(!d)return"";return d.toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}function formatSmsMessageDayLabel(value){const d=getSmsMessageDate(value);if(!d)return"";const today=new Date();const yesterday=addDays(today,-1);if(isSameDay(d,today))return"Hoy";if(isSameDay(d,yesterday))return"Ayer";return formatDate(toDateKey(d))}function formatSmsDateTime(value){if(!value)return"";const d=new Date(value);if(isNaN(d.getTime()))return"";return d.toLocaleString("es-MX",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
 function setPwaInstallStatus(text){setText("pwaInstallStatus",text)}function showInstallButton(){const btn=document.getElementById("btnInstallPwa");if(btn){btn.classList.remove("hidden");btn.disabled=false}}function hideInstallButton(){const btn=document.getElementById("btnInstallPwa");if(btn){btn.classList.add("hidden");btn.disabled=false}}function showIosHelpButton(){const btn=document.getElementById("btnIosInstallHelp");if(btn)btn.classList.remove("hidden")}function hideIosHelpButton(){const btn=document.getElementById("btnIosInstallHelp");if(btn)btn.classList.add("hidden")}function showInstallNote(){const note=document.getElementById("installNote");if(note)note.classList.remove("hidden")}function hideInstallNote(){const note=document.getElementById("installNote");if(note)note.classList.add("hidden")}function initSegprivInstallFlow(){window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;if(isIOS||isStandalone)return;showInstallButton();hideIosHelpButton();hideInstallNote();setPwaInstallStatus("App instalable")});window.addEventListener("appinstalled",()=>{deferredPrompt=null;setPwaInstallStatus("App instalada");hideInstallButton();hideIosHelpButton();hideInstallNote()});if(isStandalone){setPwaInstallStatus("App instalada");hideInstallButton();hideIosHelpButton();hideInstallNote();return}if(isIOS){setPwaInstallStatus(isSafari?"iOS Safari":"iOS");hideInstallButton();hideInstallNote();showIosHelpButton();return}setPwaInstallStatus("Web");hideInstallButton();hideIosHelpButton();hideInstallNote()}async function installSegprivPwa(){if(!deferredPrompt)return;const btn=document.getElementById("btnInstallPwa");if(btn)btn.disabled=true;try{await deferredPrompt.prompt();const choice=await deferredPrompt.userChoice;if(choice&&choice.outcome==="accepted"){setPwaInstallStatus("Instalando...");hideInstallButton();hideIosHelpButton();showInstallNote();setTimeout(()=>{if(!isIOS){setPwaInstallStatus("App instalada");hideInstallNote()}},60000)}else{setPwaInstallStatus("Instalación cancelada");hideInstallNote();if(btn)btn.disabled=false}}catch(err){console.warn("SEGPRIV PWA: no se pudo abrir el instalador:",err);setPwaInstallStatus("No se pudo instalar");hideInstallNote();if(btn)btn.disabled=false}finally{deferredPrompt=null}}function openIosInstallHelp(){window.location.href="./tutorial-ios/"}
   </script>
 </body>
