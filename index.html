@@ -1829,7 +1829,25 @@ body.splash-running .app{
     <section id="screenDetail" class="screen"><div class="module-title"><h2>Detalle del servicio</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToServices()">Regresar</button></div><div id="detailBox"></div></section>
     <section id="screenSupervisorDetail" class="screen"><div class="module-title"><h2>Detalle de supervisión</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToSupervisor()">Regresar</button></div><div id="supervisorDetailBox"></div></section>
 
+    <div id="panelGuideModal" class="privacy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="panelGuideTitle" aria-hidden="true">
+      <div class="privacy-modal-card" onclick="event.stopPropagation();">
+        <div class="privacy-modal-head">
+          <div>
+            <div class="privacy-modal-kicker">Información funcional</div>
+            <h2 id="panelGuideTitle" class="privacy-modal-title">Guía de paneles</h2>
+            <p class="privacy-modal-subtitle">Portal Operativo SCaD · Roles funcionales</p>
+          </div>
+          <button type="button" id="panelGuideCloseIcon" class="privacy-close-icon" onclick="closePanelGuideModal()" aria-label="Cerrar Guía de paneles">×</button>
+        </div>
 
+        <div id="panelGuideBody" class="privacy-modal-body" tabindex="0"></div>
+
+        <div class="privacy-modal-actions">
+          <button type="button" class="privacy-close-btn" onclick="closePanelGuideModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+    
     <div class="privacy-footer">
       <button type="button" class="privacy-link" onclick="openPrivacyPolicyModal()">Política de privacidad</button>
     </div>
@@ -1909,7 +1927,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.3";
+const APP_VERSION = "v1.4";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2015,8 +2033,26 @@ function openPrivacyPolicyModal(){
   },30);
 }
 
-function closePrivacyPolicyModal(){
-  const modal=document.getElementById("privacyPolicyModal");
+function openPanelGuideModal(){
+  const modal=document.getElementById("panelGuideModal");
+  const body=document.getElementById("panelGuideBody");
+  const closeBtn=document.getElementById("panelGuideCloseIcon");
+
+  if(!modal)return;
+
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("privacy-modal-open");
+
+  if(body)body.scrollTop=0;
+
+  setTimeout(()=>{
+    if(closeBtn)closeBtn.focus();
+  },30);
+}
+
+function closePanelGuideModal(){
+  const modal=document.getElementById("panelGuideModal");
 
   if(!modal)return;
 
@@ -2025,12 +2061,83 @@ function closePrivacyPolicyModal(){
   document.body.classList.remove("privacy-modal-open");
 }
 
+function renderPanelGuideContent(){
+  const body=document.getElementById("panelGuideBody");
+  if(!body)return;
+
+  const sections=[];
+
+  if(pwaCanAdm){
+    sections.push(`
+      <h4>Administración</h4>
+      <p>El panel de Administración permite configurar la base operativa de la Empresa Operadora dentro del Portal Operativo SCaD.</p>
+      <ul>
+        <li><strong>Clientes:</strong> registra y administra los clientes de la Empresa Operadora.</li>
+        <li><strong>Servicios:</strong> organiza los servicios asociados a cada cliente.</li>
+        <li><strong>Posiciones:</strong> define los puntos, puestos o lugares operativos dentro de un servicio.</li>
+        <li><strong>Turnos:</strong> configura horarios operativos reutilizables por servicio.</li>
+        <li><strong>Requerimientos:</strong> establece cuántas coberturas se necesitan, en qué días y bajo qué condiciones.</li>
+        <li><strong>Personal:</strong> administra el personal operativo y sus roles funcionales.</li>
+        <li><strong>Documentos:</strong> publica información técnica, operativa o administrativa autorizada.</li>
+      </ul>
+
+      <h4>Regla clave para Administración</h4>
+      <p>Todo registro operativo debe quedar asociado a la Empresa Operadora correspondiente. Esto evita mezclar información entre empresas, clientes, servicios o usuarios.</p>
+    `);
+  }
+
+  if(pwaCanCoord || pwaCanAdm){
+    sections.push(`
+      <h4>Coordinación</h4>
+      <p>El panel de Coordinación sirve para programar, consultar y dar seguimiento operativo a las coberturas.</p>
+      <ul>
+        <li><strong>Programación:</strong> asigna personal a coberturas requeridas.</li>
+        <li><strong>Reasignación:</strong> permite ajustar una cobertura cuando cambia el personal asignado.</li>
+        <li><strong>Seguimiento:</strong> permite revisar el avance operativo de las coberturas.</li>
+        <li><strong>Estados:</strong> ayuda a identificar si una cobertura está programada, confirmada, en ruta, presente, validada o pendiente.</li>
+        <li><strong>Mensajería:</strong> puede utilizarse para comunicar cambios relevantes al personal involucrado.</li>
+      </ul>
+
+      <h4>Regla clave para Coordinación</h4>
+      <p>La programación debe mantener correspondencia entre servicio, posición, turno, fecha y personal asignado. Un cambio operativo relevante debe reflejarse en la cobertura correcta.</p>
+    `);
+  }
+
+  if(pwaCanSup || pwaCanAdm){
+    sections.push(`
+      <h4>Supervisión</h4>
+      <p>El panel de Supervisión permite validar en campo el cumplimiento operativo de las coberturas asignadas.</p>
+      <ul>
+        <li><strong>Consulta:</strong> revisa coberturas bajo ámbito de supervisión.</li>
+        <li><strong>Validación de asistencia:</strong> confirma formalmente que el personal asistió.</li>
+        <li><strong>Falta:</strong> registra ausencia cuando corresponde conforme a la ventana operativa.</li>
+        <li><strong>Observación:</strong> documenta información relevante de la cobertura.</li>
+        <li><strong>Incidencia:</strong> registra eventos operativos que requieren seguimiento.</li>
+      </ul>
+
+      <h4>Regla clave para Supervisión</h4>
+      <p>El marcaje del guardia informa actividad operativa, pero la validación de Supervisión confirma formalmente asistencia, falta u observación.</p>
+    `);
+  }
+
+  body.innerHTML=sections.length
+    ? sections.join("")
+    : `<p>No hay información funcional disponible para este perfil.</p>`;
+}
+}
+
 function handlePrivacyModalKeydown(event){
   if(event.key!=="Escape")return;
 
-  const modal=document.getElementById("privacyPolicyModal");
+  const privacyModal=document.getElementById("privacyPolicyModal");
+  const panelGuideModal=document.getElementById("panelGuideModal");
 
-  if(modal&&!modal.classList.contains("hidden")){
+  if(panelGuideModal&&!panelGuideModal.classList.contains("hidden")){
+    closePanelGuideModal();
+    return;
+  }
+
+  if(privacyModal&&!privacyModal.classList.contains("hidden")){
     closePrivacyPolicyModal();
   }
 }
@@ -2670,14 +2777,10 @@ function openPanelGuide(){
     return;
   }
 
-  const current=getActiveScreenId();
-  manualReturnScreenId=current && current!=="screenManualOperacion" ? current : "screenHome";
-  manualMode="paneles";
-  manualCurrentLevel="";
-  showScreen("screenManualOperacion");
-  renderManualOperacion();
+  renderPanelGuideContent();
+  openPanelGuideModal();
 }
-
+    
 function backFromManualOperacion(){
   if(manualCurrentLevel){
     manualCurrentLevel="";
