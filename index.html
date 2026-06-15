@@ -1759,6 +1759,7 @@ body.splash-running .app{
             <span>Guía de paneles</span>
           </button>
         </div>
+      </div>
     </section>
 
     <section id="screenDocuments" class="screen">
@@ -2014,7 +2015,6 @@ function initAppIntroSplash(){
   },INTRO_TOTAL_MS);
 }
 
-
 function openPrivacyPolicyModal(){
   const modal=document.getElementById("privacyPolicyModal");
   const body=document.getElementById("privacyPolicyBody");
@@ -2031,6 +2031,16 @@ function openPrivacyPolicyModal(){
   setTimeout(()=>{
     if(closeBtn)closeBtn.focus();
   },30);
+}
+
+function closePrivacyPolicyModal(){
+  const modal=document.getElementById("privacyPolicyModal");
+
+  if(!modal)return;
+
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("privacy-modal-open");
 }
 
 function openPanelGuideModal(){
@@ -2123,7 +2133,6 @@ function renderPanelGuideContent(){
   body.innerHTML=sections.length
     ? sections.join("")
     : `<p>No hay información funcional disponible para este perfil.</p>`;
-}
 }
 
 function handlePrivacyModalKeydown(event){
