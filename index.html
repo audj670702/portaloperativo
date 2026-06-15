@@ -1588,7 +1588,7 @@ body.splash-running .app{
             <button id="btnIosInstallHelp" class="install-action hidden" onclick="openIosInstallHelp()">Ver tutorial</button>
           </div>
 <button class="topbar-icon-btn" onclick="refreshCurrentScreen()" title="Actualizar" aria-label="Actualizar">↻</button>
-<button class="topbar-icon-btn" onclick="openManualOperacion()" title="Manual de Operación" aria-label="Manual de Operación">ⓘ</button>
+<button class="topbar-icon-btn" onclick="openGeneralInfo()" title="Ayuda general" aria-label="Ayuda general">ⓘ</button>
         </div>
       </div>
     </div>
@@ -1830,6 +1830,25 @@ body.splash-running .app{
     <section id="screenDetail" class="screen"><div class="module-title"><h2>Detalle del servicio</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToServices()">Regresar</button></div><div id="detailBox"></div></section>
     <section id="screenSupervisorDetail" class="screen"><div class="module-title"><h2>Detalle de supervisión</h2><p>Cobertura asignada</p></div><div class="toolbar"><button class="secondary" onclick="backToSupervisor()">Regresar</button></div><div id="supervisorDetailBox"></div></section>
 
+    <div id="generalInfoModal" class="privacy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="generalInfoTitle" aria-hidden="true">
+      <div class="privacy-modal-card" onclick="event.stopPropagation();">
+        <div class="privacy-modal-head">
+          <div>
+            <div class="privacy-modal-kicker">Información general</div>
+            <h2 id="generalInfoTitle" class="privacy-modal-title">Ayuda general</h2>
+            <p class="privacy-modal-subtitle">Portal Operativo SCaD · Uso básico</p>
+          </div>
+          <button type="button" id="generalInfoCloseIcon" class="privacy-close-icon" onclick="closeGeneralInfoModal()" aria-label="Cerrar ayuda general">×</button>
+        </div>
+
+        <div id="generalInfoBody" class="privacy-modal-body" tabindex="0"></div>
+
+        <div class="privacy-modal-actions">
+          <button type="button" class="privacy-close-btn" onclick="closeGeneralInfoModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+    
     <div id="panelGuideModal" class="privacy-modal hidden" role="dialog" aria-modal="true" aria-labelledby="panelGuideTitle" aria-hidden="true">
       <div class="privacy-modal-card" onclick="event.stopPropagation();">
         <div class="privacy-modal-head">
@@ -1928,7 +1947,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.4";
+const APP_VERSION = "v1.5";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2015,6 +2034,88 @@ function initAppIntroSplash(){
   },INTRO_TOTAL_MS);
 }
 
+function openGeneralInfo(){
+  renderGeneralInfoContent();
+  openGeneralInfoModal();
+}
+
+function openGeneralInfoModal(){
+  const modal=document.getElementById("generalInfoModal");
+  const body=document.getElementById("generalInfoBody");
+  const closeBtn=document.getElementById("generalInfoCloseIcon");
+
+  if(!modal)return;
+
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("privacy-modal-open");
+
+  if(body)body.scrollTop=0;
+
+  setTimeout(()=>{
+    if(closeBtn)closeBtn.focus();
+  },30);
+}
+
+function closeGeneralInfoModal(){
+  const modal=document.getElementById("generalInfoModal");
+
+  if(!modal)return;
+
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("privacy-modal-open");
+}
+
+function renderGeneralInfoContent(){
+  const body=document.getElementById("generalInfoBody");
+  if(!body)return;
+
+  body.innerHTML=`
+    <h4>Portal Operativo SCaD</h4>
+    <p>Portal Operativo SCaD es una herramienta de apoyo para consultar servicios, recibir información operativa, acceder a documentos y utilizar comunicación interna relacionada con la operación diaria.</p>
+
+    <h4>Inicio</h4>
+    <p>La pantalla de inicio concentra los módulos disponibles para el usuario conforme a su perfil y permisos activos.</p>
+    <ul>
+      <li><strong>Mensajería:</strong> canal laboral interno para comunicación operativa.</li>
+      <li><strong>Mis servicios:</strong> consulta de coberturas asignadas, calendario, lista y estado operativo.</li>
+      <li><strong>Mis cursos:</strong> acceso a cursos disponibles en SCaD.</li>
+      <li><strong>Documentos:</strong> consulta de documentos técnicos, operativos o administrativos autorizados.</li>
+    </ul>
+
+    <h4>Mis servicios</h4>
+    <p>Permite consultar las coberturas asignadas y revisar el detalle de cada servicio.</p>
+    <ul>
+      <li><strong>Calendario:</strong> vista por fecha de las coberturas.</li>
+      <li><strong>Lista:</strong> vista ordenada de servicios.</li>
+      <li><strong>Detalle:</strong> información de horario, posición e indicaciones.</li>
+      <li><strong>Marcajes:</strong> confirmación, en ruta y presente, cuando estén disponibles.</li>
+    </ul>
+
+    <h4>Estados operativos</h4>
+    <p>Los estados permiten identificar el avance de una cobertura.</p>
+    <ul>
+      <li><strong>PROG:</strong> servicio programado.</li>
+      <li><strong>CONF:</strong> servicio confirmado.</li>
+      <li><strong>RUTA:</strong> traslado reportado.</li>
+      <li><strong>PRES:</strong> presencia reportada.</li>
+      <li><strong>ASISTENCIA:</strong> asistencia validada.</li>
+      <li><strong>FALTA:</strong> falta registrada.</li>
+      <li><strong>OBSERVADO:</strong> cobertura con observación o incidencia.</li>
+    </ul>
+
+    <h4>Mensajería</h4>
+    <p>Mensajería es un canal interno para comunicación laboral. Los mensajes deben usarse para asuntos relacionados con la operación, servicios, coordinación o información institucional.</p>
+
+    <h4>Documentos</h4>
+    <p>Documentos muestra únicamente información autorizada para el usuario. La disponibilidad puede depender del perfil, servicio, cliente o reglas internas de la Empresa Operadora.</p>
+
+    <h4>Paneles de control</h4>
+    <p>Los paneles de control solo se muestran a usuarios con rol funcional autorizado. La guía específica de paneles se consulta desde el acceso <strong>ⓘ Guía de paneles</strong> dentro de esa sección.</p>
+  `;
+}
+    
 function openPrivacyPolicyModal(){
   const modal=document.getElementById("privacyPolicyModal");
   const body=document.getElementById("privacyPolicyBody");
@@ -2138,8 +2239,14 @@ function renderPanelGuideContent(){
 function handlePrivacyModalKeydown(event){
   if(event.key!=="Escape")return;
 
-  const privacyModal=document.getElementById("privacyPolicyModal");
+  const generalInfoModal=document.getElementById("generalInfoModal");
   const panelGuideModal=document.getElementById("panelGuideModal");
+  const privacyModal=document.getElementById("privacyPolicyModal");
+
+  if(generalInfoModal&&!generalInfoModal.classList.contains("hidden")){
+    closeGeneralInfoModal();
+    return;
+  }
 
   if(panelGuideModal&&!panelGuideModal.classList.contains("hidden")){
     closePanelGuideModal();
