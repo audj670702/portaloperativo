@@ -1724,12 +1724,12 @@ body.splash-running .app{
           <span id="panelAccessCaret" class="panel-access-caret">▼</span>
         </button>
 
-<div id="admPanelCard" class="module-card control-card adm hidden" onclick="openAdmPanel()">
-  <span class="module-icon">⚙️</span>
-  <div class="module-card-content"><h2>Administración</h2><p>Gestión operativa y configuración.</p></div>
-</div>
-        
-        <div id="panelAccessCards" class="panel-access-grid hidden">
+<div id="panelAccessCards" class="panel-access-grid hidden">
+  <div id="admPanelCard" class="module-card control-card adm hidden" onclick="openAdmPanel()">
+    <span class="module-icon">⚙️</span>
+    <div class="module-card-content"><h2>Administración</h2><p>Gestión operativa y configuración.</p></div>
+  </div>
+  
           <div id="coordPanelCard" class="module-card control-card coord hidden" onclick="openCoordPanel()">
             <span class="module-icon">📋</span>
             <div class="module-card-content"><h2>Coordinación</h2><p>Programación y control operativo.</p></div>
@@ -1891,7 +1891,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/sp-gestion-servicios";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v0.3.86";
+const APP_VERSION = "v0.3.87";
 const INTRO_AUDIO_SRC = "./audio/INTRO%20app%20SCaD.mp3";
 const INTRO_TOTAL_MS = 4200;
 const INTRO_FADE_MS = 740;
@@ -3444,11 +3444,11 @@ function pwaContextHasRole(ctx, role){
 async function loadPwaContext(){
   resolveCurrentMember();
 
-pwaContext=null;
-pwaCanAdm=false;
-pwaCanCoord=false;
-pwaCanSup=false;
-panelAccessOpen=false;
+  pwaContext=null;
+  pwaCanAdm=false;
+  pwaCanCoord=false;
+  pwaCanSup=false;
+  panelAccessOpen=false;
 
   renderPanelAccess();
   renderPerfilOperativo();
@@ -3461,22 +3461,25 @@ panelAccessOpen=false;
     const url=`${API_BASE}/sprivPwaContext?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`;
     const data=await fetchJson(url);
 
-pwaContext=data;
-pwaCanAdm=Boolean(data.canAdm) || pwaContextHasRole(data,"ADM");
-pwaCanCoord=Boolean(data.canCoord) || pwaContextHasRole(data,"COORD");
-pwaCanSup=Boolean(data.canSup) || pwaContextHasRole(data,"SUP");
+    if(data && data.ok){
+      pwaContext=data;
+      pwaCanAdm=Boolean(data.canAdm) || pwaContextHasRole(data,"ADM");
+      pwaCanCoord=Boolean(data.canCoord) || pwaContextHasRole(data,"COORD");
+      pwaCanSup=Boolean(data.canSup) || pwaContextHasRole(data,"SUP");
     }
+
   }catch(err){
     console.warn("No se pudo cargar contexto PWA:",err);
-pwaContext=null;
-pwaCanAdm=false;
-pwaCanCoord=false;
-pwaCanSup=false;
+    pwaContext=null;
+    pwaCanAdm=false;
+    pwaCanCoord=false;
+    pwaCanSup=false;
   }
 
   renderPanelAccess();
   renderPerfilOperativo();
-}    
+}
+    
 function renderPanelAccess(){
   const wrap=document.getElementById("panelAccessWrap");
   const cards=document.getElementById("panelAccessCards");
