@@ -1226,6 +1226,122 @@ body.privacy-modal-open{
   }
 }
 
+/* SMS - tarjeta institucional Avisos de sistema v0.3.85 */
+.sms-system-card{
+  align-self:stretch;
+  width:100%;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  border-left:7px solid #f97316;
+  border-radius:18px;
+  padding:14px;
+  color:#111827;
+  box-shadow:0 6px 16px rgba(17,24,39,.06);
+}
+
+.sms-system-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.sms-system-title{
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.35px;
+  text-transform:uppercase;
+  color:#9a3412;
+}
+
+.sms-system-type{
+  font-size:10.5px;
+  font-weight:900;
+  color:#7c2d12;
+  background:#ffedd5;
+  border:1px solid #fdba74;
+  border-radius:999px;
+  padding:4px 8px;
+  white-space:nowrap;
+}
+
+.sms-system-intro{
+  font-size:14px;
+  font-weight:800;
+  line-height:1.35;
+  margin-bottom:12px;
+}
+
+.sms-system-data{
+  background:white;
+  border:1px solid #fed7aa;
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:12px;
+}
+
+.sms-system-data-row{
+  display:grid;
+  grid-template-columns:82px 1fr;
+  gap:8px;
+  padding:9px 11px;
+  border-bottom:1px solid #ffedd5;
+  font-size:13px;
+  line-height:1.25;
+}
+
+.sms-system-data-row:last-child{
+  border-bottom:none;
+}
+
+.sms-system-data-label{
+  font-weight:900;
+  color:#9a3412;
+}
+
+.sms-system-data-value{
+  font-weight:700;
+  color:#111827;
+}
+
+.sms-system-guidance{
+  font-size:12.5px;
+  line-height:1.38;
+  color:#374151;
+  margin-top:4px;
+}
+
+.sms-system-guidance strong{
+  color:#111827;
+}
+
+.sms-system-footer{
+  margin-top:10px;
+  font-size:11px;
+  font-weight:800;
+  color:#9a3412;
+  display:flex;
+  justify-content:flex-end;
+}
+
+@media(max-width:520px){
+  .sms-system-card{
+    padding:13px;
+    border-radius:17px;
+  }
+
+  .sms-system-data-row{
+    grid-template-columns:76px 1fr;
+    font-size:12.8px;
+    padding:8px 10px;
+  }
+
+  .sms-system-intro{
+    font-size:13.5px;
+  }
+}
+    
   </style>
 </head>
 
@@ -1270,7 +1386,7 @@ body.privacy-modal-open{
 
   <div class="pwa-profile-side">
     <div id="pwaProfileDiag" class="pwa-profile-diag">Em0MiD0A0AcA0Eo0</div>
-    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.84</div>
+    <div id="pwaProfileVersion" class="pwa-profile-version">v0.3.85</div>
   </div>
 </div>
 
@@ -3021,6 +3137,117 @@ function isSmsSystemSelected(){
   );
 }
 
+    function getSmsSystemNoticeType(msg){
+  const raw=String(
+    msg?.tipoAviso ||
+    msg?.noticeType ||
+    msg?.categoriaAviso ||
+    "SERVICIO"
+  ).trim().toUpperCase();
+
+  if(raw==="DOCUMENTO"||raw==="DOCUMENTOS")return"Documento";
+  if(raw==="CURSO"||raw==="CURSOS")return"Curso";
+  if(raw==="ADMIN"||raw==="ADMINISTRATIVO")return"Administrativo";
+  if(raw==="GENERAL")return"General";
+
+  return"Servicio";
+}
+
+function parseSmsSystemNoticeText(text){
+  const raw=String(text||"").replace(/\r\n/g,"\n").trim();
+  const lines=raw.split("\n").map(line=>line.trim()).filter(Boolean);
+
+  const result={
+    title:"Aviso de sistema",
+    intro:"",
+    rows:[],
+    guidance:[]
+  };
+
+  let index=0;
+
+  if(lines[index]&&normalizeSmsText(lines[index]).includes("aviso de sistema")){
+    result.title=lines[index];
+    index++;
+  }
+
+  while(index<lines.length && !normalizeSmsText(lines[index]).startsWith("datos del servicio")){
+    if(!result.intro){
+      result.intro=lines[index];
+    }else{
+      result.guidance.push(lines[index]);
+    }
+    index++;
+  }
+
+  if(index<lines.length && normalizeSmsText(lines[index]).startsWith("datos del servicio")){
+    index++;
+  }
+
+  while(index<lines.length){
+    const line=lines[index];
+    const colonIndex=line.indexOf(":");
+
+    if(colonIndex>0){
+      const label=line.slice(0,colonIndex).trim();
+      const value=line.slice(colonIndex+1).trim();
+
+      if(label&&value){
+        result.rows.push({label,value});
+        index++;
+        continue;
+      }
+    }
+
+    result.guidance.push(line);
+    index++;
+  }
+
+  if(!result.intro && raw){
+    result.intro=raw;
+  }
+
+  return result;
+}
+
+function renderSmsSystemNoticeCard(msg){
+  const text=msg.body||msg.message||msg.text||"";
+  const parsed=parseSmsSystemNoticeText(text);
+  const type=getSmsSystemNoticeType(msg);
+  const date=msg.createdAt||msg._createdDate||"";
+  const time=formatSmsTimeOnly(date);
+
+  const rowsHtml=parsed.rows.length
+    ? `<div class="sms-system-data">${parsed.rows.map(row=>`
+        <div class="sms-system-data-row">
+          <div class="sms-system-data-label">${escapeHtml(row.label)}</div>
+          <div class="sms-system-data-value">${escapeHtml(row.value)}</div>
+        </div>
+      `).join("")}</div>`
+    : "";
+
+  const guidanceHtml=parsed.guidance.length
+    ? `<div class="sms-system-guidance">${parsed.guidance.map(line=>{
+        const safe=escapeHtml(line).replaceAll("“Mis Servicios”","<strong>“Mis Servicios”</strong>");
+        return `<div>${safe}</div>`;
+      }).join("")}</div>`
+    : "";
+
+  return `
+    <div class="sms-system-card">
+      <div class="sms-system-head">
+        <div class="sms-system-title">${escapeHtml(parsed.title||"Aviso de sistema")}</div>
+        <div class="sms-system-type">${escapeHtml(type)}</div>
+      </div>
+
+      ${parsed.intro?`<div class="sms-system-intro">${escapeHtml(parsed.intro)}</div>`:""}
+      ${rowsHtml}
+      ${guidanceHtml}
+      ${time?`<div class="sms-system-footer">${escapeHtml(time)}</div>`:""}
+    </div>
+  `;
+}
+
 function getSmsContactDisplayName(item){
   const alias = String(item?.contactAlias || "").trim();
   const nombre = String(item?.nombreMostrar || item?.nombreCompleto || "Contacto").trim();
@@ -3705,6 +3932,10 @@ async function loadSmsMessages(scrollBottom=true){
 
         const time=formatSmsTimeOnly(date);
         const timeHtml=time?`<span class="sms-time">${escapeHtml(time)}</span>`:"";
+
+        if(isSmsSystemSelected()){
+          return `${separator}${renderSmsSystemNoticeCard(msg)}`;
+        }
 
         if(mine){
           return `${separator}<div class="sms-bubble mine">${escapeHtml(text)}${timeHtml}</div>`;
