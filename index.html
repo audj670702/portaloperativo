@@ -502,72 +502,42 @@
   border-color:#fed7aa;
 }
 
-    .panel-guide-access{
-  margin-top:10px;
-}
-
-.panel-guide-btn{
-  width:100%;
-  min-height:42px;
-  padding:9px 12px;
-  border-radius:16px;
-  background:#ffffff;
-  color:var(--dark);
-  border:1px solid var(--border);
+.panel-guide-access{
+  margin-top:8px;
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  text-align:left;
+  justify-content:flex-end;
 }
 
-.panel-guide-main{
-  display:flex;
+.panel-guide-link{
+  width:auto;
+  min-height:auto;
+  padding:6px 4px;
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  display:inline-flex;
   align-items:center;
-  gap:9px;
-  min-width:0;
+  justify-content:flex-end;
+  gap:6px;
+  font-size:12px;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:3px;
 }
 
-.panel-guide-icon{
-  width:28px;
-  height:28px;
+.panel-guide-link-icon{
+  width:20px;
+  height:20px;
   border-radius:999px;
-  background:#f3f4f6;
-  color:#111827;
-  border:1px solid #e5e7eb;
-  display:flex;
+  border:1px solid var(--border);
+  background:white;
+  color:var(--dark);
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:15px;
+  font-size:12px;
   font-weight:900;
-  flex-shrink:0;
-}
-
-.panel-guide-text{
-  min-width:0;
-}
-
-.panel-guide-text strong{
-  display:block;
-  font-size:12.5px;
-  line-height:1.1;
-}
-
-.panel-guide-text span{
-  display:block;
-  margin-top:2px;
-  font-size:10.8px;
-  color:var(--muted);
-  line-height:1.15;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.panel-guide-caret{
-  color:var(--muted);
-  font-size:18px;
-  font-weight:900;
+  text-decoration:none;
   flex-shrink:0;
 }
 
@@ -1784,18 +1754,11 @@ body.splash-running .app{
         </div>
 
         <div id="panelGuideAccess" class="panel-guide-access hidden">
-          <button class="panel-guide-btn" onclick="openPanelGuide()" title="Guía de paneles" aria-label="Guía de paneles">
-            <span class="panel-guide-main">
-              <span class="panel-guide-icon">ⓘ</span>
-              <span class="panel-guide-text">
-                <strong>Guía de paneles</strong>
-                <span>Ayuda para roles funcionales autorizados</span>
-              </span>
-            </span>
-            <span class="panel-guide-caret">›</span>
+          <button class="panel-guide-link" onclick="openPanelGuide()" title="Guía de paneles" aria-label="Guía de paneles">
+            <span class="panel-guide-link-icon">ⓘ</span>
+            <span>Guía de paneles</span>
           </button>
         </div>
-      </div>
     </section>
 
     <section id="screenDocuments" class="screen">
@@ -1946,7 +1909,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.2";
+const APP_VERSION = "v1.3";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
