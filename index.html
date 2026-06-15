@@ -502,6 +502,75 @@
   border-color:#fed7aa;
 }
 
+    .panel-guide-access{
+  margin-top:10px;
+}
+
+.panel-guide-btn{
+  width:100%;
+  min-height:42px;
+  padding:9px 12px;
+  border-radius:16px;
+  background:#ffffff;
+  color:var(--dark);
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  text-align:left;
+}
+
+.panel-guide-main{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+
+.panel-guide-icon{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  background:#f3f4f6;
+  color:#111827;
+  border:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:900;
+  flex-shrink:0;
+}
+
+.panel-guide-text{
+  min-width:0;
+}
+
+.panel-guide-text strong{
+  display:block;
+  font-size:12.5px;
+  line-height:1.1;
+}
+
+.panel-guide-text span{
+  display:block;
+  margin-top:2px;
+  font-size:10.8px;
+  color:var(--muted);
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.panel-guide-caret{
+  color:var(--muted);
+  font-size:18px;
+  font-weight:900;
+  flex-shrink:0;
+}
+
 .supervisor-title-actions{
   display:flex;
   flex-direction:column;
@@ -1713,6 +1782,19 @@ body.splash-running .app{
             <div class="module-card-content"><h2>Supervisión</h2><p>Coberturas, asistencia e incidencias.</p></div>
           </div>
         </div>
+
+        <div id="panelGuideAccess" class="panel-guide-access hidden">
+          <button class="panel-guide-btn" onclick="openPanelGuide()" title="Guía de paneles" aria-label="Guía de paneles">
+            <span class="panel-guide-main">
+              <span class="panel-guide-icon">ⓘ</span>
+              <span class="panel-guide-text">
+                <strong>Guía de paneles</strong>
+                <span>Ayuda para roles funcionales autorizados</span>
+              </span>
+            </span>
+            <span class="panel-guide-caret">›</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1864,7 +1946,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.0";
+const APP_VERSION = "v1.1";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -1877,6 +1959,7 @@ let smsPanelOpen=false;
 let activeModule=null;
 let manualReturnScreenId="screenHome";
 let manualCurrentLevel="";
+let manualMode="general";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
 document.addEventListener("DOMContentLoaded",()=>{
@@ -2612,6 +2695,21 @@ const MANUAL_OPERACION_DATA = [
 function openManualOperacion(){
   const current=getActiveScreenId();
   manualReturnScreenId=current && current!=="screenManualOperacion" ? current : "screenHome";
+  manualMode="general";
+  manualCurrentLevel="";
+  showScreen("screenManualOperacion");
+  renderManualOperacion();
+}
+
+function openPanelGuide(){
+  if(!pwaCanAdm&&!pwaCanCoord&&!pwaCanSup){
+    showToast("Guía de paneles no disponible para este perfil","error");
+    return;
+  }
+
+  const current=getActiveScreenId();
+  manualReturnScreenId=current && current!=="screenManualOperacion" ? current : "screenHome";
+  manualMode="paneles";
   manualCurrentLevel="";
   showScreen("screenManualOperacion");
   renderManualOperacion();
@@ -2670,8 +2768,12 @@ function getManualRoleLabel(roles){
 
 function getVisibleManuals(){
   const roles=getManualRoles();
+  const manualesBase=manualMode==="paneles"
+    ? ["supervision","coordinacion","administracion"]
+    : ["sistema","base"];
 
   return MANUAL_OPERACION_DATA.filter(manual =>
+    manualesBase.includes(manual.id) &&
     manual.roles.some(role => roles.includes(role))
   );
 }
@@ -2681,30 +2783,37 @@ function renderManualOperacion(){
   if(!root)return;
 
   const roles=getManualRoles();
+  const isPanelGuide=manualMode==="paneles";
+  const title=isPanelGuide ? "Guía de paneles" : "Ayuda general";
+  const description=isPanelGuide
+    ? "Consulta de apoyo para usuarios con rol funcional en paneles de control."
+    : "Consulta de apoyo para el uso general del Portal Operativo SCaD.";
 
   if(!manualCurrentLevel){
     const visibles=getVisibleManuals();
 
-    setText("manualStatusLine","Consulta");
+    setText("manualStatusLine",isPanelGuide ? "Roles funcionales" : "Consulta");
 
     root.innerHTML=`
       <div class="manual-shell">
         <div class="manual-header">
           <div>
-            <h2>Manual de Operación</h2>
-            <p>Consulta de apoyo del Portal Operativo SCaD. El contenido se muestra de acuerdo con los roles funcionales del usuario.</p>
+            <h2>${escapeHtml(title)}</h2>
+            <p>${escapeHtml(description)}</p>
           </div>
           <div class="manual-role-line">${escapeHtml(getManualRoleLabel(roles))}</div>
         </div>
 
-        <div class="manual-level-grid">
-          ${visibles.map(manual=>`
-            <div class="manual-level-card ${manual.className}" onclick="openManualLevel('${escapeAttr(manual.id)}')">
-              <h3>${escapeHtml(manual.title)}</h3>
-              <p>${escapeHtml(manual.description)}</p>
-            </div>
-          `).join("")}
-        </div>
+        ${visibles.length ? `
+          <div class="manual-level-grid">
+            ${visibles.map(manual=>`
+              <div class="manual-level-card ${manual.className}" onclick="openManualLevel('${escapeAttr(manual.id)}')">
+                <h3>${escapeHtml(manual.title)}</h3>
+                <p>${escapeHtml(manual.description)}</p>
+              </div>
+            `).join("")}
+          </div>
+        ` : `<div class="empty">No hay guías funcionales disponibles para este perfil.</div>`}
       </div>
     `;
     return;
@@ -3486,6 +3595,7 @@ function renderPanelAccess(){
   const adm=document.getElementById("admPanelCard");
   const coord=document.getElementById("coordPanelCard");
   const sup=document.getElementById("supPanelCard");
+  const guide=document.getElementById("panelGuideAccess");
   const caret=document.getElementById("panelAccessCaret");
 
   const hasAccess=Boolean(pwaCanAdm||pwaCanCoord||pwaCanSup);
