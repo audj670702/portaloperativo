@@ -1089,6 +1089,64 @@
 }
 }
 
+    /* Ayuda general - contenido consultable */
+.help-search-box{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#ffffff;
+  padding-bottom:10px;
+  margin-bottom:8px;
+}
+
+.help-intro{
+  color:#374151;
+  font-weight:700;
+  line-height:1.35;
+}
+
+.help-item{
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#f9fafb;
+  margin:8px 0;
+  overflow:hidden;
+}
+
+.help-item summary{
+  cursor:pointer;
+  padding:11px 12px;
+  font-size:12.5px;
+  font-weight:900;
+  color:#111827;
+  list-style:none;
+}
+
+.help-item summary::-webkit-details-marker{
+  display:none;
+}
+
+.help-item summary::after{
+  content:"＋";
+  float:right;
+  color:var(--blue);
+  font-weight:900;
+}
+
+.help-item[open] summary::after{
+  content:"−";
+}
+
+.help-item p,
+.help-item ul{
+  margin-left:12px;
+  margin-right:12px;
+}
+
+.help-item h4{
+  margin-left:12px;
+  margin-right:12px;
+}
 
 /* Política de privacidad - referencia discreta y modal informativo */
 body.privacy-modal-open{
@@ -1947,7 +2005,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.6";
+const APP_VERSION = "v1.7";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2072,48 +2130,339 @@ function renderGeneralInfoContent(){
   if(!body)return;
 
   body.innerHTML=`
-    <h4>Portal Operativo SCaD</h4>
-    <p>Portal Operativo SCaD es una herramienta de apoyo para consultar servicios, recibir información operativa, acceder a documentos y utilizar comunicación interna relacionada con la operación diaria.</p>
+    <div class="help-search-box">
+      <input id="generalInfoSearchInput" class="sms-input" type="text" placeholder="Buscar en ayuda: servicio, ruta, presente, documento, mensaje..." oninput="filterGeneralInfoHelp()" />
+    </div>
 
-    <h4>Inicio</h4>
-    <p>La pantalla de inicio concentra los módulos disponibles para el usuario conforme a su perfil y permisos activos.</p>
-    <ul>
-      <li><strong>Mensajería:</strong> canal laboral interno para comunicación operativa.</li>
-      <li><strong>Mis servicios:</strong> consulta de coberturas asignadas, calendario, lista y estado operativo.</li>
-      <li><strong>Mis cursos:</strong> acceso a cursos disponibles en SCaD.</li>
-      <li><strong>Documentos:</strong> consulta de documentos técnicos, operativos o administrativos autorizados.</li>
-    </ul>
+    <p class="help-intro">
+      Consulta rápida sobre el uso diario del Portal Operativo SCaD. Usa el buscador o abre las preguntas y temas relacionados.
+    </p>
 
-    <h4>Mis servicios</h4>
-    <p>Permite consultar las coberturas asignadas y revisar el detalle de cada servicio.</p>
-    <ul>
-      <li><strong>Calendario:</strong> vista por fecha de las coberturas.</li>
-      <li><strong>Lista:</strong> vista ordenada de servicios.</li>
-      <li><strong>Detalle:</strong> información de horario, posición e indicaciones.</li>
-      <li><strong>Marcajes:</strong> confirmación, en ruta y presente, cuando estén disponibles.</li>
-    </ul>
+    <h4>Preguntas frecuentes</h4>
 
-    <h4>Estados operativos</h4>
-    <p>Los estados permiten identificar el avance de una cobertura.</p>
-    <ul>
-      <li><strong>PROG:</strong> servicio programado.</li>
-      <li><strong>CONF:</strong> servicio confirmado.</li>
-      <li><strong>RUTA:</strong> traslado reportado.</li>
-      <li><strong>PRES:</strong> presencia reportada.</li>
-      <li><strong>ASISTENCIA:</strong> asistencia validada.</li>
-      <li><strong>FALTA:</strong> falta registrada.</li>
-      <li><strong>OBSERVADO:</strong> cobertura con observación o incidencia.</li>
-    </ul>
+    <details class="help-item" data-search="modulos no veo modulo permisos perfil paneles control">
+      <summary>¿Por qué no veo todos los módulos?</summary>
+      <p>Los módulos visibles dependen de tu perfil, permisos y configuración de la Empresa Operadora.</p>
+      <p>Los Paneles de control solo aparecen si tienes rol funcional autorizado.</p>
+    </details>
 
-    <h4>Mensajería</h4>
-    <p>Mensajería es un canal interno para comunicación laboral. Los mensajes deben usarse para asuntos relacionados con la operación, servicios, coordinación o información institucional.</p>
+    <details class="help-item" data-search="servicios no veo coberturas asignadas fecha periodo actualizar">
+      <summary>¿Por qué no veo servicios asignados?</summary>
+      <p>Puede ser porque no tienes coberturas en el periodo seleccionado, porque el rango de fechas no corresponde o porque la información aún no se ha actualizado.</p>
+      <p>Revisa el periodo y usa Actualizar.</p>
+    </details>
 
-    <h4>Documentos</h4>
-    <p>Documentos muestra únicamente información autorizada para el usuario. La disponibilidad puede depender del perfil, servicio, cliente o reglas internas de la Empresa Operadora.</p>
+    <details class="help-item" data-search="conf ruta pres estados marcajes confirmar en ruta presente">
+      <summary>¿Qué significa CONF, RUTA o PRES?</summary>
+      <p><strong>CONF</strong> indica que confirmaste conocimiento del servicio.</p>
+      <p><strong>RUTA</strong> indica que reportaste traslado hacia el servicio.</p>
+      <p><strong>PRES</strong> indica que reportaste presencia en el servicio.</p>
+    </details>
 
-    <h4>Paneles de control</h4>
-    <p>Los paneles de control solo se muestran a usuarios con rol funcional autorizado. La guía específica de paneles se consulta desde el acceso <strong>ⓘ Guía de paneles</strong> dentro de esa sección.</p>
+    <details class="help-item" data-search="no registrado sin marcaje pendiente registro">
+      <summary>¿Qué significa “No registrado”?</summary>
+      <p>Significa que el sistema no tiene registro de esa acción o dato.</p>
+      <p>No necesariamente implica falta o incumplimiento.</p>
+    </details>
+
+    <details class="help-item" data-search="asistencia falta observado validacion supervisor puedo marcar asistencia">
+      <summary>¿Puedo marcar asistencia desde Mis servicios?</summary>
+      <p>No. Desde Mis servicios puedes realizar marcajes operativos propios.</p>
+      <p>La asistencia, falta u observación corresponde a Supervisión o al proceso autorizado por la Empresa Operadora.</p>
+    </details>
+
+    <details class="help-item" data-search="no puedo marcar ruta presente horario ventana operativa">
+      <summary>¿Por qué no puedo marcar En ruta o Presente?</summary>
+      <p>Algunas acciones solo se habilitan dentro de una ventana operativa relacionada con el horario del servicio.</p>
+      <p>Si la acción no aparece, puede no estar disponible por horario o por estado de la cobertura.</p>
+    </details>
+
+    <details class="help-item" data-search="documentos no veo documento permisos autorizado cliente servicio usuario">
+      <summary>¿Por qué no veo documentos?</summary>
+      <p>Solo ves documentos autorizados para tu perfil o contexto operativo.</p>
+      <p>La disponibilidad puede depender de tu Empresa Operadora, servicio, cliente o reglas internas.</p>
+    </details>
+
+    <details class="help-item" data-search="mensajeria mensajes chat avisos sistema comunicacion laboral">
+      <summary>¿Para qué sirve Mensajería?</summary>
+      <p>Mensajería es un canal laboral interno para comunicación operativa.</p>
+      <p>Debe usarse para temas de trabajo, servicios, coordinación, avisos o comunicación institucional.</p>
+    </details>
+
+    <details class="help-item" data-search="actualizar refrescar datos no cambia informacion">
+      <summary>¿Qué hago si la información no se actualiza?</summary>
+      <p>Usa el botón Actualizar de la parte superior o del módulo correspondiente.</p>
+      <p>Si la información no cambia, revisa conexión a internet o vuelve a entrar al módulo.</p>
+    </details>
+
+    <details class="help-item" data-search="cerrar sesion salir usuario equipo compartido">
+      <summary>¿Cuándo debo cerrar sesión?</summary>
+      <p>Cierra sesión si usas un equipo compartido, si otra persona usará el dispositivo o si necesitas cambiar de usuario.</p>
+    </details>
+
+    <h4>Temas de consulta</h4>
+
+    <details class="help-item" data-search="inicio home pantalla principal modulos indicadores">
+      <summary>Inicio</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Módulos disponibles para tu perfil.</li>
+        <li>Mensajes pendientes.</li>
+        <li>Servicios próximos.</li>
+        <li>Documentos nuevos, cuando existan.</li>
+        <li>Paneles de control, si tienes rol funcional.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Entrar a Mensajería.</li>
+        <li>Entrar a Mis servicios.</li>
+        <li>Consultar Documentos.</li>
+        <li>Abrir Mis cursos.</li>
+        <li>Desplegar Paneles de control, si están disponibles.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Si un módulo no aparece, puede no estar autorizado para tu perfil.</p>
+    </details>
+
+    <details class="help-item" data-search="mis servicios coberturas calendario lista fecha horario posicion indicaciones estado">
+      <summary>Mis servicios</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Coberturas o servicios asignados.</li>
+        <li>Fecha, horario y posición.</li>
+        <li>Indicaciones del servicio.</li>
+        <li>Estado operativo.</li>
+        <li>Marcajes registrados.</li>
+        <li>Validación final, cuando exista.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Ver servicios en calendario o lista.</li>
+        <li>Filtrar por estado.</li>
+        <li>Abrir el detalle de una cobertura.</li>
+        <li>Confirmar conocimiento del servicio.</li>
+        <li>Marcar En ruta, cuando esté disponible.</li>
+        <li>Marcar Presente, cuando esté disponible.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Las acciones pueden depender del horario, estado de la cobertura y reglas operativas configuradas.</p>
+    </details>
+
+    <details class="help-item" data-search="marcajes confirmar ruta presente conf ruta pres no registrado">
+      <summary>Marcajes operativos</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Si ya confirmaste el servicio.</li>
+        <li>Si reportaste traslado.</li>
+        <li>Si reportaste presencia.</li>
+        <li>La hora registrada para cada marcaje.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Confirmar conocimiento del servicio.</li>
+        <li>Registrar En ruta.</li>
+        <li>Registrar Presente.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Los marcajes informan actividad operativa. No sustituyen la validación formal de asistencia.</p>
+      <p>Cuando no exista registro, se mostrará “No registrado”.</p>
+    </details>
+
+    <details class="help-item" data-search="validacion asistencia falta observado supervisor cumplimiento">
+      <summary>Validación de asistencia</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Si la cobertura fue validada como Asistencia.</li>
+        <li>Si fue registrada como Falta.</li>
+        <li>Si quedó Observada.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Como usuario base, solo puedes consultar la validación cuando ya exista.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>La validación corresponde a Supervisión o al proceso autorizado por la Empresa Operadora.</p>
+      <p>Marcar Presente no equivale automáticamente a asistencia validada.</p>
+    </details>
+
+    <details class="help-item" data-search="mensajeria mensajes contactos avisos sistema chat laboral">
+      <summary>Mensajería</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Mensajes recibidos.</li>
+        <li>Mensajes pendientes.</li>
+        <li>Contactos internos.</li>
+        <li>Avisos de sistema.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Buscar usuarios internos.</li>
+        <li>Abrir conversaciones.</li>
+        <li>Enviar mensajes laborales.</li>
+        <li>Consultar avisos institucionales o de programación.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Mensajería es un canal interno de trabajo. Los avisos de sistema son informativos y no siempre requieren respuesta.</p>
+    </details>
+
+    <details class="help-item" data-search="documentos archivos tecnicos operativos administrativos buscar categoria abrir descargar">
+      <summary>Documentos</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Documentos técnicos, operativos o administrativos autorizados.</li>
+        <li>Categorías disponibles.</li>
+        <li>Descripción, versión o fecha de actualización, cuando aplique.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Buscar documentos.</li>
+        <li>Filtrar por categoría.</li>
+        <li>Abrir documentos disponibles.</li>
+        <li>Descargar documentos, si está permitido.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Si no ves un documento esperado, puede no estar autorizado para tu perfil, cliente, servicio o usuario.</p>
+    </details>
+
+    <details class="help-item" data-search="cursos mis cursos capacitacion scad">
+      <summary>Mis cursos</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Cursos disponibles en el entorno SCaD.</li>
+        <li>Actividades o contenidos asignados, cuando existan.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Abrir el módulo de cursos.</li>
+        <li>Continuar con actividades disponibles.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Los cursos son distintos a los documentos operativos. Los documentos se consultan en el módulo Documentos.</p>
+    </details>
+
+    <details class="help-item" data-search="paneles control administracion coordinacion supervision roles funcionales guia">
+      <summary>Paneles de control</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Paneles funcionales disponibles para tu perfil.</li>
+        <li>Accesos autorizados a Administración, Coordinación o Supervisión.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Abrir paneles autorizados.</li>
+        <li>Consultar la Guía de paneles desde “ⓘ Guía de paneles”.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Los paneles solo aparecen cuando tienes rol funcional autorizado.</p>
+    </details>
+
+    <details class="help-item" data-search="actualizar refrescar informacion datos reciente">
+      <summary>Actualización de información</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>Información actualizada de servicios, mensajes, documentos o módulos.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Usar el botón Actualizar.</li>
+        <li>Volver a entrar al módulo.</li>
+        <li>Revisar conexión a internet.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Algunos cambios pueden tardar unos segundos en reflejarse.</p>
+    </details>
+
+    <details class="help-item" data-search="cerrar sesion salir usuario cuenta dispositivo compartido">
+      <summary>Cierre de sesión</summary>
+
+      <h4>¿Qué puedo consultar aquí?</h4>
+      <ul>
+        <li>El perfil activo mostrado en la parte superior de la app.</li>
+      </ul>
+
+      <h4>¿Qué acciones puedo realizar?</h4>
+      <ul>
+        <li>Cerrar sesión desde el botón de salida.</li>
+        <li>Entrar con otro usuario, si corresponde.</li>
+      </ul>
+
+      <h4>Notas útiles</h4>
+      <p>Cierra sesión si el dispositivo no es personal o si otra persona usará la app.</p>
+    </details>
+
+    <div id="generalInfoEmpty" class="empty hidden">Sin resultados para esta búsqueda.</div>
   `;
+}
+
+function filterGeneralInfoHelp(){
+  const input=document.getElementById("generalInfoSearchInput");
+  const body=document.getElementById("generalInfoBody");
+  const empty=document.getElementById("generalInfoEmpty");
+
+  if(!input||!body)return;
+
+  const q=String(input.value||"")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+
+  const items=Array.from(body.querySelectorAll(".help-item"));
+  let visibleCount=0;
+
+  items.forEach(item=>{
+    const haystack=String(
+      item.textContent+" "+(item.getAttribute("data-search")||"")
+    )
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g,"");
+
+    const visible=!q || haystack.includes(q);
+
+    item.classList.toggle("hidden",!visible);
+
+    if(q && visible){
+      item.setAttribute("open","open");
+    }
+
+    if(!q){
+      item.removeAttribute("open");
+    }
+
+    if(visible)visibleCount++;
+  });
+
+  if(empty){
+    empty.classList.toggle("hidden",visibleCount>0);
+  }
 }
     
 function openPrivacyPolicyModal(){
