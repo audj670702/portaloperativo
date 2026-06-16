@@ -502,6 +502,36 @@
   border-color:#fed7aa;
 }
 
+    .control-card.adm.adm-mobile-disabled{
+  cursor:not-allowed;
+  opacity:.72;
+  background:#f9fafb;
+  border-left-color:#9ca3af;
+}
+
+.control-card.adm.adm-mobile-disabled h2{
+  color:#6b7280;
+}
+
+.control-card.adm.adm-mobile-disabled .module-icon{
+  color:#9ca3af;
+  background:#f3f4f6;
+  border-color:#d1d5db;
+}
+
+.adm-mobile-note{
+  display:none;
+}
+
+.control-card.adm.adm-mobile-disabled .adm-mobile-note{
+  display:block;
+  margin-top:4px;
+  font-size:10.5px;
+  font-weight:700;
+  color:#9ca3af;
+  line-height:1.15;
+}
+
 .panel-guide-access{
   margin-top:8px;
   display:flex;
@@ -1808,10 +1838,15 @@ body.splash-running .app{
         </button>
 
 <div id="panelAccessCards" class="panel-access-grid hidden">
+
   <div id="admPanelCard" class="module-card control-card adm hidden" onclick="openAdmPanel()">
-    <span class="module-icon">⚙️</span>
-    <div class="module-card-content"><h2>Administración</h2><p>Gestión operativa y configuración.</p></div>
+  <span class="module-icon">⚙️</span>
+  <div class="module-card-content">
+    <h2>Administración</h2>
+    <p>Gestión operativa y configuración.</p>
+    <div class="adm-mobile-note">Sólo disponible en equipos de escritorio o tabletas.</div>
   </div>
+</div>
   
           <div id="coordPanelCard" class="module-card control-card coord hidden" onclick="openCoordPanel()">
             <span class="module-icon">📋</span>
@@ -2018,7 +2053,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
-const APP_VERSION = "v1.8";
+const APP_VERSION = "v1.9";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2045,6 +2080,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   loadHomeSmsPending();
   loadHomeModuleIndicators();
   initHomeLightRefresh();
+  window.addEventListener("resize",renderPanelAccess);
 
   if("serviceWorker" in navigator){
     window.addEventListener("load",async()=>{
@@ -3429,9 +3465,17 @@ function backToServices(){
   showScreen("screenServices");
 }
 
+function isAdmPanelDisponiblePorPantalla(){
+  return window.matchMedia("(min-width: 900px)").matches;
+}
+    
 function openAdmPanel(){
   if(!pwaCanAdm){
     showToast("Acceso ADM no autorizado","error");
+    return;
+  }
+
+  if(!isAdmPanelDisponiblePorPantalla()){
     return;
   }
 
@@ -4145,7 +4189,13 @@ function renderPanelAccess(){
   const hasAccess=Boolean(pwaCanAdm||pwaCanCoord||pwaCanSup);
 
   if(wrap)wrap.classList.toggle("hidden",!hasAccess);
-  if(adm)adm.classList.toggle("hidden",!pwaCanAdm);
+  if(adm){
+  const admMobileDisabled = Boolean(pwaCanAdm && !isAdmPanelDisponiblePorPantalla());
+
+  adm.classList.toggle("hidden",!pwaCanAdm);
+  adm.classList.toggle("adm-mobile-disabled",admMobileDisabled);
+  adm.setAttribute("aria-disabled",admMobileDisabled ? "true" : "false");
+}
   if(coord)coord.classList.toggle("hidden",!pwaCanCoord);
   if(sup)sup.classList.toggle("hidden",!pwaCanSup);
   if(cards)cards.classList.toggle("hidden",!hasAccess||!panelAccessOpen);
