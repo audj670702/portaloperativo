@@ -803,6 +803,28 @@
   }
 }
 
+    @media(max-width:520px){
+  #panelAccessCards .control-card.adm.adm-mobile-disabled{
+    grid-column:1 / -1;
+    width:100%;
+  }
+
+  #panelAccessCards .control-card.adm.adm-mobile-disabled .module-card-content{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+
+  #panelAccessCards .control-card.adm.adm-mobile-disabled .adm-mobile-note{
+    display:block;
+    margin-top:4px;
+    font-size:10.5px;
+    font-weight:700;
+    color:#9ca3af;
+    line-height:1.15;
+  }
+}
+
     /* Home - tarjetas compactas e indicador SMS */
 #screenHome > .grid .module-card{
   min-height:76px;
