@@ -532,6 +532,75 @@
   line-height:1.15;
 }
 
+.panel-tools-access{
+  margin-top:8px;
+}
+
+.panel-tool-card{
+  width:100%;
+  min-height:52px;
+  border-radius:16px;
+  border:1px solid #fed7aa;
+  border-left:7px solid #f59e0b;
+  background:#fffbeb;
+  color:#111827;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+  box-shadow:0 1px 3px rgba(17,24,39,.04);
+}
+
+.panel-tool-icon{
+  width:30px;
+  height:30px;
+  border-radius:11px;
+  background:#fff7ed;
+  border:1px solid #fdba74;
+  color:#b45309;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  flex-shrink:0;
+}
+
+.panel-tool-title{
+  flex:1;
+  min-width:0;
+  font-size:13.5px;
+  font-weight:900;
+  line-height:1.1;
+}
+
+.panel-tool-caret{
+  color:#92400e;
+  font-size:22px;
+  font-weight:900;
+  line-height:1;
+  flex-shrink:0;
+}
+
+@media(max-width:520px){
+  .panel-tool-card{
+    min-height:48px;
+    padding:9px 11px;
+    border-radius:15px;
+  }
+
+  .panel-tool-icon{
+    width:28px;
+    height:28px;
+    border-radius:10px;
+    font-size:14px;
+  }
+
+  .panel-tool-title{
+    font-size:13px;
+  }
+}
+    
 .panel-guide-access{
   margin-top:8px;
   display:flex;
@@ -1877,11 +1946,20 @@ body.splash-running .app{
 
           <div id="supPanelCard" class="module-card control-card sup hidden" onclick="openSupervisor()">
             <span class="module-icon">👮</span>
-            <div class="module-card-content"><h2>Supervisión</h2><p>Coberturas, asistencia e incidencias.</p></div>
+            <div class="module-card-content"><h2>Supervisión</h2><p>Coberturas y asistencia.</p></div>
           </div>
         </div>
 
+        <div id="panelToolsAccess" class="panel-tools-access hidden">
+          <button class="panel-tool-card" onclick="openIncidenciasServicio()" title="Registro de incidencias" aria-label="Registro de incidencias">
+            <span class="panel-tool-icon">⚠️</span>
+            <span class="panel-tool-title">Registro de incidencias</span>
+            <span class="panel-tool-caret">›</span>
+          </button>
+        </div>
+
         <div id="panelGuideAccess" class="panel-guide-access hidden">
+  
           <button class="panel-guide-link" onclick="openPanelGuide()" title="Guía de paneles" aria-label="Guía de paneles">
             <span class="panel-guide-link-icon">ⓘ</span>
             <span>Guía de paneles</span>
@@ -2075,6 +2153,7 @@ const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
+const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
 const APP_VERSION = "v1.9";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
@@ -3528,6 +3607,18 @@ function openSupervisorInformes(){
   window.location.href=SEGPRIV_SUP_INFORMES_URL;
 }
 
+function openIncidenciasServicio(){
+  if(!pwaCanAdm && !pwaCanCoord && !pwaCanSup){
+    showToast("Acceso a incidencias no autorizado","error");
+    return;
+  }
+
+  const sep = SEGPRIV_INCIDENCIAS_URL.includes("?") ? "&" : "?";
+
+  window.location.href =
+    `${SEGPRIV_INCIDENCIAS_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID || "")}&email=${encodeURIComponent(CURRENT_EMAIL || "")}&origen=PWA`;
+}
+    
 function openSms(){
     setActiveModule("sms");
   expandSmsPanel();
@@ -4205,6 +4296,7 @@ function renderPanelAccess(){
   const adm=document.getElementById("admPanelCard");
   const coord=document.getElementById("coordPanelCard");
   const sup=document.getElementById("supPanelCard");
+  const tools=document.getElementById("panelToolsAccess");
   const guide=document.getElementById("panelGuideAccess");
   const caret=document.getElementById("panelAccessCaret");
 
@@ -4218,9 +4310,11 @@ function renderPanelAccess(){
   adm.classList.toggle("adm-mobile-disabled",admMobileDisabled);
   adm.setAttribute("aria-disabled",admMobileDisabled ? "true" : "false");
 }
-  if(coord)coord.classList.toggle("hidden",!pwaCanCoord);
+
+    if(coord)coord.classList.toggle("hidden",!pwaCanCoord);
   if(sup)sup.classList.toggle("hidden",!pwaCanSup);
   if(cards)cards.classList.toggle("hidden",!hasAccess||!panelAccessOpen);
+  if(tools)tools.classList.toggle("hidden",!hasAccess||!panelAccessOpen);
   if(guide)guide.classList.toggle("hidden",!hasAccess||!panelAccessOpen);
   if(caret)caret.textContent=panelAccessOpen?"▲":"▼";
 }
