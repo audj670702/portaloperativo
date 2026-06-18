@@ -2146,7 +2146,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.1";
+const APP_VERSION = "v2.2.1";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -3550,6 +3550,13 @@ function openDocuments(){
 }
 
 function openServices(){
+  resolveCurrentMember();
+
+  if(!CURRENT_MEMBER_ID){
+    showToast("Inicia sesión para acceder a Mis servicios.","error");
+    return;
+  }
+
   setActiveModule("services");
   loadServices();
 }
