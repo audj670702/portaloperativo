@@ -2146,7 +2146,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.2";
+const APP_VERSION = "v2.1";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -3540,30 +3540,16 @@ function openExternalUrl(url){
   window.location.href=url;
 }
 
-    function requireSesionPwa(){
-  resolveCurrentMember();
-
-  if(CURRENT_MEMBER_ID){
-    return true;
-  }
-
-  showToast("Inicia sesión para continuar.","error");
-  return false;
-}
-
 function openCourses(){
-  if(!requireSesionPwa())return;
   openExternalUrl(SCAD_MIS_CURSOS_URL);
 }
 
 function openDocuments(){
-  if(!requireSesionPwa())return;
   setActiveModule("documents");
   loadDocuments();
 }
 
 function openServices(){
-  if(!requireSesionPwa())return;
   setActiveModule("services");
   loadServices();
 }
@@ -3626,12 +3612,9 @@ function openIncidenciasServicio(){
 }
     
 function openSms(){
-  if(!requireSesionPwa())return;
-  setActiveModule("sms");
+    setActiveModule("sms");
   expandSmsPanel();
-}
-    
-function openCoordPanel(){if(!pwaCanCoord){showToast("Acceso COORD no autorizado","error");return}const sep=SEGPRIV_COORD_URL.includes("?")?"&":"?";window.location.href=`${SEGPRIV_COORD_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID||"")}&email=${encodeURIComponent(CURRENT_EMAIL||"")}`}
+}function openCoordPanel(){if(!pwaCanCoord){showToast("Acceso COORD no autorizado","error");return}const sep=SEGPRIV_COORD_URL.includes("?")?"&":"?";window.location.href=`${SEGPRIV_COORD_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID||"")}&email=${encodeURIComponent(CURRENT_EMAIL||"")}`}
     function toggleSmsPanel(){
   if(smsPanelOpen){
     goHome();
@@ -4325,49 +4308,9 @@ function renderPanelAccess(){
   if(secondary)secondary.classList.toggle("hidden",!hasAccess||!panelAccessOpen);
   if(caret)caret.textContent=panelAccessOpen?"▲":"▼";
 }
-
-function aplicarVistaSinSesion(){
-  pwaContext=null;
-  pwaCanAdm=false;
-  pwaCanCoord=false;
-  pwaCanSup=false;
-  panelAccessOpen=false;
-  smsProfile=null;
-  smsSelectedContact=null;
-  smsPanelOpen=false;
-
-  servicios=[];
-  docsItems=[];
-  docsCategorias=[];
-  supervisorCoverages=[];
-
-  collapseSmsPanel(false);
-  renderPanelAccess();
-  renderPerfilOperativo();
-  updateSessionTopbar();
-  showScreen("screenHome");
-}
     
-    function updateSessionTopbar(){const loginBtn=document.getElementById("btnLoginSegpriv"),logoutBtn=document.querySelector(".logout-mini-btn");if(loginBtn)loginBtn.classList.toggle("hidden",Boolean(CURRENT_MEMBER_ID));if(logoutBtn)logoutBtn.classList.toggle("hidden",!CURRENT_MEMBER_ID)}function iniciarSesionSegpriv(){window.location.href=SEGPRIV_ACCESS_URL}
-
-    function cerrarSesionSegpriv(){
-  if(!confirm("¿Deseas cerrar sesión en SEGPRIV?"))return;
-
-  localStorage.removeItem("SEGPRIV_MEMBER_ID");
-  localStorage.removeItem("SEGPRIV_EMAIL");
-
-  CURRENT_MEMBER_ID="";
-  CURRENT_EMAIL="";
-
-  if(smsRefreshTimer){
-    clearInterval(smsRefreshTimer);
-    smsRefreshTimer=null;
-  }
-
-  aplicarVistaSinSesion();
-
-  window.location.href=`${SEGPRIV_ACCESS_URL}?logout=1`;
-}
+    function updateSessionTopbar(){const loginBtn=document.getElementById("btnLoginSegpriv"),logoutBtn=document.querySelector(".logout-mini-btn");if(loginBtn)loginBtn.classList.toggle("hidden",Boolean(CURRENT_MEMBER_ID));if(logoutBtn)logoutBtn.classList.toggle("hidden",!CURRENT_MEMBER_ID)}function iniciarSesionSegpriv(){window.location.href=SEGPRIV_ACCESS_URL}function cerrarSesionSegpriv(){if(!confirm("¿Deseas cerrar sesión en SCaD?"))return;localStorage.removeItem("SEGPRIV_MEMBER_ID");localStorage.removeItem("SEGPRIV_EMAIL");CURRENT_MEMBER_ID="";CURRENT_EMAIL="";
+pwaContext=null;pwaCanAdm=false;pwaCanCoord=false;pwaCanSup=false;panelAccessOpen=false;
                                                                                                                                                                                                                                                                                                                                                                                                          smsProfile=null;smsSelectedContact=null;if(smsRefreshTimer){clearInterval(smsRefreshTimer);smsRefreshTimer=null}window.location.href=`${SEGPRIV_ACCESS_URL}?logout=1`}
 function setDocsStatus(text,error=false){const el=document.getElementById("docsStatusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}async function loadDocuments(){resolveCurrentMember();const root=document.getElementById("docsList");if(!root)return;if(!CURRENT_MEMBER_ID){docsItems=[];docsCategorias=[];setDocsStatus("Sin sesión",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>";return}setDocsStatus("Cargando...");root.innerHTML="<div class='empty'>Cargando documentos...</div>";try{const data=await fetchJson(`${API_BASE}/sprivDocumentos?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&t=${Date.now()}`);if(!data.ok){docsItems=[];docsCategorias=[];setDocsStatus("No disponible",true);renderDocumentsCategories();root.innerHTML=`<div class="empty">${escapeHtml(data.error||"No fue posible cargar documentos.")}</div>`;return}docsItems=data.items||[];docsCategorias=data.categorias||[];docsCategoriaActual="TODOS";setDocsStatus(`Documentos: ${docsItems.length}`);renderDocumentsCategories();renderDocumentsList();markDocumentsReviewed()}catch(err){console.error("Error documentos:",err);docsItems=[];docsCategorias=[];setDocsStatus("Error",true);renderDocumentsCategories();root.innerHTML="<div class='empty'>Error al conectar con documentos.</div>"}}
 function renderDocumentsCategories(){const row=document.getElementById("docsCategoryRow");if(!row)return;row.innerHTML=`<button class="docs-category-btn ${docsCategoriaActual==="TODOS"?"active":""}" onclick="setDocumentsCategory('TODOS')">Todos</button>${(docsCategorias||[]).map(cat=>`<button class="docs-category-btn ${docsCategoriaActual===cat?"active":""}" onclick="setDocumentsCategory('${escapeAttr(cat)}')">${escapeHtml(cat)}</button>`).join("")}`}function setDocumentsCategory(category){docsCategoriaActual=category||"TODOS";renderDocumentsCategories();renderDocumentsList()}function handleDocumentsSearch(){clearTimeout(docsSearchTimer);docsSearchTimer=setTimeout(renderDocumentsList,200)}function getFilteredDocuments(){const q=normalizeDocsText(getValue("docsSearchInput"));return(docsItems||[]).filter(doc=>{if(docsCategoriaActual&&docsCategoriaActual!=="TODOS"&&String(doc.categoria||"")!==docsCategoriaActual)return false;if(!q)return true;const haystack=normalizeDocsText([doc.titulo,doc.descripcion,doc.categoria,doc.tipoDocumento,doc.etiquetas,doc.versionDocumento].filter(Boolean).join(" "));return haystack.includes(q)})}function renderDocumentsList(){const root=document.getElementById("docsList");if(!root)return;const data=getFilteredDocuments();if(!data.length){root.innerHTML="<div class='empty'>Sin documentos para este filtro.</div>";return}root.innerHTML=data.map(doc=>{const titulo=doc.titulo||"Documento",categoria=doc.categoria||"General",tipo=doc.tipoDocumento||"",version=doc.versionDocumento?`Versión ${doc.versionDocumento}`:"",fecha=doc.fechaActualizacion?formatSmsDateTime(doc.fechaActualizacion):"",meta=[categoria,tipo,version,fecha].filter(Boolean).join(" · "),url=doc.urlVistaPrevia||doc.urlDocumento||"",urlDocumento=doc.urlDocumento||url,descargable=doc.descargable===true;return`<div class="docs-item"><div class="docs-item-header"><div><div class="docs-title">${escapeHtml(titulo)}</div><div class="docs-meta">${escapeHtml(meta)}</div></div><span class="docs-badge">${escapeHtml(categoria)}</span></div>${doc.descripcion?`<div class="docs-description">${escapeHtml(doc.descripcion)}</div>`:""}<div class="docs-actions">${url?`<button onclick="openDocumentUrl('${escapeAttr(url)}')">Abrir</button>`:""}${descargable&&urlDocumento?`<button class="secondary" onclick="openDocumentUrl('${escapeAttr(urlDocumento)}')">Descargar</button>`:""}</div></div>`}).join("")}function openDocumentUrl(url){if(url)window.open(url,"_blank","noopener,noreferrer")}function normalizeDocsText(value){return String(value||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
