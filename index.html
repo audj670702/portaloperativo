@@ -2935,10 +2935,10 @@ function renderPerfilOperativo(){
   if(!card || !avatar || !name || !meta)return;
 
 if(!CURRENT_MEMBER_ID){
-  card.classList.add("hidden");
+  card.classList.remove("hidden");
   avatar.innerHTML="SP";
-  name.textContent="";
-  meta.textContent="";
+  name.textContent="Sesión no iniciada";
+  meta.textContent="Inicia sesión para acceder a la app.";
   if(diag) diag.textContent="Em0MiD0A0AcA0Eo0";
   return;
 }
@@ -3612,9 +3612,18 @@ function openIncidenciasServicio(){
 }
     
 function openSms(){
-    setActiveModule("sms");
+  resolveCurrentMember();
+
+  if(!CURRENT_MEMBER_ID){
+    showToast("Inicia sesión para acceder a Mensajería.","error");
+    return;
+  }
+
+  setActiveModule("sms");
   expandSmsPanel();
-}function openCoordPanel(){if(!pwaCanCoord){showToast("Acceso COORD no autorizado","error");return}const sep=SEGPRIV_COORD_URL.includes("?")?"&":"?";window.location.href=`${SEGPRIV_COORD_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID||"")}&email=${encodeURIComponent(CURRENT_EMAIL||"")}`}
+}
+    
+    function openCoordPanel(){if(!pwaCanCoord){showToast("Acceso COORD no autorizado","error");return}const sep=SEGPRIV_COORD_URL.includes("?")?"&":"?";window.location.href=`${SEGPRIV_COORD_URL}${sep}memberId=${encodeURIComponent(CURRENT_MEMBER_ID||"")}&email=${encodeURIComponent(CURRENT_EMAIL||"")}`}
     function toggleSmsPanel(){
   if(smsPanelOpen){
     goHome();
