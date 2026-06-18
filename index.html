@@ -206,7 +206,16 @@
     .screen{display:none}.screen.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.module-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;min-height:110px;cursor:pointer}.module-card h2{margin:0;font-size:18px}.module-card p{margin:8px 0 0;font-size:13px;color:var(--muted)}
     .module-title{margin:8px 0 12px}.module-title h2,.module-title-row h2{margin:0;font-size:20px}.module-title p,.module-title-row p{margin:4px 0 0;color:var(--muted);font-size:13px}.module-title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 12px}.module-status-inline{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right;margin-bottom:1px}.status-error{color:var(--red)}
     .toolbar,.view-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}button{border:none;border-radius:999px;padding:11px 14px;background:var(--dark);color:white;font-size:14px;cursor:pointer}button.secondary{background:white;color:var(--dark);border:1px solid var(--border)}button.success{background:var(--green)}button.warning{background:var(--orange)}button.teal{background:var(--teal)}button.active{background:var(--blue)}
-    input[type="date"]{border:1px solid var(--border);border-radius:12px;padding:10px;font-size:14px;background:white;color:var(--text)}.status-line{font-size:13px;color:var(--muted);margin:10px 0}.view-filter-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:10px 0}.compact-view-tabs{margin:0;flex-shrink:0}.compact-view-tabs button{padding:9px 14px;font-size:13px}.inline-period-controls{display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;flex-wrap:wrap}.inline-period-controls label{display:flex;flex-direction:column;gap:3px;font-size:10px;font-weight:700;color:var(--muted)}.inline-period-controls input[type="date"]{width:118px;padding:7px 6px;font-size:12px;border-radius:10px}.inline-period-controls button{padding:8px 12px;font-size:12px}
+
+.view-filter-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:10px 0}
+.period-top-row{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;flex-shrink:0}
+.compact-view-tabs{margin:0;flex-shrink:0}
+.compact-view-tabs button{padding:9px 14px;font-size:13px}
+.period-refresh-btn{padding:8px 12px;font-size:12px}
+.inline-period-controls{display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.inline-period-controls label{display:flex;flex-direction:column;gap:3px;font-size:10px;font-weight:700;color:var(--muted)}
+.inline-period-controls input[type="date"]{width:118px;padding:7px 6px;font-size:12px;border-radius:10px}
+    
     .legend{display:flex;flex-direction:column;gap:7px;margin:8px 0;background:white;border:1px solid var(--border);border-radius:14px;padding:9px}.legend-row{display:grid;gap:6px;width:100%}.legend-row-status{grid-template-columns:repeat(4,1fr)}.legend-row-compliance{grid-template-columns:repeat(3,1fr)}.legend-pill{width:100%;min-width:0;height:32px;background:#f9fafb;color:var(--text);border:1px solid #e5e7eb;border-radius:999px;padding:0 8px;font-size:10.5px;display:flex;align-items:center;justify-content:space-between;gap:5px;line-height:1}.legend-pill.active{background:var(--dark);color:white;border-color:var(--dark)}.legend-left{display:inline-flex;align-items:center;gap:5px;min-width:0;flex:1;overflow:hidden}.legend-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.legend-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:999px;font-size:10px;font-weight:900;color:var(--muted);background:rgba(17,24,39,.06);flex-shrink:0}.legend-pill.active .legend-count{color:var(--dark);background:white}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0}.dot.todos{background:var(--dark)}.dot.conf{background:var(--purple)}.dot.ruta{background:var(--orange)}.dot.pres{background:var(--teal)}.dot.asistencia{background:var(--green)}.dot.falta{background:var(--red)}.dot.observado{background:var(--yellow)}.legend-pill.active .dot.todos{background:white}
     .compliance-strip{background:white;border:1px solid var(--border);border-radius:16px;padding:10px 12px;margin:8px 0 10px}.compliance-bar-pro{display:flex;width:100%;min-height:28px;border-radius:999px;overflow:hidden;background:linear-gradient(90deg,#f3f4f6,#d1d5db);box-shadow:inset 0 1px 2px rgba(0,0,0,.1),0 6px 14px rgba(17,24,39,.08)}.compliance-segment{min-height:30px;min-width:0;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}.compliance-segment.asistencia{background:linear-gradient(90deg,#22c55e,#16a34a)}.compliance-segment.observado{background:linear-gradient(90deg,#facc15,#ca8a04);color:#422006}.compliance-segment.falta{background:linear-gradient(90deg,#f87171,#dc2626)}.compliance-segment.sinregistro{width:100%;background:linear-gradient(90deg,#f3f4f6,#d1d5db);color:var(--muted)}
     .list{display:flex;flex-direction:column;gap:10px}.service-card{background:white;border:1px solid var(--border);border-left:7px solid var(--gray);border-radius:16px;padding:14px;cursor:pointer}.service-card.prog{border-left-color:var(--blue)}.service-card.conf{border-left-color:var(--purple)}.service-card.ruta{border-left-color:var(--orange)}.service-card.pres{border-left-color:var(--teal)}.service-card.asist,.service-card.asistencia{border-left-color:var(--green)}.service-card.falta,.service-card.falto{border-left-color:var(--red)}.service-card.obs,.service-card.observado{border-left-color:var(--yellow)}.service-card-header{display:flex;justify-content:space-between;gap:8px;align-items:center}.service-card-title{font-weight:700;font-size:15px}.service-card-sub{margin-top:6px;font-size:13px;color:var(--muted)}.badge{border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700;background:#e5e7eb;color:var(--dark);white-space:nowrap}.badge.prog{background:#dbeafe;color:#1d4ed8}.badge.conf{background:#e0e7ff;color:#4338ca}.badge.ruta{background:#ffedd5;color:#c2410c}.badge.pres{background:#ccfbf1;color:#0f766e}.badge.asist,.badge.asistencia{background:#dcfce7;color:#15803d}.badge.falta,.badge.falto{background:#fee2e2;color:#b91c1c}.badge.obs,.badge.observado{background:#fef9c3;color:#854d0e}
@@ -831,7 +840,16 @@
 .app-top p{
   font-size:12.5px;
 }
-     .topbar-icon-btn{width:31px;height:31px;font-size:15px}.logout-mini-btn{width:28px;height:28px;font-size:14px}.pwa-install-status,.install-action{font-size:10px}.install-info{flex-direction:column;align-items:flex-end;gap:1px}.grid{grid-template-columns:1fr}.module-title-row{align-items:flex-start}.module-status-inline{font-size:11px;max-width:45%}.view-filter-row{flex-direction:column;align-items:stretch}.compact-view-tabs{display:flex;width:100%}.compact-view-tabs button{flex:1}
+     .topbar-icon-btn{width:31px;height:31px;font-size:15px}.logout-mini-btn{width:28px;height:28px;font-size:14px}.pwa-install-status,.install-action{font-size:10px}.install-info{flex-direction:column;align-items:flex-end;gap:1px}.grid{grid-template-columns:1fr}.module-title-row{align-items:flex-start}.module-status-inline{font-size:11px;max-width:45%}
+.view-filter-row{flex-direction:column;align-items:stretch}
+.period-top-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.compact-view-tabs{display:flex;flex:1;width:auto;margin:0}
+.compact-view-tabs button{flex:1;padding:8px 10px;font-size:12px}
+.period-refresh-btn{width:34px;min-width:34px;height:34px;padding:0;font-size:0}
+.period-refresh-btn::before{content:"↻";font-size:16px;font-weight:900}
+.inline-period-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;width:100%;align-items:end}
+.inline-period-controls label{min-width:0;width:100%}
+.inline-period-controls input[type="date"]{width:100%;min-width:0;font-size:10px;padding:7px 4px;text-align:center}
      .inline-period-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;width:100%;align-items:end}
      .inline-period-controls input[type="date"]{width:100%;min-width:0;font-size:10px;padding:7px 4px;text-align:center}
      .inline-period-controls button{grid-column:3;justify-self:end;width:34px;min-width:34px;height:34px;padding:0;margin-top:2px;font-size:0}
@@ -2006,7 +2024,23 @@ body.splash-running .app{
         <div id="statusLine" class="status-line module-status-inline">Cargando servicios...</div>
         <span class="module-active-caret">⌃</span>
       </div>
-      <div class="view-filter-row"><div class="view-tabs compact-view-tabs"><button id="btnViewCalendar" class="active" onclick="setView('calendar')">Calendario</button><button id="btnViewList" onclick="setView('list')">Lista</button></div><div class="inline-period-controls"><label><span>Ir a fecha</span><input id="inputGoDate" type="date" onchange="goToSelectedDate()" /></label><label><span>Inicio</span><input id="inputStartDate" type="date" /></label><label><span>Fin</span><input id="inputEndDate" type="date" /></label><button onclick="loadServices()">Actualizar</button></div></div>
+
+<div class="view-filter-row">
+  <div class="period-top-row">
+    <div class="view-tabs compact-view-tabs">
+      <button id="btnViewCalendar" class="active" onclick="setView('calendar')">Calendario</button>
+      <button id="btnViewList" onclick="setView('list')">Lista</button>
+    </div>
+    <button class="period-refresh-btn" onclick="loadServices()" title="Actualizar servicios" aria-label="Actualizar servicios">Actualizar</button>
+  </div>
+
+  <div class="inline-period-controls">
+    <label><span>Ir a fecha</span><input id="inputGoDate" type="date" onchange="goToSelectedDate()" /></label>
+    <label><span>Inicio</span><input id="inputStartDate" type="date" /></label>
+    <label><span>Fin</span><input id="inputEndDate" type="date" /></label>
+  </div>
+</div>
+      
       <div class="legend legend-split"><div class="legend-row legend-row-status"><button id="filterTODOS" class="legend-pill active" onclick="setStatusFilter('TODOS')"><span class="legend-left"><span class="dot todos"></span><span class="legend-label">Todos</span></span><span id="countTODOS" class="legend-count">-</span></button><button id="filterCONF" class="legend-pill" onclick="setStatusFilter('CONF')"><span class="legend-left"><span class="dot conf"></span><span class="legend-label">CONF</span></span><span id="countCONF" class="legend-count">-</span></button><button id="filterRUTA" class="legend-pill" onclick="setStatusFilter('RUTA')"><span class="legend-left"><span class="dot ruta"></span><span class="legend-label">RUTA</span></span><span id="countRUTA" class="legend-count">-</span></button><button id="filterPRES" class="legend-pill" onclick="setStatusFilter('PRES')"><span class="legend-left"><span class="dot pres"></span><span class="legend-label">PRES</span></span><span id="countPRES" class="legend-count">-</span></button></div><div class="legend-row legend-row-compliance"><button id="filterASISTENCIA" class="legend-pill" onclick="setStatusFilter('ASISTENCIA')"><span class="legend-left"><span class="dot asistencia"></span><span class="legend-label">Asistencia</span></span><span id="countASISTENCIA" class="legend-count">-</span></button><button id="filterFALTA" class="legend-pill" onclick="setStatusFilter('FALTA')"><span class="legend-left"><span class="dot falta"></span><span class="legend-label">Falta</span></span><span id="countFALTA" class="legend-count">-</span></button><button id="filterOBSERVADO" class="legend-pill" onclick="setStatusFilter('OBSERVADO')"><span class="legend-left"><span class="dot observado"></span><span class="legend-label">Observado</span></span><span id="countOBSERVADO" class="legend-count">-</span></button></div></div>
       <div id="complianceSummary" class="compliance-strip"><div class="compliance-bar-pro"><div class="compliance-segment sinregistro">Sin registro de cumplimiento</div></div></div>
       <div id="calendarView"></div><div id="listView" style="display:none;"></div>
@@ -2022,7 +2056,23 @@ body.splash-running .app{
         </div>
         <span class="module-active-caret">⌃</span>
       </div>
-      <div class="view-filter-row"><div class="view-tabs compact-view-tabs"><button id="btnSupervisorViewCalendar" class="active" onclick="setSupervisorView('calendar')">Calendario</button><button id="btnSupervisorViewList" onclick="setSupervisorView('list')">Lista</button></div><div class="inline-period-controls"><label><span>Ir a fecha</span><input id="supervisorInputGoDate" type="date" onchange="goToSupervisorSelectedDate()" /></label><label><span>Inicio</span><input id="supervisorInputStartDate" type="date" /></label><label><span>Fin</span><input id="supervisorInputEndDate" type="date" /></label><button onclick="loadSupervisorCoverages()">Actualizar</button></div></div>
+
+<div class="view-filter-row">
+  <div class="period-top-row">
+    <div class="view-tabs compact-view-tabs">
+      <button id="btnSupervisorViewCalendar" class="active" onclick="setSupervisorView('calendar')">Calendario</button>
+      <button id="btnSupervisorViewList" onclick="setSupervisorView('list')">Lista</button>
+    </div>
+    <button class="period-refresh-btn" onclick="loadSupervisorCoverages()" title="Actualizar supervisión" aria-label="Actualizar supervisión">Actualizar</button>
+  </div>
+
+  <div class="inline-period-controls">
+    <label><span>Ir a fecha</span><input id="supervisorInputGoDate" type="date" onchange="goToSupervisorSelectedDate()" /></label>
+    <label><span>Inicio</span><input id="supervisorInputStartDate" type="date" /></label>
+    <label><span>Fin</span><input id="supervisorInputEndDate" type="date" /></label>
+  </div>
+</div>
+      
       <div class="legend legend-split"><div class="legend-row legend-row-status"><button id="supervisorFilterTODOS" class="legend-pill active" onclick="setSupervisorStatusFilter('TODOS')"><span class="legend-left"><span class="dot todos"></span><span class="legend-label">Todos</span></span><span id="supervisorCountTODOS" class="legend-count">-</span></button><button id="supervisorFilterPROG" class="legend-pill" onclick="setSupervisorStatusFilter('PROG')"><span class="legend-left"><span class="dot conf"></span><span class="legend-label">PROG</span></span><span id="supervisorCountPROG" class="legend-count">-</span></button><button id="supervisorFilterCONF" class="legend-pill" onclick="setSupervisorStatusFilter('CONF')"><span class="legend-left"><span class="dot conf"></span><span class="legend-label">CONF</span></span><span id="supervisorCountCONF" class="legend-count">-</span></button><button id="supervisorFilterPRES" class="legend-pill" onclick="setSupervisorStatusFilter('PRES')"><span class="legend-left"><span class="dot pres"></span><span class="legend-label">PRES</span></span><span id="supervisorCountPRES" class="legend-count">-</span></button></div><div class="legend-row legend-row-compliance"><button id="supervisorFilterASISTENCIA" class="legend-pill" onclick="setSupervisorStatusFilter('ASISTENCIA')"><span class="legend-left"><span class="dot asistencia"></span><span class="legend-label">Asistencia</span></span><span id="supervisorCountASISTENCIA" class="legend-count">-</span></button><button id="supervisorFilterFALTA" class="legend-pill" onclick="setSupervisorStatusFilter('FALTA')"><span class="legend-left"><span class="dot falta"></span><span class="legend-label">Falta</span></span><span id="supervisorCountFALTA" class="legend-count">-</span></button><button id="supervisorFilterOBSERVADO" class="legend-pill" onclick="setSupervisorStatusFilter('OBSERVADO')"><span class="legend-left"><span class="dot observado"></span><span class="legend-label">Observado</span></span><span id="supervisorCountOBSERVADO" class="legend-count">-</span></button></div></div>
       <div id="supervisorOperationalSummary" class="docs-card"><div class="empty">Sin coberturas para supervisión.</div></div>
       <div class="docs-card"><div class="docs-toolbar"><button class="secondary" onclick="clearSupervisorComplementaryFilters()">Limpiar filtros</button></div><div class="sms-two-columns"><div><div class="sms-field-label">Servicio</div><select id="supervisorServiceFilterSelect" class="sms-input" onchange="setSupervisorComplementaryFilters()"><option value="TODOS">Todos</option></select></div><div><div class="sms-field-label">Posición</div><select id="supervisorPositionFilterSelect" class="sms-input" onchange="setSupervisorComplementaryFilters()"><option value="TODOS">Todas</option></select></div></div><div style="margin-top:8px;"><div class="sms-field-label">Guardia / elemento</div><select id="supervisorGuardFilterSelect" class="sms-input" onchange="setSupervisorComplementaryFilters()"><option value="TODOS">Todos</option></select></div></div>
@@ -2150,7 +2200,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.2.3";
+const APP_VERSION = "v2.2.4";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
