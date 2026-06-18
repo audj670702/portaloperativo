@@ -1296,6 +1296,108 @@
   margin-right:12px;
 }
 
+/* Ayuda App SCaD - capturas y estructura visual */
+.help-section-title{
+  margin:16px 0 7px;
+  font-size:12.5px;
+  font-weight:900;
+  color:#111827;
+  letter-spacing:.15px;
+}
+
+.help-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin:0 0 8px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#3730a3;
+  font-size:10.5px;
+  font-weight:900;
+}
+
+.help-note{
+  margin:8px 12px 10px;
+  padding:9px 10px;
+  border-radius:12px;
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  color:#374151;
+  font-size:12.5px;
+  line-height:1.35;
+}
+
+.help-shot{
+  margin:9px 12px 12px;
+  border:1px solid #dbeafe;
+  border-radius:14px;
+  background:#eff6ff;
+  overflow:hidden;
+}
+
+.help-shot summary{
+  list-style:none;
+  cursor:pointer;
+  padding:9px 11px;
+  font-size:12px;
+  font-weight:900;
+  color:#1d4ed8;
+}
+
+.help-shot summary::-webkit-details-marker{
+  display:none;
+}
+
+.help-shot summary::after{
+  content:"＋";
+  float:right;
+  color:#2563eb;
+  font-weight:900;
+}
+
+.help-shot[open] summary::after{
+  content:"−";
+}
+
+.help-shot img{
+  display:block;
+  width:100%;
+  max-height:520px;
+  object-fit:contain;
+  background:#ffffff;
+  border-top:1px solid #dbeafe;
+}
+
+.help-mini-list{
+  margin-top:6px;
+}
+
+.help-mini-list li{
+  margin-bottom:4px;
+}
+
+.help-tag-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin:8px 12px 12px;
+}
+
+.help-tag{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  color:#374151;
+  font-size:10.8px;
+  font-weight:800;
+}
+    
 /* Política de privacidad - referencia discreta y modal informativo */
 body.privacy-modal-open{
   overflow:hidden;
@@ -2086,9 +2188,9 @@ body.splash-running .app{
       <div class="privacy-modal-card" onclick="event.stopPropagation();">
         <div class="privacy-modal-head">
           <div>
-            <div class="privacy-modal-kicker">Información general</div>
-            <h2 id="generalInfoTitle" class="privacy-modal-title">Ayuda general</h2>
-            <p class="privacy-modal-subtitle">Portal Operativo SCaD · Uso básico</p>
+<div class="privacy-modal-kicker">Ayuda</div>
+<h2 id="generalInfoTitle" class="privacy-modal-title">App SCaD</h2>
+<p class="privacy-modal-subtitle">Guía práctica de uso</p>
           </div>
           <button type="button" id="generalInfoCloseIcon" class="privacy-close-icon" onclick="closeGeneralInfoModal()" aria-label="Cerrar ayuda general">×</button>
         </div>
@@ -2200,7 +2302,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.2.4";
+const APP_VERSION = "v2.3";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2327,290 +2429,541 @@ function renderGeneralInfoContent(){
 
   body.innerHTML=`
     <div class="help-search-box">
-      <input id="generalInfoSearchInput" class="sms-input" type="text" placeholder="Buscar en ayuda: servicio, ruta, presente, documento, mensaje..." oninput="filterGeneralInfoHelp()" />
+      <input id="generalInfoSearchInput" class="sms-input" type="text" placeholder="Buscar en Ayuda: sesión, servicios, ruta, presente, mensaje, documento..." oninput="filterGeneralInfoHelp()" />
     </div>
 
+    <div class="help-kicker">App SCaD</div>
+
     <p class="help-intro">
-      Consulta rápida sobre el uso diario del Portal Operativo SCaD. Usa el buscador o abre las preguntas y temas relacionados.
+      Ayuda práctica para usar la App SCaD. Busca una duda o abre el tema que corresponda a la acción que necesitas realizar.
     </p>
 
-    <h4>Preguntas frecuentes</h4>
+    <div class="help-section-title">Inicio y acceso</div>
 
-    <details class="help-item" data-search="modulos no veo modulo permisos perfil paneles control">
-      <summary>¿Por qué no veo todos los módulos?</summary>
-      <p>Los módulos visibles dependen de tu perfil, permisos y configuración de la Empresa Operadora.</p>
-      <p>Los Paneles de control solo aparecen si tienes rol funcional autorizado.</p>
-    </details>
+    <details class="help-item" data-search="inicio pantalla principal modulos mensajeria mis servicios cursos documentos ayuda actualizar">
+      <summary>Qué puedes hacer en App SCaD</summary>
+      <p>Desde la App SCaD puedes consultar servicios asignados, revisar mensajes, acceder a documentos, entrar a Mis cursos y usar funciones operativas disponibles para tu perfil.</p>
 
-    <details class="help-item" data-search="servicios no veo coberturas asignadas fecha periodo actualizar">
-      <summary>¿Por qué no veo servicios asignados?</summary>
-      <p>Puede ser porque no tienes coberturas en el periodo seleccionado, porque el rango de fechas no corresponde o porque la información aún no se ha actualizado.</p>
-      <p>Revisa el periodo y usa Actualizar.</p>
-    </details>
-
-    <details class="help-item" data-search="conf ruta pres estados marcajes confirmar en ruta presente">
-      <summary>¿Qué significa CONF, RUTA o PRES?</summary>
-      <p><strong>CONF</strong> indica que confirmaste conocimiento del servicio.</p>
-      <p><strong>RUTA</strong> indica que reportaste traslado hacia el servicio.</p>
-      <p><strong>PRES</strong> indica que reportaste presencia en el servicio.</p>
-    </details>
-
-    <details class="help-item" data-search="no registrado sin marcaje pendiente registro">
-      <summary>¿Qué significa “No registrado”?</summary>
-      <p>Significa que el sistema no tiene registro de esa acción o dato.</p>
-      <p>No necesariamente implica falta o incumplimiento.</p>
-    </details>
-
-    <details class="help-item" data-search="asistencia falta observado validacion supervisor puedo marcar asistencia">
-      <summary>¿Puedo marcar asistencia desde Mis servicios?</summary>
-      <p>No. Desde Mis servicios puedes realizar marcajes operativos propios.</p>
-      <p>La asistencia, falta u observación corresponde a Supervisión o al proceso autorizado por la Empresa Operadora.</p>
-    </details>
-
-    <details class="help-item" data-search="no puedo marcar ruta presente horario ventana operativa">
-      <summary>¿Por qué no puedo marcar En ruta o Presente?</summary>
-      <p>Algunas acciones solo se habilitan dentro de una ventana operativa relacionada con el horario del servicio.</p>
-      <p>Si la acción no aparece, puede no estar disponible por horario o por estado de la cobertura.</p>
-    </details>
-
-    <details class="help-item" data-search="documentos no veo documento permisos autorizado cliente servicio usuario">
-      <summary>¿Por qué no veo documentos?</summary>
-      <p>Solo ves documentos autorizados para tu perfil o contexto operativo.</p>
-      <p>La disponibilidad puede depender de tu Empresa Operadora, servicio, cliente o reglas internas.</p>
-    </details>
-
-    <details class="help-item" data-search="mensajeria mensajes chat avisos sistema comunicacion laboral">
-      <summary>¿Para qué sirve Mensajería?</summary>
-      <p>Mensajería es un canal laboral interno para comunicación operativa.</p>
-      <p>Debe usarse para temas de trabajo, servicios, coordinación, avisos o comunicación institucional.</p>
-    </details>
-
-    <details class="help-item" data-search="actualizar refrescar datos no cambia informacion">
-      <summary>¿Qué hago si la información no se actualiza?</summary>
-      <p>Usa el botón Actualizar de la parte superior o del módulo correspondiente.</p>
-      <p>Si la información no cambia, revisa conexión a internet o vuelve a entrar al módulo.</p>
-    </details>
-
-    <details class="help-item" data-search="cerrar sesion salir usuario equipo compartido">
-      <summary>¿Cuándo debo cerrar sesión?</summary>
-      <p>Cierra sesión si usas un equipo compartido, si otra persona usará el dispositivo o si necesitas cambiar de usuario.</p>
-    </details>
-
-    <h4>Temas de consulta</h4>
-
-    <details class="help-item" data-search="inicio home pantalla principal modulos indicadores">
-      <summary>Inicio</summary>
-
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Módulos disponibles para tu perfil.</li>
-        <li>Mensajes pendientes.</li>
-        <li>Servicios próximos.</li>
-        <li>Documentos nuevos, cuando existan.</li>
-        <li>Paneles de control, si tienes rol funcional.</li>
+      <h4>Funciones principales</h4>
+      <ul class="help-mini-list">
+        <li>Consultar <strong>Mis servicios</strong>.</li>
+        <li>Revisar calendario o lista de coberturas.</li>
+        <li>Confirmar conocimiento del servicio.</li>
+        <li>Marcar <strong>En ruta</strong> y <strong>Presente</strong>, cuando aplique.</li>
+        <li>Usar <strong>Mensajería</strong>.</li>
+        <li>Consultar <strong>Documentos</strong>.</li>
+        <li>Acceder a <strong>Mis cursos</strong>.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Entrar a Mensajería.</li>
-        <li>Entrar a Mis servicios.</li>
-        <li>Consultar Documentos.</li>
-        <li>Abrir Mis cursos.</li>
-        <li>Desplegar Paneles de control, si están disponibles.</li>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_inicio_usuario_activo.png" alt="Pantalla principal de App SCaD con usuario activo" />
+      </details>
+
+      <div class="help-note">Si una función no aparece, puede deberse a permisos, configuración de tu usuario o estado de sesión.</div>
+    </details>
+
+    <details class="help-item" data-search="iniciar sesion login entrar acceso correo usuario no puedo entrar">
+      <summary>Iniciar sesión</summary>
+      <p>Inicia sesión para que la App cargue tu información, tus servicios y las funciones disponibles para tu perfil.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Abre la App SCaD.</li>
+        <li>Selecciona <strong>Iniciar sesión</strong>.</li>
+        <li>Ingresa con el correo registrado por tu organización.</li>
+        <li>Espera a que la App cargue tu perfil.</li>
       </ul>
 
-      <h4>Notas útiles</h4>
-      <p>Si un módulo no aparece, puede no estar autorizado para tu perfil.</p>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_inicio_sin_sesion.png" alt="Pantalla inicial de App SCaD sin sesión iniciada" />
+      </details>
+
+      <div class="help-note">Usa el mismo correo registrado para acceder a SCaD. Si usas otro correo, la App puede no reconocer tu perfil.</div>
     </details>
+
+    <details class="help-item" data-search="actualizar refrescar informacion datos recargar no cambia servicios mensajes documentos">
+      <summary>Actualizar información</summary>
+      <p>Usa Actualizar cuando necesites recargar servicios, mensajes, documentos o cambios recientes.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Presiona el botón <strong>↻</strong> de la parte superior o del módulo correspondiente.</li>
+        <li>Espera a que la App recargue la información.</li>
+        <li>Revisa nuevamente la sección que estabas consultando.</li>
+      </ul>
+
+      <div class="help-note">Actualiza antes de reportar que no aparece un servicio, documento o mensaje esperado.</div>
+    </details>
+
+    <div class="help-section-title">Mis servicios</div>
 
     <details class="help-item" data-search="mis servicios coberturas calendario lista fecha horario posicion indicaciones estado">
-      <summary>Mis servicios</summary>
+      <summary>Consultar Mis servicios</summary>
+      <p>Mis servicios muestra las coberturas o servicios asignados a tu usuario dentro del periodo seleccionado.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Coberturas o servicios asignados.</li>
-        <li>Fecha, horario y posición.</li>
-        <li>Indicaciones del servicio.</li>
+      <h4>Qué puedes revisar</h4>
+      <ul class="help-mini-list">
+        <li>Fecha y horario.</li>
+        <li>Servicio y posición.</li>
         <li>Estado operativo.</li>
         <li>Marcajes registrados.</li>
-        <li>Validación final, cuando exista.</li>
+        <li>Cumplimiento, cuando exista validación.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Ver servicios en calendario o lista.</li>
-        <li>Filtrar por estado.</li>
-        <li>Abrir el detalle de una cobertura.</li>
-        <li>Confirmar conocimiento del servicio.</li>
-        <li>Marcar En ruta, cuando esté disponible.</li>
-        <li>Marcar Presente, cuando esté disponible.</li>
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Entra a <strong>Mis servicios</strong>.</li>
+        <li>Selecciona <strong>Calendario</strong> o <strong>Lista</strong>.</li>
+        <li>Revisa el periodo de consulta.</li>
+        <li>Abre la cobertura que deseas revisar.</li>
       </ul>
 
-      <h4>Notas útiles</h4>
-      <p>Las acciones pueden depender del horario, estado de la cobertura y reglas operativas configuradas.</p>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mis_servicios_calendario_evento.png" alt="Mis servicios en vista calendario con servicio visible" />
+      </details>
     </details>
 
-    <details class="help-item" data-search="marcajes confirmar ruta presente conf ruta pres no registrado">
-      <summary>Marcajes operativos</summary>
+    <details class="help-item" data-search="calendario mes semana dia hoy evento servicio fecha abrir cobertura">
+      <summary>Usar la vista Calendario</summary>
+      <p>La vista Calendario permite ubicar servicios por fecha.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Si ya confirmaste el servicio.</li>
-        <li>Si reportaste traslado.</li>
-        <li>Si reportaste presencia.</li>
-        <li>La hora registrada para cada marcaje.</li>
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Entra a <strong>Mis servicios</strong>.</li>
+        <li>Selecciona <strong>Calendario</strong>.</li>
+        <li>Ubica el día del servicio.</li>
+        <li>Toca el evento para abrir el detalle.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Confirmar conocimiento del servicio.</li>
-        <li>Registrar En ruta.</li>
-        <li>Registrar Presente.</li>
-      </ul>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mis_servicios_calendario_evento.png" alt="Calendario de Mis servicios con evento visible" />
+      </details>
 
-      <h4>Notas útiles</h4>
-      <p>Los marcajes informan actividad operativa. No sustituyen la validación formal de asistencia.</p>
-      <p>Cuando no exista registro, se mostrará “No registrado”.</p>
+      <div class="help-note">Si no aparece el servicio, revisa el periodo de Inicio y Fin, limpia filtros y presiona Actualizar.</div>
     </details>
 
-    <details class="help-item" data-search="validacion asistencia falta observado supervisor cumplimiento">
-      <summary>Validación de asistencia</summary>
+    <details class="help-item" data-search="lista servicios vista lista cambiar calendario lista">
+      <summary>Usar la vista Lista</summary>
+      <p>La vista Lista muestra tus servicios en formato ordenado para revisar coberturas sin usar calendario.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Si la cobertura fue validada como Asistencia.</li>
-        <li>Si fue registrada como Falta.</li>
-        <li>Si quedó Observada.</li>
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Entra a <strong>Mis servicios</strong>.</li>
+        <li>Selecciona <strong>Lista</strong>.</li>
+        <li>Revisa los servicios disponibles.</li>
+        <li>Toca el servicio para abrir el detalle.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Como usuario base, solo puedes consultar la validación cuando ya exista.</li>
-      </ul>
-
-      <h4>Notas útiles</h4>
-      <p>La validación corresponde a Supervisión o al proceso autorizado por la Empresa Operadora.</p>
-      <p>Marcar Presente no equivale automáticamente a asistencia validada.</p>
+      <div class="help-note">Captura pendiente. La función ya está considerada en la Ayuda.</div>
     </details>
 
-    <details class="help-item" data-search="mensajeria mensajes contactos avisos sistema chat laboral">
-      <summary>Mensajería</summary>
+    <details class="help-item" data-search="filtros todos conf ruta pres asistencia falta observado contadores cumplimiento">
+      <summary>Usar filtros de servicios</summary>
+      <p>Los filtros permiten consultar servicios por estado operativo o por cumplimiento.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Mensajes recibidos.</li>
-        <li>Mensajes pendientes.</li>
-        <li>Contactos internos.</li>
-        <li>Avisos de sistema.</li>
+      <h4>Filtros comunes</h4>
+      <ul class="help-mini-list">
+        <li><strong>Todos:</strong> muestra todos los servicios del periodo.</li>
+        <li><strong>CONF:</strong> servicios confirmados.</li>
+        <li><strong>RUTA:</strong> servicios con marcaje En ruta.</li>
+        <li><strong>PRES:</strong> servicios con marcaje Presente.</li>
+        <li><strong>Asistencia, Falta u Observado:</strong> resultados de validación.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Buscar usuarios internos.</li>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mis_servicios_calendario_evento.png" alt="Filtros de Mis servicios en vista calendario" />
+      </details>
+
+      <div class="help-note">Cuando un contador aparece como “-”, significa que no hay registros para ese filtro.</div>
+    </details>
+
+    <details class="help-item" data-search="detalle servicio cobertura abrir fecha horario posicion indicaciones confirmar ruta presente">
+      <summary>Abrir el detalle de un servicio</summary>
+      <p>El detalle muestra la información completa de una cobertura y las acciones disponibles.</p>
+
+      <h4>Qué debes revisar</h4>
+      <ul class="help-mini-list">
+        <li>Fecha.</li>
+        <li>Horario.</li>
+        <li>Posición.</li>
+        <li>Indicaciones.</li>
+        <li>Estado de Confirmado, En ruta y Presente.</li>
+      </ul>
+
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_detalle_servicio_confirmar.png" alt="Detalle del servicio con botón Confirmar conocimiento" />
+      </details>
+
+      <div class="help-note">Antes de marcar cualquier acción, revisa que el servicio, horario y posición sean correctos.</div>
+    </details>
+
+    <div class="help-section-title">Marcajes operativos</div>
+
+    <details class="help-item" data-search="confirmar conocimiento servicio conf confirmacion aceptar servicio asignado boton confirmar">
+      <summary>Confirmar conocimiento del servicio</summary>
+      <p>Confirma conocimiento para informar que reconoces el servicio asignado.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Entra a <strong>Mis servicios</strong>.</li>
+        <li>Abre el servicio correspondiente.</li>
+        <li>Revisa fecha, horario, posición e indicaciones.</li>
+        <li>Presiona <strong>Confirmar conocimiento</strong>.</li>
+        <li>Verifica que el estado cambie a Confirmado.</li>
+      </ul>
+
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_detalle_servicio_confirmar.png" alt="Botón Confirmar conocimiento en detalle del servicio" />
+      </details>
+
+      <div class="help-note">No confirmes si detectas un error en fecha, horario, servicio o posición. Repórtalo por el conducto indicado por tu organización.</div>
+    </details>
+
+    <details class="help-item" data-search="marcar en ruta ruta traslado servicio boton en ruta">
+      <summary>Marcar En ruta</summary>
+      <p>Marca En ruta cuando inicies tu traslado al servicio.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Abre el detalle del servicio.</li>
+        <li>Verifica que el servicio esté confirmado.</li>
+        <li>Presiona <strong>Marcar en ruta</strong>, si el botón está disponible.</li>
+        <li>Verifica que el estado cambie a En ruta.</li>
+      </ul>
+
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_detalle_servicio_en_ruta.png" alt="Detalle del servicio con botón Marcar en ruta" />
+      </details>
+
+      <div class="help-note">La acción depende del horario y estado de la cobertura. No siempre estará disponible.</div>
+    </details>
+
+    <details class="help-item" data-search="marcar presente presencia pres llegar servicio boton presente">
+      <summary>Marcar Presente</summary>
+      <p>Marca Presente cuando te encuentres en el servicio o punto de cobertura.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Abre el detalle del servicio.</li>
+        <li>Verifica que corresponde al servicio correcto.</li>
+        <li>Presiona <strong>Marcar presente</strong>, si el botón está disponible.</li>
+        <li>Verifica que el estado cambie a Presente.</li>
+      </ul>
+
+      <div class="help-note">Marcar Presente no equivale automáticamente a asistencia validada. La asistencia depende de validación autorizada.</div>
+    </details>
+
+    <details class="help-item" data-search="marcaje operativo diferencia asistencia validacion formal confirmado ruta presente">
+      <summary>Diferencia entre marcaje y validación</summary>
+      <p>Los marcajes operativos los realiza el Personal desde la App. La validación formal corresponde a Supervisión o al perfil autorizado.</p>
+
+      <h4>Marcajes operativos</h4>
+      <ul class="help-mini-list">
+        <li>Confirmar conocimiento.</li>
+        <li>Marcar En ruta.</li>
+        <li>Marcar Presente.</li>
+      </ul>
+
+      <h4>Validación formal</h4>
+      <ul class="help-mini-list">
+        <li>Asistencia.</li>
+        <li>Falta.</li>
+        <li>Observado.</li>
+      </ul>
+
+      <div class="help-note">Un servicio puede tener Presente registrado y todavía aparecer sin Asistencia si Supervisión no ha validado.</div>
+    </details>
+
+    <div class="help-section-title">Mensajería</div>
+
+    <details class="help-item" data-search="mensajeria mensajes sms interno chat contacto pendientes avisos sistema">
+      <summary>Consultar Mensajería</summary>
+      <p>Mensajería es el canal interno de comunicación laboral dentro de SCaD.</p>
+
+      <h4>Qué puedes hacer</h4>
+      <ul class="help-mini-list">
+        <li>Revisar mensajes pendientes.</li>
         <li>Abrir conversaciones.</li>
-        <li>Enviar mensajes laborales.</li>
-        <li>Consultar avisos institucionales o de programación.</li>
+        <li>Buscar contactos internos.</li>
+        <li>Consultar Avisos de sistema.</li>
       </ul>
 
-      <h4>Notas útiles</h4>
-      <p>Mensajería es un canal interno de trabajo. Los avisos de sistema son informativos y no siempre requieren respuesta.</p>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mensajeria_abierta_sin_contacto.png" alt="Mensajería abierta sin contacto seleccionado" />
+      </details>
+
+      <div class="help-note">Primero selecciona un contacto o pendiente para abrir el chat.</div>
     </details>
 
-    <details class="help-item" data-search="documentos archivos tecnicos operativos administrativos buscar categoria abrir descargar">
-      <summary>Documentos</summary>
+    <details class="help-item" data-search="buscar contacto usuario interno alias nombre codigo mensajeria">
+      <summary>Buscar un usuario interno</summary>
+      <p>Usa la búsqueda para localizar un contacto interno activo.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Documentos técnicos, operativos o administrativos autorizados.</li>
-        <li>Categorías disponibles.</li>
-        <li>Descripción, versión o fecha de actualización, cuando aplique.</li>
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Abre <strong>Mensajería</strong>.</li>
+        <li>Selecciona <strong>Buscar usuario interno</strong>.</li>
+        <li>Escribe alias, nombre o código.</li>
+        <li>Selecciona el contacto correcto.</li>
+        <li>Abre la conversación.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Buscar documentos.</li>
-        <li>Filtrar por categoría.</li>
-        <li>Abrir documentos disponibles.</li>
-        <li>Descargar documentos, si está permitido.</li>
-      </ul>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mensajeria_buscar_contacto.png" alt="Búsqueda de usuario interno en Mensajería" />
+      </details>
 
-      <h4>Notas útiles</h4>
-      <p>Si no ves un documento esperado, puede no estar autorizado para tu perfil, cliente, servicio o usuario.</p>
+      <div class="help-note">Verifica el contacto antes de enviar información operativa.</div>
     </details>
 
-    <details class="help-item" data-search="cursos mis cursos capacitacion scad">
-      <summary>Mis cursos</summary>
+    <details class="help-item" data-search="avisos de sistema canal institucional mensaje automatico cambio cobertura cancelacion reasignacion">
+      <summary>Avisos de sistema</summary>
+      <p>Avisos de sistema es un canal institucional dentro de Mensajería. Sirve para avisos automáticos o relevantes del sistema.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Cursos disponibles en el entorno SCaD.</li>
-        <li>Actividades o contenidos asignados, cuando existan.</li>
+      <h4>Puede informar sobre</h4>
+      <ul class="help-mini-list">
+        <li>Cambios de cobertura.</li>
+        <li>Retiro de una asignación.</li>
+        <li>Cancelación de cobertura previamente asignada.</li>
+        <li>Avisos operativos institucionales.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Abrir el módulo de cursos.</li>
-        <li>Continuar con actividades disponibles.</li>
-      </ul>
-
-      <h4>Notas útiles</h4>
-      <p>Los cursos son distintos a los documentos operativos. Los documentos se consultan en el módulo Documentos.</p>
+      <div class="help-note">Avisos de sistema no es un chat informal. Es un canal institucional y puede permanecer visible aunque no tenga mensajes pendientes.</div>
     </details>
 
-    <details class="help-item" data-search="paneles control administracion coordinacion supervision roles funcionales guia">
-      <summary>Paneles de control</summary>
+    <div class="help-section-title">Documentos y cursos</div>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Paneles funcionales disponibles para tu perfil.</li>
-        <li>Accesos autorizados a Administración, Coordinación o Supervisión.</li>
+    <details class="help-item" data-search="documentos archivos tecnicos operativos administrativos buscar filtro todos no aparece documento">
+      <summary>Consultar Documentos</summary>
+      <p>Documentos permite consultar archivos autorizados por tu organización.</p>
+
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Entra a <strong>Documentos</strong>.</li>
+        <li>Presiona <strong>Actualizar</strong>.</li>
+        <li>Usa el buscador si necesitas un documento específico.</li>
+        <li>Selecciona el documento disponible.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Abrir paneles autorizados.</li>
-        <li>Consultar la Guía de paneles desde “ⓘ Guía de paneles”.</li>
-      </ul>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_documentos_sin_resultados.png" alt="Documentos sin resultados disponibles para el filtro" />
+      </details>
 
-      <h4>Notas útiles</h4>
-      <p>Los paneles solo aparecen cuando tienes rol funcional autorizado.</p>
+      <div class="help-note">Los documentos visibles pueden depender de tu perfil, usuario, cliente, servicio o configuración de la organización.</div>
     </details>
 
-    <details class="help-item" data-search="actualizar refrescar informacion datos reciente">
-      <summary>Actualización de información</summary>
+    <details class="help-item" data-search="mis cursos cursos capacitacion acceso externo programas wix">
+      <summary>Acceder a Mis cursos</summary>
+      <p>Mis cursos abre el ambiente de capacitación disponible para tu usuario.</p>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>Información actualizada de servicios, mensajes, documentos o módulos.</li>
+      <h4>Pasos</h4>
+      <ul class="help-mini-list">
+        <li>Desde la pantalla principal, selecciona <strong>Mis cursos</strong>.</li>
+        <li>Espera la apertura del ambiente correspondiente.</li>
+        <li>Consulta tus cursos en ese entorno.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Usar el botón Actualizar.</li>
-        <li>Volver a entrar al módulo.</li>
-        <li>Revisar conexión a internet.</li>
-      </ul>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mis_cursos_acceso_externo.png" alt="Ambiente externo de Mis cursos" />
+      </details>
 
-      <h4>Notas útiles</h4>
-      <p>Algunos cambios pueden tardar unos segundos en reflejarse.</p>
+      <div class="help-note">En esta Ayuda solo se explica el acceso. La operación interna de cursos corresponde al ambiente de cursos.</div>
     </details>
 
-    <details class="help-item" data-search="cerrar sesion salir usuario cuenta dispositivo compartido">
-      <summary>Cierre de sesión</summary>
+    <div class="help-section-title">Problemas frecuentes</div>
 
-      <h4>¿Qué puedo consultar aquí?</h4>
-      <ul>
-        <li>El perfil activo mostrado en la parte superior de la app.</li>
+    <details class="help-item" data-search="no puedo entrar iniciar sesion acceso correo usuario activo">
+      <summary>No puedo entrar</summary>
+      <p>Puede deberse a correo incorrecto, usuario no activo, acceso no habilitado o problema temporal de conexión.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Que uses el correo registrado por tu organización.</li>
+        <li>Que tengas conexión a internet.</li>
+        <li>Que estés entrando desde el acceso correcto.</li>
+        <li>Que tu usuario esté activo.</li>
       </ul>
 
-      <h4>¿Qué acciones puedo realizar?</h4>
-      <ul>
-        <li>Cerrar sesión desde el botón de salida.</li>
-        <li>Entrar con otro usuario, si corresponde.</li>
+      <div class="help-note">Si el problema continúa, repórtalo al responsable de tu organización.</div>
+    </details>
+
+    <details class="help-item" data-search="no veo servicios sin servicios encontrados cero cobertura periodo fecha filtros actualizar">
+      <summary>No veo servicios asignados</summary>
+      <p>Puede ser que no tengas servicios en el periodo seleccionado, que exista un filtro activo o que la información no esté actualizada.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Presiona <strong>Actualizar</strong>.</li>
+        <li>Revisa el periodo de Inicio y Fin.</li>
+        <li>Cambia a <strong>Todos</strong>.</li>
+        <li>Prueba con Calendario y Lista.</li>
       </ul>
 
-      <h4>Notas útiles</h4>
-      <p>Cierra sesión si el dispositivo no es personal o si otra persona usará la app.</p>
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_mis_servicios_calendario_sin_servicios.png" alt="Mis servicios sin servicios encontrados" />
+      </details>
+    </details>
+
+    <details class="help-item" data-search="no aparece confirmar conocimiento boton confirmar servicio estado cobertura">
+      <summary>No aparece Confirmar conocimiento</summary>
+      <p>El botón puede no aparecer si el servicio no está en estado que permita confirmación, si ya fue confirmado o si la información no está actualizada.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Abre el detalle del servicio.</li>
+        <li>Verifica el estado de la cobertura.</li>
+        <li>Actualiza la información.</li>
+        <li>Confirma que el servicio corresponde a tu usuario.</li>
+      </ul>
+    </details>
+
+    <details class="help-item" data-search="no puedo marcar en ruta cobertura termino ventana horario alerta ruta no disponible">
+      <summary>No puedo marcar En ruta</summary>
+      <p>La acción En ruta depende de la ventana operativa y del estado de la cobertura.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Fecha y horario del servicio.</li>
+        <li>Que el servicio esté confirmado.</li>
+        <li>Que la cobertura no haya terminado.</li>
+        <li>Que la App esté actualizada.</li>
+      </ul>
+
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_error_en_ruta_cobertura_terminada.png" alt="Alerta de En ruta no disponible porque la cobertura terminó" />
+      </details>
+
+      <div class="help-note">Si la App indica que la cobertura ya terminó, ya no se puede registrar En ruta para esa cobertura.</div>
+    </details>
+
+    <details class="help-item" data-search="no puedo marcar presente pres cobertura termino horario no disponible">
+      <summary>No puedo marcar Presente</summary>
+      <p>Presente puede no estar disponible por horario, estado de cobertura, falta de información actualizada o porque la cobertura ya terminó.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Fecha y horario.</li>
+        <li>Servicio correcto.</li>
+        <li>Estado operativo.</li>
+        <li>Conexión y actualización de datos.</li>
+      </ul>
+
+      <div class="help-note">Si consideras que deberías poder marcar Presente, repórtalo por el conducto indicado.</div>
+    </details>
+
+    <details class="help-item" data-search="sin registro cumplimiento asistencia falta observado no registrado">
+      <summary>La App muestra “Sin registro de cumplimiento”</summary>
+      <p>Significa que no existe validación registrada para los servicios mostrados o para el filtro actual.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Periodo seleccionado.</li>
+        <li>Filtros activos.</li>
+        <li>Si ya existe validación autorizada.</li>
+      </ul>
+
+      <div class="help-note">El cumplimiento depende de validación formal, no solo de los marcajes del Personal.</div>
+    </details>
+
+    <details class="help-item" data-search="no veo documentos sin documentos filtro permiso autorizado usuario cliente servicio">
+      <summary>No veo documentos</summary>
+      <p>Puede ser que no tengas documentos disponibles, que el filtro no coincida o que el documento no esté autorizado para tu usuario.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Presiona <strong>Actualizar</strong>.</li>
+        <li>Borra el texto de búsqueda.</li>
+        <li>Selecciona <strong>Todos</strong>, si aparece.</li>
+        <li>Confirma con tu responsable si esperabas un documento específico.</li>
+      </ul>
+
+      <details class="help-shot">
+        <summary>Ver captura</summary>
+        <img src="./help/app-scad/app_documentos_sin_resultados.png" alt="Documentos sin resultados" />
+      </details>
+    </details>
+
+    <details class="help-item" data-search="no puedo enviar mensaje chat contacto seleccionar enviar">
+      <summary>No puedo enviar mensaje</summary>
+      <p>Puede deberse a que no seleccionaste contacto, el campo está vacío, no hay conexión o la conversación no está abierta.</p>
+
+      <h4>Qué revisar</h4>
+      <ul class="help-mini-list">
+        <li>Selecciona un contacto.</li>
+        <li>Escribe el mensaje.</li>
+        <li>Verifica conexión.</li>
+        <li>Actualiza Mensajería.</li>
+      </ul>
+    </details>
+
+    <div class="help-section-title">Glosario</div>
+
+    <details class="help-item" data-search="glosario app scad mis servicios cobertura servicio confirmacion ruta presente marcaje cumplimiento">
+      <summary>Glosario de App SCaD</summary>
+
+      <h4>App SCaD</h4>
+      <p>Interfaz móvil para consultar servicios, mensajes, documentos, cursos y realizar acciones operativas.</p>
+
+      <h4>Mis servicios</h4>
+      <p>Sección donde consultas tus servicios o coberturas asignadas.</p>
+
+      <h4>Servicio</h4>
+      <p>Actividad o contexto operativo asignado a una fecha, horario y posición.</p>
+
+      <h4>Cobertura</h4>
+      <p>Registro operativo de un servicio asignado en una fecha y horario determinados.</p>
+
+      <h4>Confirmación</h4>
+      <p>Acción mediante la cual reconoces que tienes un servicio asignado.</p>
+
+      <h4>En ruta</h4>
+      <p>Marcaje operativo que indica que te diriges al servicio.</p>
+
+      <h4>Presente</h4>
+      <p>Marcaje operativo que indica que te encuentras en el servicio o punto de cobertura.</p>
+
+      <h4>Marcaje operativo</h4>
+      <p>Acción registrada desde la App por el Personal, como confirmar, marcar En ruta o marcar Presente.</p>
+
+      <h4>Cumplimiento</h4>
+      <p>Información relacionada con asistencia, falta, observación o falta de registro.</p>
+
+      <h4>Asistencia</h4>
+      <p>Validación formal de que el servicio fue cubierto conforme a los criterios de la organización.</p>
+
+      <h4>Falta</h4>
+      <p>Registro formal de que el servicio no fue cubierto conforme a lo esperado.</p>
+
+      <h4>Observado</h4>
+      <p>Estado que indica que existe una observación registrada sobre el servicio o cumplimiento.</p>
+
+      <h4>Sin registro</h4>
+      <p>Indica que no existe información registrada para una acción o estado.</p>
+
+      <h4>Mensajería</h4>
+      <p>Canal laboral interno para comunicación entre usuarios activos.</p>
+
+      <h4>Avisos de sistema</h4>
+      <p>Canal institucional dentro de Mensajería para avisos automáticos o relevantes del sistema.</p>
+
+      <h4>Documentos</h4>
+      <p>Sección para consultar información autorizada por la organización.</p>
+
+      <h4>Mis cursos</h4>
+      <p>Acceso al ambiente de cursos o contenidos de capacitación disponibles.</p>
     </details>
 
     <div id="generalInfoEmpty" class="empty hidden">Sin resultados para esta búsqueda.</div>
