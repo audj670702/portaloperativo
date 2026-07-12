@@ -4480,7 +4480,270 @@ async function supervisorRegisterIncident(){
   await supervisorPostAction("sprivSupervisorRegistrarIncidencia",{tipoIncidencia:tipo,descripcion});
 }
 
-    function renderGenericMonthCalendar(rootId,date,data,buttonsHtml,selectFn,openFn,supervisor=false){const root=document.getElementById(rootId);if(!root)return;const year=date.getFullYear(),month=date.getMonth(),firstDay=new Date(year,month,1),lastDay=new Date(year,month+1,0),startWeekDay=firstDay.getDay(),totalDays=lastDay.getDate(),names=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];let html=`<div class="calendar"><div class="calendar-header"><div class="calendar-title">${monthName(month)} ${year}</div>${buttonsHtml}</div><div class="calendar-grid">`;names.forEach(n=>html+=`<div class="day-name">${n}</div>`);for(let i=0;i<startWeekDay;i++)html+=`<div class="day"></div>`;for(let d=1;d<=totalDays;d++){const cellDate=new Date(year,month,d),key=toDateKey(cellDate),dayItems=data.filter(s=>s.fechaKey===key);html+=`<div class="day ${isSameDay(cellDate,new Date())?"today":""} ${isSameDay(cellDate,date)?"selected":""}" onclick="${selectFn}('${key}')"><div class="day-number">${d}</div>${dayItems.map(item=>{const estado=supervisor?getSupervisorStatusForFilter(item):normalizeServiceStatus(item.estado);return`<div class="mini-event ${statusClass(estado)}" onclick="event.stopPropagation(); ${openFn}('${escapeAttr(item.coberturaId)}')">${escapeHtml(item.horaInicio||"")} ${escapeHtml(item.servicio||"")} ${escapeHtml(estado||"")}</div>`}).join("")}</div>`}html+=`</div></div>`;root.innerHTML=html}function renderGenericWeekCalendar(rootId,date,data,buttonsHtml,selectFn,openFn,supervisor=false){const root=document.getElementById(rootId);if(!root)return;const start=startOfWeek(date),end=addDays(start,6),names=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];let html=`<div class="calendar"><div class="calendar-header"><div class="calendar-title">Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}</div>${buttonsHtml}</div><div class="calendar-grid">`;names.forEach(n=>html+=`<div class="day-name">${n}</div>`);for(let i=0;i<7;i++){const cellDate=addDays(start,i),key=toDateKey(cellDate),dayItems=data.filter(s=>s.fechaKey===key);html+=`<div class="day ${isSameDay(cellDate,new Date())?"today":""} ${isSameDay(cellDate,date)?"selected":""}" onclick="${selectFn}('${key}')"><div class="day-number">${cellDate.getDate()}</div>${dayItems.map(item=>{const estado=supervisor?getSupervisorStatusForFilter(item):normalizeServiceStatus(item.estado);return`<div class="mini-event ${statusClass(estado)}" onclick="event.stopPropagation(); ${openFn}('${escapeAttr(item.coberturaId)}')">${escapeHtml(item.horaInicio||"")} ${escapeHtml(item.servicio||"")}</div>`}).join("")}</div>`}html+=`</div></div>`;root.innerHTML=html}function renderGenericDayCalendar(rootId,date,data,buttonsHtml,openFn,emptyText,supervisor=false){const root=document.getElementById(rootId);if(!root)return;const key=toDateKey(date),items=data.filter(s=>s.fechaKey===key);let html=`<div class="calendar"><div class="calendar-header"><div class="calendar-title">Día ${formatDate(key)}</div>${buttonsHtml}</div>`;if(!items.length){html+=`<div class="empty">${emptyText}</div>`}else{html+=`<div class="day-mode-list">`;items.forEach(item=>{const estado=supervisor?getSupervisorStatusForFilter(item):normalizeServiceStatus(item.estado);html+=`<div class="service-card ${statusClass(estado)}" onclick="${openFn}('${escapeAttr(item.coberturaId)}')"><div class="service-card-header"><div class="service-card-title">${escapeHtml(item.horario||"")} · ${escapeHtml(item.servicio||"Servicio")}</div><span class="badge ${statusClass(estado)}">${escapeHtml(estado||"")}</span></div><div class="service-card-sub">${escapeHtml(item.posicion||"")}${supervisor?`<br>Guardia: ${escapeHtml(item.nombreGuardia||"No asignado")}`:""}</div></div>`});html+=`</div>`}html+=`</div>`;root.innerHTML=html}
+function renderGenericMonthCalendar(
+  rootId,
+  date,
+  data,
+  buttonsHtml,
+  selectFn,
+  openFn,
+  supervisor = false
+) {
+  const root = document.getElementById(rootId);
+  if (!root) return;
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startWeekDay = firstDay.getDay();
+  const totalDays = lastDay.getDate();
+  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
+        <div class="calendar-title">${monthName(month)} ${year}</div>
+        ${buttonsHtml}
+      </div>
+      <div class="calendar-grid">
+  `;
+
+  names.forEach(name => {
+    html += `<div class="day-name">${name}</div>`;
+  });
+
+  for (let i = 0; i < startWeekDay; i++) {
+    html += `<div class="day"></div>`;
+  }
+
+  for (let dayNumber = 1; dayNumber <= totalDays; dayNumber++) {
+    const cellDate = new Date(year, month, dayNumber);
+    const key = toDateKey(cellDate);
+    const dayItems = data.filter(item => item.fechaKey === key);
+
+    html += `
+      <div
+        class="day
+          ${isSameDay(cellDate, new Date()) ? "today" : ""}
+          ${isSameDay(cellDate, date) ? "selected" : ""}"
+        onclick="${selectFn}('${key}')"
+      >
+        <div class="day-number">${dayNumber}</div>
+    `;
+
+    dayItems.forEach(item => {
+      const estado = supervisor
+        ? getSupervisorStatusForFilter(item)
+        : normalizeServiceStatus(item.estado);
+
+      const texto = supervisor
+        ? getSupervisorCalendarEventText(item, "month")
+        : `${item.horaInicio || ""} ${item.servicio || ""} ${estado || ""}`;
+
+      html += `
+        <div
+          class="mini-event ${statusClass(estado)}"
+          onclick="event.stopPropagation(); ${openFn}('${escapeAttr(item.coberturaId)}')"
+        >
+          ${escapeHtml(texto)}
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
+  html += `</div></div>`;
+  root.innerHTML = html;
+}
+
+function renderGenericWeekCalendar(
+  rootId,
+  date,
+  data,
+  buttonsHtml,
+  selectFn,
+  openFn,
+  supervisor = false
+) {
+  const root = document.getElementById(rootId);
+  if (!root) return;
+
+  const start = startOfWeek(date);
+  const end = addDays(start, 6);
+  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
+        <div class="calendar-title">
+          Semana ${formatDate(toDateKey(start))} - ${formatDate(toDateKey(end))}
+        </div>
+        ${buttonsHtml}
+      </div>
+      <div class="calendar-grid">
+  `;
+
+  names.forEach(name => {
+    html += `<div class="day-name">${name}</div>`;
+  });
+
+  for (let i = 0; i < 7; i++) {
+    const cellDate = addDays(start, i);
+    const key = toDateKey(cellDate);
+    const dayItems = data.filter(item => item.fechaKey === key);
+
+    html += `
+      <div
+        class="day
+          ${isSameDay(cellDate, new Date()) ? "today" : ""}
+          ${isSameDay(cellDate, date) ? "selected" : ""}"
+        onclick="${selectFn}('${key}')"
+      >
+        <div class="day-number">${cellDate.getDate()}</div>
+    `;
+
+    dayItems.forEach(item => {
+      const estado = supervisor
+        ? getSupervisorStatusForFilter(item)
+        : normalizeServiceStatus(item.estado);
+
+      const texto = supervisor
+        ? getSupervisorCalendarEventText(item, "week")
+        : `${item.horaInicio || ""} ${item.servicio || ""}`;
+
+      html += `
+        <div
+          class="mini-event ${statusClass(estado)}"
+          onclick="event.stopPropagation(); ${openFn}('${escapeAttr(item.coberturaId)}')"
+        >
+          ${escapeHtml(texto)}
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
+  html += `</div></div>`;
+  root.innerHTML = html;
+}
+
+function renderGenericDayCalendar(
+  rootId,
+  date,
+  data,
+  buttonsHtml,
+  openFn,
+  emptyText,
+  supervisor = false
+) {
+  const root = document.getElementById(rootId);
+  if (!root) return;
+
+  const key = toDateKey(date);
+  const items = data.filter(item => item.fechaKey === key);
+
+  let html = `
+    <div class="calendar">
+      <div class="calendar-header">
+        <div class="calendar-title">Día ${formatDate(key)}</div>
+        ${buttonsHtml}
+      </div>
+  `;
+
+  if (!items.length) {
+    html += `<div class="empty">${emptyText}</div>`;
+  } else {
+    html += `<div class="day-mode-list">`;
+
+    items.forEach(item => {
+      const estado = supervisor
+        ? getSupervisorStatusForFilter(item)
+        : normalizeServiceStatus(item.estado);
+
+      const titulo = supervisor
+        ? getSupervisorCalendarEventText(item, "day")
+        : `${item.horario || ""} · ${item.servicio || "Servicio"}`;
+
+      html += `
+        <div
+          class="service-card ${statusClass(estado)}"
+          onclick="${openFn}('${escapeAttr(item.coberturaId)}')"
+        >
+          <div class="service-card-header">
+            <div class="service-card-title">
+              ${escapeHtml(titulo)}
+            </div>
+
+            <span class="badge ${statusClass(estado)}">
+              ${escapeHtml(estado || "")}
+            </span>
+          </div>
+
+          <div class="service-card-sub">
+            ${escapeHtml(item.posicion || "")}
+            ${
+              supervisor
+                ? `<br>Guardia: ${escapeHtml(item.nombreGuardia || "No asignado")}`
+                : ""
+            }
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  root.innerHTML = html;
+}
+    
+
+function formatSupervisorGuardCount(item) {
+  const cantidad = Math.max(
+    0,
+    Number(item?.cantidadGuardias || 0)
+  );
+
+  return `${String(cantidad).padStart(2, "0")}G`;
+}
+
+function formatSupervisorCoverageNumber(item) {
+  const numero = String(item?.numeroCobertura || "").trim();
+
+  return numero ? `#${numero}` : "#-";
+}
+
+function getSupervisorCalendarEventText(item, mode) {
+  const horaInicio = String(item?.horaInicio || "").trim();
+
+  const codigoServicio = String(
+    item?.codigoServicio ||
+    item?.identificadorServicio ||
+    ""
+  )
+    .trim()
+    .toUpperCase()
+    .slice(0, 5);
+
+  const codigo = codigoServicio || "SERV";
+  const guardias = formatSupervisorGuardCount(item);
+  const cobertura = formatSupervisorCoverageNumber(item);
+
+  if (mode === "month") {
+    return `${codigo} | ${guardias}`;
+  }
+
+  if (mode === "week") {
+    return `${horaInicio} | ${codigo} | ${guardias}`;
+  }
+
+  return `${horaInicio} | ${codigo} | ${cobertura}`;
+}
+    
 function renderProgressLine(item){const inicioServicio=getServiceStartDateTime(item),ahora=new Date(),rutaDisponible=inicioServicio?ahora>=addHours(inicioServicio,-5):false,presenteDisponible=inicioServicio?ahora>=addHours(inicioServicio,-1):false;const steps=[{label:"Confirmado",value:item.fechaConfirmacionConocimiento,operational:true,lockedText:"Disponible"},{label:"En ruta",value:item.fechaEnRuta,operational:rutaDisponible,lockedText:"Disponible 5 h antes"},{label:"Presente",value:item.fechaEnServicio,operational:presenteDisponible,lockedText:"Disponible 1 h antes"}];return`<div class="guard-progress"><div class="guard-progress-track">${steps.map(step=>{const registrado=hasValidDate(step.value);let cls="locked",texto=step.lockedText;if(step.operational&&registrado){cls="registered";texto=formatProgressDateTime(step.value)}if(step.operational&&!registrado){cls="not-registered operational";texto="No registrado"}return`<div class="guard-step ${cls}"><div class="guard-step-dot"></div><div class="guard-step-label">${step.label}</div><div class="guard-step-time">${texto}</div></div>`}).join("")}</div></div>`}
 function renderCompliance(rootId,counts,emptyLabel){const root=document.getElementById(rootId);if(!root)return;const asistencia=counts.ASISTENCIA||0,observado=counts.OBSERVADO||0,falta=counts.FALTA||0,total=asistencia+observado+falta;if(!total){root.innerHTML=`<div class="compliance-bar-pro"><div class="compliance-segment sinregistro">${emptyLabel}</div></div>`;return}const asistenciaPct=Math.round(asistencia/total*100),observadoPct=Math.round(observado/total*100),faltaPct=Math.max(100-asistenciaPct-observadoPct,0);root.innerHTML=`<div class="compliance-bar-pro">${asistencia>0?`<div class="compliance-segment asistencia" style="width:${asistenciaPct}%">Asistencia ${asistenciaPct}%</div>`:""}${observado>0?`<div class="compliance-segment observado" style="width:${observadoPct}%">Observado ${observadoPct}%</div>`:""}${falta>0?`<div class="compliance-segment falta" style="width:${faltaPct}%">Falta ${faltaPct}%</div>`:""}</div>`}
 function statusClass(status){const raw=String(status||"").toLowerCase();if(raw==="req")return"";if(raw==="prog")return"prog";if(raw==="conf")return"conf";if(raw==="ruta")return"ruta";if(raw==="pres")return"pres";if(raw==="asist")return"asist";if(raw==="asistencia")return"asistencia";if(raw==="falta")return"falta";if(raw==="falto")return"falto";if(raw==="obs")return"obs";if(raw==="observado")return"observado";return""}
