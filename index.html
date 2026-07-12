@@ -2299,7 +2299,7 @@ const API_BASE = "https://www.scad.mx/_functions";
 const SEGPRIV_ACCESS_URL = "https://www.scad.mx/inicio-sesion";
 const SCAD_MIS_CURSOS_URL = "https://www.scad.mx/mis-cursos";
 const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
-const SEGPRIV_ADM_URL = "https://www.scad.mx/portaloperativo";
+const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
 const APP_VERSION = "v2.3";
@@ -2319,8 +2319,6 @@ let manualMode="general";
 const ua=navigator.userAgent||"",isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),isSafari=/^((?!chrome|android).)*safari/i.test(ua),isStandalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
 
 document.addEventListener("DOMContentLoaded",()=>{
-  procesarLogoutExterno();
-
   initAppIntroSplash();
   setAppVersion();
   setInitialPeriod();
@@ -4620,63 +4618,8 @@ function formatProgressDateTime(value){
   const d=new Date(value);
   if(isNaN(d.getTime()))return"No registrado";
   return d.toLocaleString("es-MX",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-}function getUrlParam(name){return new URLSearchParams(window.location.search).get(name)||""}
-    
-function procesarLogoutExterno() {
-  const params = new URLSearchParams(window.location.search);
+}function getUrlParam(name){return new URLSearchParams(window.location.search).get(name)||""}function resolveCurrentMember(){const urlMemberId=getUrlParam("memberId")||getUrlParam("memberID")||getUrlParam("wixMemberId")||"",urlEmail=getUrlParam("email")||getUrlParam("correo")||"";if(urlMemberId){CURRENT_MEMBER_ID=urlMemberId;localStorage.setItem("SEGPRIV_MEMBER_ID",urlMemberId)}else{CURRENT_MEMBER_ID=localStorage.getItem("SEGPRIV_MEMBER_ID")||""}if(urlEmail){CURRENT_EMAIL=urlEmail;localStorage.setItem("SEGPRIV_EMAIL",urlEmail)}else{CURRENT_EMAIL=localStorage.getItem("SEGPRIV_EMAIL")||""}updateSessionTopbar();return CURRENT_MEMBER_ID}
 
-  if (params.get("logout") !== "1") {
-    return false;
-  }
-
-  localStorage.removeItem("SEGPRIV_MEMBER_ID");
-  localStorage.removeItem("SEGPRIV_EMAIL");
-
-  CURRENT_MEMBER_ID = "";
-  CURRENT_EMAIL = "";
-
-  pwaContext = null;
-  pwaCanAdm = false;
-  pwaCanCoord = false;
-  pwaCanSup = false;
-  panelAccessOpen = false;
-
-  smsProfile = null;
-  smsSelectedContact = null;
-
-  if (smsRefreshTimer) {
-    clearInterval(smsRefreshTimer);
-    smsRefreshTimer = null;
-  }
-
-  updateSessionTopbar();
-  renderPerfilOperativo();
-  renderPanelAccess();
-
-  params.delete("logout");
-  params.delete("ts");
-  params.delete("memberId");
-  params.delete("memberID");
-  params.delete("wixMemberId");
-  params.delete("email");
-  params.delete("correo");
-
-  const query = params.toString();
-
-  const nuevaUrl =
-    window.location.pathname +
-    (query ? `?${query}` : "") +
-    window.location.hash;
-
-  window.history.replaceState(
-    {},
-    document.title,
-    nuevaUrl
-  );
-
-  return true;
-}
-    
 function getPwaFunctionalRolesFromContext(ctx){
   const source = ctx || {};
 
