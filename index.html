@@ -4966,7 +4966,10 @@ async function loadPwaContext(){
     if(data && data.ok){
       pwaContext=data;
       pwaCanAdm=Boolean(data.canAdm) || pwaContextHasRole(data,"ADM");
-      pwaCanCoord=Boolean(data.canCoord) || pwaContextHasRole(data,"COORD");
+      pwaCanCoord =
+  Boolean(data.canCoord) ||
+  pwaContextHasRole(data,"PROG") ||
+  pwaContextHasRole(data,"COORD");
       pwaCanSup=Boolean(data.canSup) || pwaContextHasRole(data,"SUP");
     }
 
