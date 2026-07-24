@@ -4966,11 +4966,21 @@ async function loadPwaContext(){
     if(data && data.ok){
       pwaContext=data;
       pwaCanAdm=Boolean(data.canAdm) || pwaContextHasRole(data,"ADM");
-      pwaCanCoord =
-      Boolean(data.canCoord) ||
-      pwaContextHasRole(data,"PROG") ||
-      pwaCanSup=Boolean(data.canSup) || pwaContextHasRole(data,"SUP");
-    }
+if(data && data.ok){
+  pwaContext=data;
+
+  pwaCanAdm =
+    Boolean(data.canAdm) ||
+    pwaContextHasRole(data,"ADM");
+
+  pwaCanCoord =
+    Boolean(data.canCoord) ||
+    pwaContextHasRole(data,"PROG");
+
+  pwaCanSup =
+    Boolean(data.canSup) ||
+    pwaContextHasRole(data,"SUP");
+}
 
   }catch(err){
     console.warn("No se pudo cargar contexto PWA:",err);
