@@ -2302,7 +2302,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.3";
+const APP_VERSION = "v2.3.1";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -3597,7 +3597,7 @@ const MANUAL_OPERACION_DATA = [
     className:"sistema",
     title:"Manual del Sistema",
     description:"Referencia general del Portal Operativo SCaD y su flujo operativo.",
-    roles:["BASE","SUP","COORD","ADM"],
+    roles:["BASE","SUP","PROG","ADM"],
     topics:[
       {
         title:"Qué es el Portal Operativo SCaD",
@@ -3618,7 +3618,7 @@ const MANUAL_OPERACION_DATA = [
           <ul>
             <li><strong>Personal base:</strong> consulta servicios, marca acciones propias y accede a documentos permitidos.</li>
             <li><strong>Supervisión:</strong> valida asistencia y revisa coberturas bajo su ámbito operativo.</li>
-            <li><strong>Coordinación:</strong> programa, reasigna y da seguimiento operativo a coberturas.</li>
+            <li><strong>Programación:</strong> programa, reasigna y da seguimiento operativo a coberturas.</li>
             <li><strong>Administración:</strong> configura catálogos, personal, documentos y reglas del sistema.</li>
           </ul>
         `
@@ -3628,7 +3628,7 @@ const MANUAL_OPERACION_DATA = [
         body:`
           <ul>
             <li>Administración configura la base operativa.</li>
-            <li>Coordinación programa coberturas.</li>
+            <li>Programación programa coberturas.</li>
             <li>Personal base consulta servicios y realiza marcajes permitidos.</li>
             <li>Supervisión valida asistencia o falta.</li>
           </ul>
@@ -3708,12 +3708,12 @@ const MANUAL_OPERACION_DATA = [
   {
     id:"coordinacion",
     className:"coord",
-    title:"Coordinación",
+    title:"Programación",
     description:"Programación, reasignación y seguimiento operativo.",
-    roles:["COORD","ADM"],
+    roles:["PROG","ADM"],
     topics:[
       {
-        title:"Panel de Coordinación",
+        title:"Panel de Programación",
         body:`
           <ul>
             <li>Permite consultar servicios operativos.</li>
@@ -3809,7 +3809,7 @@ function getManualRoles(){
   const roles=["BASE"];
 
   if(pwaCanSup) roles.push("SUP");
-  if(pwaCanCoord) roles.push("COORD");
+  if(pwaCanCoord) roles.push("PROG");
 
   const ctx=pwaContext || {};
   const rawRoles=[
@@ -3829,7 +3829,7 @@ function getManualRoles(){
     rawRoles.includes("ADMINISTRACION") ||
     rawRoles.includes("ADMINISTRACIÓN")
   ){
-    roles.push("SUP","COORD","ADM");
+    roles.push("SUP","PROG","ADM");
   }
 
   return [...new Set(roles)];
@@ -3840,7 +3840,7 @@ function getManualRoleLabel(roles){
 
   if(roles.includes("BASE")) labels.push("Personal base");
   if(roles.includes("SUP")) labels.push("Supervisión");
-  if(roles.includes("COORD")) labels.push("Coordinación");
+  if(roles.includes("PROG")) labels.push("Programación");
   if(roles.includes("ADM")) labels.push("Administración");
 
   return labels.join(" · ");
@@ -4965,9 +4965,18 @@ async function loadPwaContext(){
 
     if(data && data.ok){
       pwaContext=data;
-      pwaCanAdm=Boolean(data.canAdm) || pwaContextHasRole(data,"ADM");
-      pwaCanCoord=Boolean(data.canCoord) || pwaContextHasRole(data,"COORD");
-      pwaCanSup=Boolean(data.canSup) || pwaContextHasRole(data,"SUP");
+
+      pwaCanAdm=
+        Boolean(data.canAdm) ||
+        pwaContextHasRole(data,"ADM");
+
+      pwaCanCoord=
+        Boolean(data.canCoord) ||
+        pwaContextHasRole(data,"PROG");
+
+      pwaCanSup=
+        Boolean(data.canSup) ||
+        pwaContextHasRole(data,"SUP");
     }
 
   }catch(err){
