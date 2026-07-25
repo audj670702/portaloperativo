@@ -2156,8 +2156,8 @@ body.splash-running .app{
 
   <div class="inline-period-controls">
     <label><span>Ir a fecha</span><input id="inputGoDate" type="date" onchange="goToSelectedDate()" /></label>
-    <label><span>Inicio</span><input id="inputStartDate" type="date" /></label>
-    <label><span>Fin</span><input id="inputEndDate" type="date" /></label>
+    <label><span>Inicio</span><input id="inputStartDate" type="date" onchange="reloadServicesForPeriod()" /></label>
+    <label><span>Fin</span><input id="inputEndDate" type="date" onchange="reloadServicesForPeriod()" /></label>
   </div>
 </div>
       
@@ -4130,7 +4130,7 @@ function togglePanelAccess(){
 }
   
 function setStatus(text,error=false){const el=document.getElementById("statusLine");if(!el)return;el.textContent=text;el.className=error?"status-line module-status-inline status-error":"status-line module-status-inline"}
-async function loadServices(){resolveCurrentMember();if(!CURRENT_MEMBER_ID){servicios=[];setStatus("Sin sesión",true);renderViews();setHtml("calendarView","<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>");setHtml("listView","<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>");return}setStatus("Cargando servicios...");const fechaInicio=getValue("inputStartDate"),fechaFin=getValue("inputEndDate");try{const url=`${API_BASE}/sprivMisServicios?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&estatus=TODOS&t=${Date.now()}`;const data=await fetchJson(url);if(!data.ok){servicios=[];setStatus(data.error||"No fue posible cargar servicios.",true);renderViews();return}
+async function loadServices(){resolveCurrentMember();if(!CURRENT_MEMBER_ID){servicios=[];setStatus("Sin sesión",true);renderViews();setHtml("calendarView","<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>");setHtml("listView","<div class='empty'>Debes entrar desde el portal Wix de acceso SEGPRIV.</div>");return}if(!validateServicesPeriod())return;setStatus("Cargando servicios...");const fechaInicio=getValue("inputStartDate"),fechaFin=getValue("inputEndDate");try{const url=`${API_BASE}/sprivMisServicios?memberId=${encodeURIComponent(CURRENT_MEMBER_ID)}&email=${encodeURIComponent(CURRENT_EMAIL||"")}&fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&estatus=TODOS&t=${Date.now()}`;const data=await fetchJson(url);if(!data.ok){servicios=[];setStatus(data.error||"No fue posible cargar servicios.",true);renderViews();return}
                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 servicios=data.items||[];
 
@@ -4147,7 +4147,60 @@ setText("guardiaNombre",data.guardia?.nombre||"Guardia");
 setStatus(`Servicios encontrados: ${servicios.length}`);
 renderViews();
 loadHomeServicesUpcoming()                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }catch(err){console.error(err);servicios=[];setStatus("Error al conectar con el sistema.",true);renderViews()}}
-function setView(view){currentView=view;toggleActive("btnViewCalendar",view==="calendar");toggleActive("btnViewList",view==="list");display("calendarView",view==="calendar");display("listView",view==="list")}function setCalendarMode(mode){calendarMode=mode;renderCalendar()}function goToday(){selectedDate=new Date();setInputValue("inputGoDate",toDateKey(selectedDate));calendarMode="day";renderCalendar()}function goToSelectedDate(){const value=getValue("inputGoDate");if(!value)return;selectedDate=createLocalDate(value);calendarMode="day";renderCalendar()}function setStatusFilter(status){statusFilter=status;["TODOS","CONF","RUTA","PRES","ASISTENCIA","FALTA","OBSERVADO"].forEach(s=>toggleActive(`filter${s}`,s===status));renderViews()}
+function setView(view){currentView=view;toggleActive("btnViewCalendar",view==="calendar");toggleActive("btnViewList",view==="list");display("calendarView",view==="calendar");display("listView",view==="list")}
+function setCalendarMode(mode){calendarMode=mode;renderCalendar()}
+function goToday(){
+  const todayKey=toDateKey(new Date());
+  setInputValue("inputGoDate",todayKey);
+  goToSelectedDate();
+}
+function getServicesPeriod(){
+  return {
+    inicio:getValue("inputStartDate"),
+    fin:getValue("inputEndDate")
+  };
+}
+function validateServicesPeriod(showMessage=true){
+  const {inicio,fin}=getServicesPeriod();
+  if(!inicio||!fin){
+    if(showMessage)showToast("Selecciona las fechas de inicio y fin","error");
+    return false;
+  }
+  if(inicio>fin){
+    if(showMessage)showToast("La fecha de inicio no puede ser posterior a la fecha final","error");
+    return false;
+  }
+  return true;
+}
+async function reloadServicesForPeriod(){
+  if(!validateServicesPeriod())return;
+  const {inicio,fin}=getServicesPeriod();
+  const selectedKey=toDateKey(selectedDate);
+  if(selectedKey<inicio||selectedKey>fin){
+    selectedDate=createLocalDate(inicio);
+    setInputValue("inputGoDate",inicio);
+  }
+  await loadServices();
+}
+async function goToSelectedDate(){
+  const value=getValue("inputGoDate");
+  if(!value)return;
+
+  selectedDate=createLocalDate(value);
+  const {inicio,fin}=getServicesPeriod();
+
+  if(!inicio||!fin||value<inicio||value>fin){
+    const start=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);
+    const end=new Date(selectedDate.getFullYear(),selectedDate.getMonth()+1,0);
+    setInputValue("inputStartDate",toDateKey(start));
+    setInputValue("inputEndDate",toDateKey(end));
+    await loadServices();
+    return;
+  }
+
+  renderCalendar();
+}
+function setStatusFilter(status){statusFilter=status;["TODOS","CONF","RUTA","PRES","ASISTENCIA","FALTA","OBSERVADO"].forEach(s=>toggleActive(`filter${s}`,s===status));renderViews()}
 function normalizeServiceStatus(status){const raw=String(status||"").trim().toUpperCase();if(raw==="ASIST")return"ASISTENCIA";if(raw==="FALTO")return"FALTA";if(raw==="OBS")return"OBSERVADO";return raw}function getServiceStatusCounts(){const counts={TODOS:servicios.length,CONF:0,RUTA:0,PRES:0,ASISTENCIA:0,FALTA:0,OBSERVADO:0};servicios.forEach(item=>{const estado=normalizeServiceStatus(item.estado);if(Object.prototype.hasOwnProperty.call(counts,estado))counts[estado]++});return counts}function formatCountValue(value){return Number(value||0)>0?String(value):"-"}function renderStatusCounts(){const counts=getServiceStatusCounts();Object.keys(counts).forEach(key=>setText(`count${key}`,formatCountValue(counts[key])))}
 function renderComplianceSummary(){renderCompliance("complianceSummary",getServiceStatusCounts(),"Sin registro de cumplimiento")}function getFilteredServices(){return statusFilter==="TODOS"?servicios:servicios.filter(item=>normalizeServiceStatus(item.estado)===statusFilter)}function renderViews(){renderStatusCounts();renderComplianceSummary();renderList();renderCalendar();setView(currentView)}
 function renderList(){const root=document.getElementById("listView"),data=getFilteredServices();if(!root)return;if(!data.length){root.innerHTML="<div class='empty'>Sin servicios para este filtro.</div>";return}root.innerHTML=`<div class="list">${data.map(item=>`<div class="service-card ${statusClass(item.estado)}" onclick="openDetail('${escapeAttr(item.coberturaId)}')"><div class="service-card-header"><div class="service-card-title">${escapeHtml(item.servicio||"Servicio")}</div><span class="badge ${statusClass(item.estado)}">${escapeHtml(item.estado||"")}</span></div><div class="service-card-sub">${formatDate(item.fecha)} · ${escapeHtml(item.horario||"")}<br>${escapeHtml(item.posicion||"")}</div></div>`).join("")}</div>`}
@@ -4572,7 +4625,7 @@ function renderGenericMonthCalendar(
 
       const texto = supervisor
         ? getSupervisorCalendarEventText(item, "month")
-        : `${item.horaInicio || ""} ${item.servicio || ""} ${estado || ""}`;
+        : getServiceCalendarEventText(item);
 
       html += `
         <div
@@ -4644,7 +4697,7 @@ function renderGenericWeekCalendar(
 
       const texto = supervisor
         ? getSupervisorCalendarEventText(item, "week")
-        : `${item.horaInicio || ""} ${item.servicio || ""}`;
+        : getServiceCalendarEventText(item);
 
       html += `
         <div
@@ -4698,7 +4751,7 @@ function renderGenericDayCalendar(
 
       const titulo = supervisor
         ? getSupervisorCalendarEventText(item, "day")
-        : `${item.horario || ""} · ${item.servicio || "Servicio"}`;
+        : getServiceCalendarEventText(item);
 
       html += `
         <div
@@ -4742,6 +4795,20 @@ function formatSupervisorGuardCount(item) {
   );
 
   return `${String(cantidad).padStart(2, "0")}G`;
+}
+
+function getServiceCalendarEventText(item) {
+  const horaInicio = String(item?.horaInicio || "").trim();
+  const codigoServicio = String(
+    item?.codigoServicio ||
+    item?.identificadorServicio ||
+    ""
+  )
+    .trim()
+    .toUpperCase()
+    .slice(0, 5);
+
+  return `${horaInicio || "--:--"} | ${codigoServicio || "SERV"}`;
 }
 
 function formatSupervisorCoverageNumber(item) {
