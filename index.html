@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Portal Operativo SCaD</title>
   <meta name="theme-color" content="#111827" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.webmanifest?v=20260605" />
@@ -2320,7 +2321,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.3.4";
+const APP_VERSION = "v2.3.5";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -2346,7 +2347,6 @@ document.addEventListener("DOMContentLoaded",()=>{
   loadPwaContext();
   loadHomeSmsPending();
   loadHomeModuleIndicators();
-  initHomeLightRefresh();
   window.addEventListener("resize",renderPanelAccess);
 
   if("serviceWorker" in navigator){
@@ -2362,8 +2362,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 document.addEventListener("keydown",handlePrivacyModalKeydown);
-document.addEventListener("visibilitychange",handlePwaVisibilityChange);
-window.addEventListener("focus",handlePwaWindowFocus);
     
     document.addEventListener("keydown",handlePrivacyModalKeydown);
 
