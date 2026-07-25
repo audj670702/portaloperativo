@@ -2320,7 +2320,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.3.3";
+const APP_VERSION = "v2.3.4";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -3350,6 +3350,48 @@ function obtenerDatosPerfilOperativo(){
   };
 }
 
+function obtenerNombreComercialEO(){
+  const ctx=pwaContext || {};
+
+  const perfil =
+    ctx.perfilPersonal ||
+    ctx.personal ||
+    ctx.usuario ||
+    ctx.member ||
+    ctx.guardia ||
+    {};
+
+  const referenciasEO=[
+    ctx.empresaOperadora,
+    perfil.empresaOperadora,
+    perfil.empresaOperadoraId,
+    ctx.empresaOperadoraId
+  ];
+
+  const nombreDirecto=[
+    ctx.nombreComercialEO,
+    ctx.nombreComercial,
+    perfil.nombreComercialEO,
+    perfil.nombreComercial
+  ].find(valor=>typeof valor==="string" && valor.trim());
+
+  if(nombreDirecto)return nombreDirecto.trim();
+
+  for(const referencia of referenciasEO){
+    if(referencia && typeof referencia==="object"){
+      const nombre=String(
+        referencia.nombreComercial ||
+        referencia.nombreComercialEO ||
+        ""
+      ).trim();
+
+      if(nombre)return nombre;
+    }
+  }
+
+  return "";
+}
+
 function renderPerfilOperativo(){
   const card=document.getElementById("pwaProfileCard");
   const avatar=document.getElementById("pwaProfileAvatar");
@@ -3374,11 +3416,7 @@ if(!CURRENT_MEMBER_ID){
 }
 
   const datos=obtenerDatosPerfilOperativo();
-  const nombreComercialEO=String(
-    pwaContext?.empresaOperadora?.nombreComercial ||
-    pwaContext?.nombreComercialEO ||
-    ""
-  ).trim();
+  const nombreComercialEO=obtenerNombreComercialEO();
 
   name.textContent=datos.nombre;
   meta.textContent=datos.puesto;
