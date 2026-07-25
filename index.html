@@ -2320,7 +2320,7 @@ const SEGPRIV_COORD_URL = "https://www.scad.mx/scad-sp-coord";
 const SEGPRIV_ADM_URL = "https://www.scad.mx/scad-sp";
 const SEGPRIV_SUP_INFORMES_URL = "https://www.scad.mx/sp-informes?origen=SUP";
 const SEGPRIV_INCIDENCIAS_URL = "https://www.scad.mx/sp-incidencias";
-const APP_VERSION = "v2.3.1";
+const APP_VERSION = "v2.3.3";
 const INTRO_AUDIO_SRC = "./audio/INTRO_app_SCaD.mp3";
 const INTRO_TOTAL_MS = 2200;
 const INTRO_FADE_MS = 420;
@@ -4786,16 +4786,6 @@ function renderGenericDayCalendar(
   html += `</div>`;
   root.innerHTML = html;
 }
-    
-
-function formatSupervisorGuardCount(item) {
-  const cantidad = Math.max(
-    0,
-    Number(item?.cantidadGuardias || 0)
-  );
-
-  return `${String(cantidad).padStart(2, "0")}G`;
-}
 
 function getServiceCalendarEventText(item) {
   const horaInicio = String(item?.horaInicio || "").trim();
@@ -4809,6 +4799,15 @@ function getServiceCalendarEventText(item) {
     .slice(0, 5);
 
   return `${horaInicio || "--:--"} | ${codigoServicio || "SERV"}`;
+}
+
+function formatSupervisorGuardCount(item) {
+  const cantidad = Math.max(
+    0,
+    Number(item?.cantidadGuardias || 0)
+  );
+
+  return `${String(cantidad).padStart(2, "0")}G`;
 }
 
 function formatSupervisorCoverageNumber(item) {
