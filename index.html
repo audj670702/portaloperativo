@@ -43,6 +43,18 @@
   gap:2px;
 }
 
+.app-eo-name{
+  max-width:240px;
+  color:#ffffff;
+  font-size:10.5px;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:.15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
 .app-version-text{
   font-size:9px;
   font-weight:400;
@@ -194,6 +206,11 @@
 
   .pwa-profile-version{
     font-size:8.3px;
+  }
+
+  .app-eo-name{
+    max-width:150px;
+    font-size:9.5px;
   }
 }
 
@@ -1883,6 +1900,7 @@ body.splash-running .app{
   <img class="app-logo" src="./icons/icon-192.png" alt="SCaD" />
   <div class="app-brand-text">
     <p>Portal operativo</p>
+    <div id="appEoName" class="app-eo-name hidden"></div>
   </div>
 </div>
             <button id="btnLoginSegpriv" class="login-mini-link hidden" onclick="iniciarSesionSegpriv()">Iniciar sesión</button>
@@ -3338,6 +3356,7 @@ function renderPerfilOperativo(){
   const name=document.getElementById("pwaProfileName");
   const meta=document.getElementById("pwaProfileMeta");
   const diag=document.getElementById("pwaProfileDiag");
+  const eoName=document.getElementById("appEoName");
 
   if(!card || !avatar || !name || !meta)return;
 
@@ -3347,13 +3366,27 @@ if(!CURRENT_MEMBER_ID){
   name.textContent="Sesión no iniciada";
   meta.textContent="Inicia sesión para acceder a la app.";
   if(diag) diag.textContent="Em0MiD0A0AcA0Eo0";
+  if(eoName){
+    eoName.textContent="";
+    eoName.classList.add("hidden");
+  }
   return;
 }
 
   const datos=obtenerDatosPerfilOperativo();
+  const nombreComercialEO=String(
+    pwaContext?.empresaOperadora?.nombreComercial ||
+    pwaContext?.nombreComercialEO ||
+    ""
+  ).trim();
 
   name.textContent=datos.nombre;
   meta.textContent=datos.puesto;
+
+  if(eoName){
+    eoName.textContent=nombreComercialEO;
+    eoName.classList.toggle("hidden",!nombreComercialEO);
+  }
 
   if(diag){
     diag.textContent=construirCodigoDiagnosticoPerfil();
