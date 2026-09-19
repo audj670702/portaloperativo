@@ -3361,14 +3361,18 @@ function obtenerNombreComercialEO(){
 
   const referenciasEO=[
     ctx.empresaOperadora,
+    ctx.eo,
     perfil.empresaOperadora,
-    perfil.empresaOperadoraId,
-    ctx.empresaOperadoraId
+    perfil.eo
   ];
 
   const nombreDirecto=[
+    ctx.nombreVisible,
+    ctx.nombreEO,
     ctx.nombreComercialEO,
     ctx.nombreComercial,
+    perfil.nombreVisible,
+    perfil.nombreEO,
     perfil.nombreComercialEO,
     perfil.nombreComercial
   ].find(valor=>typeof valor==="string" && valor.trim());
@@ -3378,6 +3382,8 @@ function obtenerNombreComercialEO(){
   for(const referencia of referenciasEO){
     if(referencia && typeof referencia==="object"){
       const nombre=String(
+        referencia.nombreVisible ||
+        referencia.nombre ||
         referencia.nombreComercial ||
         referencia.nombreComercialEO ||
         ""
