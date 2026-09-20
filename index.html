@@ -3186,7 +3186,6 @@ async function refreshCurrentScreen(){const screenId=getActiveScreenId();showToa
                                                                                                           if(screenId==="screenDetail"){if(selectedItem){const id=selectedItem.coberturaId;await loadServices();selectedItem=servicios.find(s=>s.coberturaId===id)||selectedItem;renderDetail();showToast("Detalle actualizado")}else{await loadServices();showScreen("screenServices");showToast("Servicios actualizados")}return}
 if(screenId==="screenHome"){
   await loadPwaContext();
-  await
   await loadHomeModuleIndicators();
   showToast("Inicio actualizado");
   return;
@@ -5792,8 +5791,6 @@ async function openSmsConversation(contactMemberId,contactName,contactMeta="",is
     await markSmsCurrentRead();
     await loadSmsMessages(true);
     await loadSmsPending();
-    await
-
     if(!isSystem){
       await loadSmsRegularContacts();
     }else{
@@ -6045,8 +6042,6 @@ async function sendSmsCurrentMessage(){
     setInputValue("smsMessageInput","");
     await loadSmsMessages(true);
     await loadSmsPending();
-    await
-
   }catch(err){
     console.error(err);
     alert("Error al enviar mensaje.");
