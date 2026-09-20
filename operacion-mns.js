@@ -32,10 +32,10 @@ function resolveMnsContext(ctx){
     ''
   ).trim();
 
-  const eoKey=direct || (/^EO-[A-Z0-9_-]+$/i.test(ref)?ref:'');
+  const eoKey=direct || ref;
 
   if(!eoKey){
-    throw new Error('Portal Operativo no recibió el código EO de la Empresa Operadora activa.');
+    throw new Error('Portal Operativo no recibió la referencia de la Empresa Operadora activa.');
   }
 
   return {mnsKey:MNS_KEY,eoKey};
