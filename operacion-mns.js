@@ -5,6 +5,7 @@ const FRAME_URL='mns-frontend-v052.html?v=0.5.11';
 const MNS_BRIDGE='https://www.scad.mx/_functions/mnsBridge';
 const MNS_KEY='MNS-5C2ZNY6E9K3Y';
 let activeContext=null;
+let resolvedMnsContext=null;
 
 async function loadOperContext(){
   if(typeof resolveCurrentMember==='function')resolveCurrentMember();
@@ -42,7 +43,7 @@ function resolveMnsContext(ctx){
 }
 
 async function invokeMns(action,payload={}){
-  const ctx=resolveMnsContext(activeContext);
+  const ctx=resolvedMnsContext||resolveMnsContext(activeContext);
   const response=await fetch(MNS_BRIDGE,{
     method:'POST',
     mode:'cors',
@@ -60,8 +61,8 @@ async function invokeMns(action,payload={}){
 function ensureStyles(){if(document.getElementById('operMnsStyles'))return;const s=document.createElement('style');s.id='operMnsStyles';s.textContent=`.oper-mns-overlay{position:fixed;inset:0;z-index:99999;background:rgba(11,28,47,.46);display:flex;align-items:stretch;justify-content:center}.oper-mns-panel{width:100%;height:100%;background:#f6f8fb;overflow:hidden}.oper-mns-frame{display:block;width:100%;height:100%;border:0;background:#f6f8fb}body.oper-mns-open{overflow:hidden}@media(min-width:760px){.oper-mns-overlay{padding:28px;align-items:center}.oper-mns-panel{width:min(1040px,calc(100vw - 56px));height:min(820px,calc(100dvh - 56px));border-radius:22px;box-shadow:0 24px 80px rgba(6,31,57,.28)}}`;document.head.appendChild(s)}
 function frame(){return document.querySelector('#operMnsOverlay iframe')}
 function closeMns(){document.getElementById('operMnsOverlay')?.remove();document.body.classList.remove('oper-mns-open')}
-async function openMns(ctx=null){try{activeContext=ctx||await loadOperContext();resolveMnsContext(activeContext);ensureStyles();closeMns();const overlay=document.createElement('div');overlay.id='operMnsOverlay';overlay.className='oper-mns-overlay';overlay.innerHTML=`<div class="oper-mns-panel" role="dialog" aria-modal="true" aria-label="Mensajería"><iframe class="oper-mns-frame" src="${FRAME_URL}" title="Mensajería SCaD MNS"></iframe></div>`;overlay.addEventListener('click',e=>{if(e.target===overlay)closeMns()});document.body.appendChild(overlay);document.body.classList.add('oper-mns-open')}catch(error){console.error('[OPERACIÓN MNS]',error);window.alert(error?.message||'No fue posible abrir Mensajería.')}}
+async function openMns(ctx=null){try{activeContext=ctx||await loadOperContext();const requested=resolveMnsContext(activeContext);const init=await invokeMns('mnsInit',requested);const appId=String(init?.appId||init?.app?._id||init?.app?._id||'').trim();const eoId=String(init?.eoId||init?.eo?._id||'').trim();if(!appId||!eoId)throw new Error('MNS no devolvió el contexto resuelto de APP/EO.');resolvedMnsContext={...requested,appId,eoId};ensureStyles();closeMns();const overlay=document.createElement('div');overlay.id='operMnsOverlay';overlay.className='oper-mns-overlay';overlay.innerHTML=`<div class="oper-mns-panel" role="dialog" aria-modal="true" aria-label="Mensajería"><iframe class="oper-mns-frame" src="${FRAME_URL}" title="Mensajería SCaD MNS"></iframe></div>`;overlay.addEventListener('click',e=>{if(e.target===overlay)closeMns()});document.body.appendChild(overlay);document.body.classList.add('oper-mns-open')}catch(error){console.error('[OPERACIÓN MNS]',error);window.alert(error?.message||'No fue posible abrir Mensajería.')}}
 window.openScadMns=openMns;
 window.openSms=openMns;
 
-window.addEventListener('message',async event=>{const f=frame();if(!f||event.source!==f.contentWindow||event.origin!==location.origin)return;const m=event.data;if(!m||m.channel!==CHANNEL)return;if(m.type==='CLOSE'){closeMns();return}if(m.type==='READY'){try{f.contentWindow.postMessage({channel:CHANNEL,type:'CONTEXT',payload:resolveMnsContext(activeContext)},location.origin)}catch(e){console.error('[OPERACIÓN MNS]',e)}return}if(!m.id||!m.action)return;try{const data=await invokeMns(m.action,m.payload||{});f.contentWindow.postMessage({channel:CHANNEL,id:m.id,ok:true,data},location.origin)}catch(error){f.contentWindow.postMessage({channel:CHANNEL,id:m.id,ok:false,error:error?.message||'Error MNS'},location.origin)}});
+window.addEventListener('message',async event=>{const f=frame();if(!f||event.source!==f.contentWindow||event.origin!==location.origin)return;const m=event.data;if(!m||m.channel!==CHANNEL)return;if(m.type==='CLOSE'){closeMns();return}if(m.type==='READY'){try{f.contentWindow.postMessage({channel:CHANNEL,type:'CONTEXT',payload:resolvedMnsContext||resolveMnsContext(activeContext)},location.origin)}catch(e){console.error('[OPERACIÓN MNS]',e)}return}if(!m.id||!m.action)return;try{const data=await invokeMns(m.action,m.payload||{});f.contentWindow.postMessage({channel:CHANNEL,id:m.id,ok:true,data},location.origin)}catch(error){f.contentWindow.postMessage({channel:CHANNEL,id:m.id,ok:false,error:error?.message||'Error MNS'},location.origin)}});
