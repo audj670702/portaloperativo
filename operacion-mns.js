@@ -1,4 +1,4 @@
-// Portal Operativo SCaD · Integración MNS global · v2.3.14
+// Portal Operativo SCaD · Integración MNS global · v2.3.15
 // Flujo: sesión Portal -> contexto APP/EO -> aprovisionamiento MNS -> validación -> interfaz.
 // No reproduce lógica MNS: consume exclusivamente el bridge y frontend globales existentes.
 
@@ -64,32 +64,17 @@ async function loadOperMnsSourceContext(){
 }
 
 function resolveOperMnsContext(ctx){
-  // Sólo referencias MNS/SCaD EO explícitas entregadas por el contexto.
-  // Nunca se convierte empresaOperadoraId ni otro ID operativo en eoKey.
-  const eoId=String(
-    ctx?.mns?.eoId ||
-    ctx?.eo?.mnsEoId ||
-    ctx?.eo?.eoMnsId ||
-    ''
-  ).trim();
-
   const eoKey=String(
-    ctx?.eo?.codigoEO ||
-    ctx?.mns?.eoKey ||
-    ctx?.eo?.mnsEoKey ||
     ctx?.codigoEO ||
-    ctx?.empresaOperadora?.codigoEO ||
-    ctx?.perfilPersonal?.empresaOperadora?.codigoEO ||
+    ctx?.eo?.codigoEO ||
     ''
-  ).trim();
+  ).trim().toUpperCase();
 
-  if(!eoId&&!eoKey){
-    throw new Error('Portal Operativo no recibió la referencia MNS de la Empresa Operadora activa.');
+  if(!eoKey){
+    throw new Error('Portal Operativo no recibió codigoEO de la Empresa Operadora activa.');
   }
 
-  return eoId
-    ? {mnsKey:MNS_APP_KEY,eoId}
-    : {mnsKey:MNS_APP_KEY,eoKey};
+  return {mnsKey:MNS_APP_KEY,eoKey};
 }
 
 async function invokeOperMns(action,payload={}){
