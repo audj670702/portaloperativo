@@ -1,4 +1,4 @@
-// Portal Operativo SCaD · Integración MNS global · v2.3.10
+// Portal Operativo SCaD · Integración MNS global · v2.3.11
 // Modelo SYS/MNS existente: MNS_Apps identifica APP/origen; EO dinámica por eoKey.
 const CHANNEL='MNS_FRONTEND';
 const FRAME_URL='mns-frontend-v052.html?v=0.5.11';
